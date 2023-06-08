@@ -9,6 +9,8 @@ import androidx.room.Room
 import com.alican.mvvm_starter.data.local.AppDatabase
 import com.alican.mvvm_starter.data.remote.webservice.AuthInterceptor
 import com.alican.mvvm_starter.data.remote.webservice.WebService
+import com.alican.mvvm_starter.domain.repository.HomeMoviesRepository
+import com.alican.mvvm_starter.util.Constant
 import com.alican.mvvm_starter.util.Constant.BASE_URL
 import com.alican.mvvm_starter.util.Constant.DATA_STORE_NAME
 import com.alican.mvvm_starter.util.Constant.ROOM_DATA_BASE_NAME
@@ -17,7 +19,9 @@ import dagger.Provides
 import dagger.hilt.InstallIn
 import dagger.hilt.android.qualifiers.ApplicationContext
 import dagger.hilt.components.SingletonComponent
+import okhttp3.Interceptor
 import okhttp3.OkHttpClient
+import okhttp3.Request
 import okhttp3.logging.HttpLoggingInterceptor
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
@@ -55,10 +59,23 @@ object AppModule {
     ): okhttp3.Call.Factory {
         return OkHttpClient.Builder()
             .addInterceptor(loggingInterceptor)
-            .callTimeout(600, TimeUnit.SECONDS)
-            .readTimeout(600, TimeUnit.SECONDS)
-            .connectTimeout(10000, TimeUnit.SECONDS)
+            .callTimeout(30, TimeUnit.SECONDS)
+            .readTimeout(30, TimeUnit.SECONDS)
+            .connectTimeout(60, TimeUnit.SECONDS)
+            .addInterceptor(providesOkhttpInterceptor())
+            .addInterceptor(loggingInterceptor)
             .build()
+    }
+    @Provides
+    @Singleton
+    fun providesOkhttpInterceptor(): Interceptor {
+        return Interceptor { chain: Interceptor.Chain ->
+            val original: Request = chain.request()
+            val requestBuilder: Request.Builder = original.newBuilder()
+                .header("Authorization", "Bearer ${Constant.TOKEN}")
+            val request: Request = requestBuilder.build()
+            chain.proceed(request)
+        }
     }
 
     @Provides
@@ -78,5 +95,14 @@ object AppModule {
         return Room.databaseBuilder(context, AppDatabase::class.java, ROOM_DATA_BASE_NAME)
             .fallbackToDestructiveMigration()
             .build()
+    }
+
+    @Provides
+    @Singleton
+    fun provideMovieRepository(
+        service: WebService,
+        database: AppDatabase
+    ) : HomeMoviesRepository {
+        return HomeMoviesRepository(service, database)
     }
 }

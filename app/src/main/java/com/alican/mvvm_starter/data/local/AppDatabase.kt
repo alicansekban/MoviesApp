@@ -2,9 +2,13 @@ package com.alican.mvvm_starter.data.local
 
 import androidx.room.Database
 import androidx.room.RoomDatabase
+import com.alican.mvvm_starter.data.local.dao.NowPlayingMoviesDao
+import com.alican.mvvm_starter.data.local.dao.RemoteKeyDao
 import com.alican.mvvm_starter.data.local.model.DataModel
+import com.alican.mvvm_starter.data.local.model.RemoteKey
 
-@Database(entities = [DataModel::class], version = 1)
+@Database(entities = [DataModel::class,RemoteKey::class], version = 1)
 abstract class AppDatabase : RoomDatabase() {
-    abstract fun dao(): AppDao
+    abstract fun homeMoviesDao(): NowPlayingMoviesDao
+    abstract fun remoteKeyDao(): RemoteKeyDao
 }
