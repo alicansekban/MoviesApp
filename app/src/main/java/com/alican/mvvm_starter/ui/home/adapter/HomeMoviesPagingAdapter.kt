@@ -7,6 +7,7 @@ import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.RecyclerView
 import com.alican.mvvm_starter.data.local.model.MovieEntity
 import com.alican.mvvm_starter.databinding.ItemHomeMoviesBinding
+import com.alican.mvvm_starter.util.utils.loadImage
 
 class HomeMoviesPagingAdapter(private val onItemClick: (MovieEntity) -> Unit) : PagingDataAdapter<MovieEntity, HomeMoviesPagingAdapter.ExampleViewHolder>(DIFF_CALLBACK) {
 
@@ -27,6 +28,10 @@ class HomeMoviesPagingAdapter(private val onItemClick: (MovieEntity) -> Unit) : 
         fun bind(item: MovieEntity) {
             binding.root.setOnClickListener {
                 onItemClick(item)
+            }
+            item.let {
+                binding.tvTitle.text = it.title
+                binding.ivCatalog.loadImage(it.getImagePath())
             }
         }
     }

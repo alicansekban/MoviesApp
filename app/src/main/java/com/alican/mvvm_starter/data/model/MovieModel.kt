@@ -1,4 +1,4 @@
-package com.alican.mvvm_starter.data.local.model
+package com.alican.mvvm_starter.data.model
 
 import android.os.Parcelable
 import androidx.room.Entity
@@ -6,12 +6,8 @@ import androidx.room.PrimaryKey
 import com.alican.mvvm_starter.util.Constant
 import kotlinx.parcelize.Parcelize
 
-@Entity(
-    tableName = "movies"
-)
 @Parcelize
-data class MovieEntity(
-    @PrimaryKey(autoGenerate = true)
+data class MovieModel(
     val id: Int = 0,
     val adult: Boolean?,
     val backdrop_path: String?,
@@ -27,7 +23,4 @@ data class MovieEntity(
     val vote_count: Int?
 ) : Parcelable {
 
-    fun getImagePath() : String {
-        return Constant.BASE_POSTER_URL + poster_path
-    }
 }

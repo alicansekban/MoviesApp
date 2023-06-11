@@ -53,7 +53,7 @@ data class ResultsItem(
 	val popularity: Any? = null,
 
 	@Json(name="vote_average")
-	val voteAverage: Any? = null,
+	val voteAverage: Double? = null,
 
 	@Json(name="id")
 	val id: Int? = null,

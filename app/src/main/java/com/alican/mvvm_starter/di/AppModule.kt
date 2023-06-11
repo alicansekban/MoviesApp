@@ -10,6 +10,7 @@ import com.alican.mvvm_starter.data.local.AppDatabase
 import com.alican.mvvm_starter.data.remote.webservice.AuthInterceptor
 import com.alican.mvvm_starter.data.remote.webservice.WebService
 import com.alican.mvvm_starter.domain.repository.HomeMoviesRepository
+import com.alican.mvvm_starter.domain.repository.HomeRepository
 import com.alican.mvvm_starter.util.Constant
 import com.alican.mvvm_starter.util.Constant.BASE_URL
 import com.alican.mvvm_starter.util.Constant.DATA_STORE_NAME
@@ -72,6 +73,7 @@ object AppModule {
         return Interceptor { chain: Interceptor.Chain ->
             val original: Request = chain.request()
             val requestBuilder: Request.Builder = original.newBuilder()
+                .addHeader("accept", "application/json")
                 .header("Authorization", "Bearer ${Constant.TOKEN}")
             val request: Request = requestBuilder.build()
             chain.proceed(request)
@@ -104,5 +106,12 @@ object AppModule {
         database: AppDatabase
     ) : HomeMoviesRepository {
         return HomeMoviesRepository(service, database)
+    }
+    @Provides
+    @Singleton
+    fun provideHomeRepository(
+        service: WebService,
+    ) : HomeRepository {
+        return HomeRepository(service)
     }
 }

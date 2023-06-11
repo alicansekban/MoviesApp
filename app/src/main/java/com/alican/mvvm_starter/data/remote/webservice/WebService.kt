@@ -14,6 +14,12 @@ interface WebService {
     @GET("discover/movie")
     suspend fun getDiscoverMovies(@Query("page") page : Int): BasePagingResponse<MovieResponseModel>
 
+    @GET("upcoming")
+    suspend fun getUpComingMovies(@Query("page") page : Int): BasePagingResponse<MovieResponseModel>
+
+    @GET("popular")
+    suspend fun getPopularMovies(@Query("page") page : Int): BasePagingResponse<MovieResponseModel>
+
     @GET("players/id")
     suspend fun getDataRepo(@Query ("id") id: Int): Response<GetDataDto>
 }
