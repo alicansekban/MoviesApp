@@ -24,6 +24,9 @@ interface NowPlayingMoviesDao {
     @Query("select * from movies order by id asc")
     fun getPagingMovie() : PagingSource<Int, MovieEntity>
 
+    @Query("select * from movies where title like '%' || :searchQuery || '%' order by id asc")
+    fun getPagingMovieQuery(searchQuery: String) : PagingSource<Int, MovieEntity>
+
     @Query("select * from movies order by id asc limit :limit")
     fun getFlowMovies(limit: Int): Flow<List<MovieEntity>>
 }

@@ -11,13 +11,17 @@ import retrofit2.http.Query
 
 interface WebService {
 
+    // DISCOVER
     @GET("discover/movie")
     suspend fun getDiscoverMovies(@Query("page") page : Int): BasePagingResponse<MovieResponseModel>
 
-    @GET("upcoming")
+    @GET("discover/tv")
+    suspend fun getDiscoverTvShows(@Query("page") page : Int): BasePagingResponse<MovieResponseModel>
+
+    @GET("movie/upcoming")
     suspend fun getUpComingMovies(@Query("page") page : Int): BasePagingResponse<MovieResponseModel>
 
-    @GET("popular")
+    @GET("movie/popular")
     suspend fun getPopularMovies(@Query("page") page : Int): BasePagingResponse<MovieResponseModel>
 
     @GET("players/id")

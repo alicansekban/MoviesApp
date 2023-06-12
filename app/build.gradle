@@ -90,6 +90,7 @@ dependencies {
     def moshiVersion = "1.13.0"
     implementation "com.squareup.moshi:moshi:$moshiVersion"
     kapt "com.squareup.moshi:moshi-kotlin-codegen:$moshiVersion"
+    implementation "com.squareup.moshi:moshi-kotlin:1.9.2"
 
 
 

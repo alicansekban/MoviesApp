@@ -23,4 +23,7 @@ data class MovieModel(
     val vote_count: Int?
 ) : Parcelable {
 
+    fun getImagePath() : String {
+        return Constant.BASE_POSTER_URL + poster_path
+    }
 }
