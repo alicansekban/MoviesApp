@@ -23,7 +23,12 @@ interface WebService {
 
     @GET("movie/popular")
     suspend fun getPopularMovies(@Query("page") page : Int): BasePagingResponse<MovieResponseModel>
+    @GET("movie/top_rated")
+    suspend fun getTopRatedApi(@Query("page") page: Int): BasePagingResponse<MovieResponseModel>
+    @GET("search/movie")
+    suspend fun getSearchMovieApi(
+        @Query("page") page: Int,
+        @Query("query") query: String
+    ): BasePagingResponse<MovieResponseModel>
 
-    @GET("players/id")
-    suspend fun getDataRepo(@Query ("id") id: Int): Response<GetDataDto>
 }

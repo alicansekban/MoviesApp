@@ -26,4 +26,7 @@ data class MovieModel(
     fun getImagePath() : String {
         return Constant.BASE_POSTER_URL + poster_path
     }
+    fun rateFormat(): String {
+        return String.format("%.1f", vote_average)
+    }
 }

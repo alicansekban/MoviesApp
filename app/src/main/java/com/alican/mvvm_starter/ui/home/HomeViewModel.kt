@@ -25,8 +25,6 @@ class HomeViewModel @Inject constructor(
 ) : ViewModel() {
     val progressLiveData: MutableLiveData<Boolean> = MutableLiveData()
 
-    val exampleListDataFlow = MutableStateFlow<List<MovieModel>>(emptyList())
-    val myList: StateFlow<List<MovieModel>> get() = exampleListDataFlow.asStateFlow()
 
 
     private val _popularMovies = MutableStateFlow<List<MovieModel>>(emptyList())
@@ -37,20 +35,10 @@ class HomeViewModel @Inject constructor(
     val upComingMovies: StateFlow<List<MovieModel>> get() = _upComingMovies.asStateFlow()
 
     init {
-        getDataExample()
         getPopularMovies()
         getUpcomingMovies()
     }
 
-    fun getDataExample() {
-        progressLiveData.postValue(true)
-        viewModelScope.launch {
-            repository.getExampleData().collectLatest {
-                exampleListDataFlow.emit(it)
-                progressLiveData.postValue(false)
-            }
-        }
-    }
 
     private fun getPopularMovies() {
         progressLiveData.postValue(true)

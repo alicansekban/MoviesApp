@@ -5,6 +5,7 @@ import android.util.Log
 import android.view.View
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.lifecycleScope
+import androidx.navigation.fragment.findNavController
 import androidx.paging.LoadState
 import androidx.paging.PagingData
 import com.alican.mvvm_starter.R
@@ -54,6 +55,9 @@ class HomeFragment : BaseFragment<FragmentHomeBinding>() {
         binding.rvMovies.adapter = adapter
         binding.rvPopularMovies.adapter = HomeMoviesAdapter {
 
+        }
+        binding.btnAllPopularMovies.setOnClickListener {
+            findNavController().navigate(R.id.action_homeFragment_to_moviesListFragment)
         }
         binding.rvUpcomingMovies.adapter = HomeMoviesAdapter {
 
