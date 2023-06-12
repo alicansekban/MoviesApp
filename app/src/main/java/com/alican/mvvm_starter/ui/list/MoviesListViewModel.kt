@@ -3,6 +3,7 @@ package com.alican.mvvm_starter.ui.list
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import androidx.paging.PagingData
+import androidx.paging.cachedIn
 import androidx.paging.map
 import com.alican.mvvm_starter.data.model.MovieModel
 import com.alican.mvvm_starter.domain.repository.ListMoviesRepository
@@ -13,23 +14,21 @@ import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
 import javax.inject.Inject
+
 @HiltViewModel
 class MoviesListViewModel @Inject constructor(
     private val repository: ListMoviesRepository
 ) : ViewModel() {
 
 
-    private val _popularMovies = MutableStateFlow<PagingData<MovieModel>>(PagingData.empty())
-    val popularMovies: StateFlow<PagingData<MovieModel>> get() = _popularMovies
+    private val _movies = MutableStateFlow<PagingData<MovieModel>>(PagingData.empty())
+    val movies: StateFlow<PagingData<MovieModel>> get() = _movies
 
 
-    init {
-        getPopularMovies()
-    }
     fun getPopularMovies() {
         viewModelScope.launch {
-            repository.getPopularMovie().collectLatest {
-                _popularMovies.emit(it)
+            repository.getPopularMovie().cachedIn(viewModelScope).collectLatest {
+                _movies.emit(it)
 
             }
         }
@@ -37,8 +36,8 @@ class MoviesListViewModel @Inject constructor(
 
     fun getUpComingMovies() {
         viewModelScope.launch {
-            repository.getUpComingMovie().collectLatest {
-                _popularMovies.emit(it)
+            repository.getUpComingMovie().cachedIn(viewModelScope).collectLatest {
+                _movies.emit(it)
 
             }
         }
@@ -46,18 +45,17 @@ class MoviesListViewModel @Inject constructor(
 
     fun getTopRatedMovies() {
         viewModelScope.launch {
-            repository.getTopRatedMovie().collectLatest {
-                _popularMovies.emit(it)
+            repository.getTopRatedMovie().cachedIn(viewModelScope).collectLatest {
+                _movies.emit(it)
 
             }
         }
     }
 
-    fun getMoviesWithQuery(query:String) {
+    fun getMoviesWithQuery(query: String = "") {
         viewModelScope.launch {
-            repository.getSearchMovies(query).collectLatest {
-                _popularMovies.emit(it)
-
+            repository.getSearchMovies(query).cachedIn(viewModelScope).collectLatest {
+                _movies.emit(it)
             }
         }
     }

@@ -18,6 +18,7 @@ import com.alican.mvvm_starter.domain.mapper.toMovieModel
 import com.alican.mvvm_starter.ui.home.adapter.HomeMoviesAdapter
 import com.alican.mvvm_starter.ui.home.adapter.HomeMoviesPagingAdapter
 import com.alican.mvvm_starter.ui.home.adapter.HomeViewPagerAdapter
+import com.alican.mvvm_starter.util.Constant
 import com.alican.mvvm_starter.util.utils.SliderTransformer
 import com.murgupluoglu.request.STATUS_ERROR
 import com.murgupluoglu.request.STATUS_LOADING
@@ -50,23 +51,18 @@ class HomeFragment : BaseFragment<FragmentHomeBinding>() {
 
     private fun initViews() {
         adapter = HomeMoviesPagingAdapter {
-            findNavController().navigate(R.id.action_homeFragment_to_moviesListFragment)
 
         }
         binding.rvMovies.adapter = adapter
         binding.rvPopularMovies.adapter = HomeMoviesAdapter {
+            goToListFragment(Constant.POPULAR_MOVIES)
+        }
 
-            findNavController().navigate(R.id.action_homeFragment_to_moviesListFragment)
-        }
-        binding.btnAllPopularMovies.setOnClickListener {
-            findNavController().navigate(R.id.action_homeFragment_to_moviesListFragment)
-        }
         binding.rvUpcomingMovies.adapter = HomeMoviesAdapter {
-            findNavController().navigate(R.id.action_homeFragment_to_moviesListFragment)
+            goToListFragment(Constant.UP_COMING_MOVIES)
 
         }
         homeBannerAdapter = HomeViewPagerAdapter {
-            findNavController().navigate(R.id.action_homeFragment_to_moviesListFragment)
         }
         binding.rvBanner.adapter = homeBannerAdapter
     }
@@ -90,6 +86,9 @@ class HomeFragment : BaseFragment<FragmentHomeBinding>() {
                 initUpComingMovies(list)
             }
         }
+    }
+    private fun goToListFragment(type: String) {
+        val action = findNavController().navigate(HomeFragmentDirections.actionHomeFragmentToMoviesListFragment(type))
     }
 
     private fun initUpComingMovies(list: List<MovieModel>) {
