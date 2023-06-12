@@ -29,14 +29,11 @@ class HomeMoviesAdapter(val onClick: (MovieModel) -> Unit) : ListAdapter<MovieMo
             binding.root.setOnClickListener {
                 onClick(bindingAdapterPosition)
             }
-
-
         }
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
-        val binding = ItemMoviesBinding.inflate(LayoutInflater.from(parent.context),parent,false)
-
+        val binding = ItemMoviesBinding.inflate(LayoutInflater.from(parent.context), parent, false)
         return ViewHolder(binding) {
             onClick(getItem(it))
         }
@@ -47,3 +44,4 @@ class HomeMoviesAdapter(val onClick: (MovieModel) -> Unit) : ListAdapter<MovieMo
         holder.binding.executePendingBindings()
     }
 }
+

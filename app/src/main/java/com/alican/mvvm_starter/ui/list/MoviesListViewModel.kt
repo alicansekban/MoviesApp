@@ -37,7 +37,25 @@ class MoviesListViewModel @Inject constructor(
 
     fun getUpComingMovies() {
         viewModelScope.launch {
-            repository.getPopularMovie().collectLatest {
+            repository.getUpComingMovie().collectLatest {
+                _popularMovies.emit(it)
+
+            }
+        }
+    }
+
+    fun getTopRatedMovies() {
+        viewModelScope.launch {
+            repository.getTopRatedMovie().collectLatest {
+                _popularMovies.emit(it)
+
+            }
+        }
+    }
+
+    fun getMoviesWithQuery(query:String) {
+        viewModelScope.launch {
+            repository.getSearchMovies(query).collectLatest {
                 _popularMovies.emit(it)
 
             }

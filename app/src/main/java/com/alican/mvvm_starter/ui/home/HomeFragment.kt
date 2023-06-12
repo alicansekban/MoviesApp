@@ -50,20 +50,23 @@ class HomeFragment : BaseFragment<FragmentHomeBinding>() {
 
     private fun initViews() {
         adapter = HomeMoviesPagingAdapter {
+            findNavController().navigate(R.id.action_homeFragment_to_moviesListFragment)
 
         }
         binding.rvMovies.adapter = adapter
         binding.rvPopularMovies.adapter = HomeMoviesAdapter {
 
+            findNavController().navigate(R.id.action_homeFragment_to_moviesListFragment)
         }
         binding.btnAllPopularMovies.setOnClickListener {
             findNavController().navigate(R.id.action_homeFragment_to_moviesListFragment)
         }
         binding.rvUpcomingMovies.adapter = HomeMoviesAdapter {
+            findNavController().navigate(R.id.action_homeFragment_to_moviesListFragment)
 
         }
         homeBannerAdapter = HomeViewPagerAdapter {
-
+            findNavController().navigate(R.id.action_homeFragment_to_moviesListFragment)
         }
         binding.rvBanner.adapter = homeBannerAdapter
     }

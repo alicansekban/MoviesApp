@@ -1,26 +1,19 @@
 <?xml version="1.0" encoding="utf-8"?>
 <layout xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools">
+
     <data>
+
         <variable
             name="data"
             type="com.alican.mvvm_starter.data.model.MovieModel" />
     </data>
-<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:layout_width="wrap_content"
-    android:layout_height="wrap_content">
 
-    <com.google.android.material.card.MaterialCardView
-        android:id="@+id/cv_highlights"
-        android:layout_width="93dp"
-        android:layout_height="wrap_content"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
+    <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+        android:layout_width="100dp"
         android:layout_margin="8dp"
-        android:clickable="true"
-        android:focusable="true"
-        app:cardCornerRadius="5dp"
-        app:cardElevation="0dp">
+        android:layout_height="200dp">
+
 
         <androidx.constraintlayout.widget.ConstraintLayout
             android:layout_width="match_parent"
@@ -28,12 +21,12 @@
 
             <ImageView
                 android:id="@+id/iv_catalog"
+                downloadImage="@{data.getImagePath()}"
                 android:layout_width="0dp"
                 android:layout_height="0dp"
                 android:layout_centerInParent="true"
                 android:adjustViewBounds="true"
                 android:scaleType="centerCrop"
-                downloadImage="@{data.getImagePath()}"
                 app:layout_constraintDimensionRatio="2:3"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
@@ -41,22 +34,21 @@
                 tools:src="@tools:sample/backgrounds/scenic" />
 
             <TextView
+                android:id="@+id/tv_title"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                tools:text="Fast and Furious"
-                android:id="@+id/tv_title"
-                app:layout_constraintTop_toBottomOf="@id/iv_catalog"
-                app:layout_constraintStart_toStartOf="@id/iv_catalog"
+                android:fontFamily="@font/sfprodisplay_bold"
                 android:gravity="center"
                 android:text="@{data.title}"
                 android:textColor="@color/black"
-                android:fontFamily="@font/sfprodisplay_bold"
                 android:textSize="16sp"
-                app:layout_constraintEnd_toEndOf="@id/iv_catalog"/>
+                app:layout_constraintEnd_toEndOf="@id/iv_catalog"
+                app:layout_constraintStart_toStartOf="@id/iv_catalog"
+                app:layout_constraintTop_toBottomOf="@id/iv_catalog"
+                tools:text="Fast and Furious" />
 
         </androidx.constraintlayout.widget.ConstraintLayout>
 
-    </com.google.android.material.card.MaterialCardView>
 
-</androidx.constraintlayout.widget.ConstraintLayout>
+    </androidx.constraintlayout.widget.ConstraintLayout>
 </layout>

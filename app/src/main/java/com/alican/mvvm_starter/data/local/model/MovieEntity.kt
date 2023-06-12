@@ -23,7 +23,7 @@ data class MovieEntity(
     val release_date: String?,
     val title: String,
     val video: Boolean?,
-    val vote_average: Float?,
+    val vote_average: Double?,
     val vote_count: Int?
 ) : Parcelable {
 
