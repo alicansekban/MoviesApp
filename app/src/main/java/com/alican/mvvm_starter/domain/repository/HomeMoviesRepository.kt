@@ -39,7 +39,7 @@ class HomeMoviesRepository @Inject constructor(
 
     suspend fun getUpComingMovies(): Flow<List<MovieModel>> = flow {
         val response = webService.getUpComingMovies(1)
-        val movieModels = response.results.map {
+        val movieModels = response.results.take(7).map {
             it.toMovieModel()
         }
 
@@ -49,7 +49,7 @@ class HomeMoviesRepository @Inject constructor(
 
     suspend fun getPopularMovies(): Flow<List<MovieModel>> = flow {
         val response = webService.getPopularMovies(1)
-        val movieModels = response.results.map {
+        val movieModels = response.results.take(7).map {
             it.toMovieModel()
         }
 
@@ -58,11 +58,4 @@ class HomeMoviesRepository @Inject constructor(
 
     }.flowOn(Dispatchers.IO)
 
-    suspend fun getExampleData(): Flow<List<MovieModel>> = flow {
-        val items = webService.getPopularMovies(1)
-        val returnItems = items.results.take(7).map {
-            it.toMovieModel()
-        }
-        emit(returnItems)
-    }.flowOn(Dispatchers.IO)
 }

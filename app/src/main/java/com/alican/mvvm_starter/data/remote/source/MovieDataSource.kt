@@ -15,7 +15,7 @@ class MovieDataSource @Inject constructor(private val webService: WebService) {
 
 
 
-    suspend fun getPopularMovies(): Flow<PagingData<MovieResponseModel>> = Pager(
+     fun getPopularMovies(): Flow<PagingData<MovieResponseModel>> = Pager(
         config = PagingConfig(
             pageSize = 20,
             maxSize = PagingConfig.MAX_SIZE_UNBOUNDED,
@@ -27,7 +27,7 @@ class MovieDataSource @Inject constructor(private val webService: WebService) {
         }
     ).flow
 
-    suspend fun getTopRatedMovies(): Flow<PagingData<MovieResponseModel>> = Pager(
+     fun getTopRatedMovies(): Flow<PagingData<MovieResponseModel>> = Pager(
         config = PagingConfig(
             pageSize = 20,
             maxSize = PagingConfig.MAX_SIZE_UNBOUNDED,
@@ -39,7 +39,7 @@ class MovieDataSource @Inject constructor(private val webService: WebService) {
         }
     ).flow
 
-    suspend fun getUpComingMovies(): Flow<PagingData<MovieResponseModel>> = Pager(
+     fun getUpComingMovies(): Flow<PagingData<MovieResponseModel>> = Pager(
         config = PagingConfig(
             pageSize = 20,
             maxSize = PagingConfig.MAX_SIZE_UNBOUNDED,
@@ -51,7 +51,7 @@ class MovieDataSource @Inject constructor(private val webService: WebService) {
         }
     ).flow
 
-    suspend fun getSearchMovies(query: String): Flow<PagingData<MovieResponseModel>> = Pager(
+     fun getSearchMovies(query: String): Flow<PagingData<MovieResponseModel>> = Pager(
         config = PagingConfig(
             pageSize = 20,
             maxSize = PagingConfig.MAX_SIZE_UNBOUNDED,
