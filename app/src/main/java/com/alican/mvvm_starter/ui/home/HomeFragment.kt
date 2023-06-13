@@ -55,7 +55,7 @@ class HomeFragment : BaseFragment<FragmentHomeBinding>() {
         }
         binding.rvMovies.adapter = adapter
         binding.rvPopularMovies.adapter = HomeMoviesAdapter {
-            goToListFragment(Constant.POPULAR_MOVIES)
+            goToDetailFragment(it.id)
         }
         binding.rvNowPlaying.adapter = HomeMoviesAdapter {
             goToListFragment(Constant.NOW_PLAYING)
@@ -115,7 +115,11 @@ class HomeFragment : BaseFragment<FragmentHomeBinding>() {
     }
 
     private fun goToListFragment(type: String) {
-        val action = findNavController().navigate(HomeFragmentDirections.actionHomeFragmentToMoviesListFragment(type))
+        findNavController().navigate(HomeFragmentDirections.actionHomeFragmentToMoviesListFragment(type))
+    }
+
+    private fun goToDetailFragment(id:Int) {
+       findNavController().navigate(HomeFragmentDirections.actionHomeFragmentToMovieDetailFragment(id))
     }
 
     private fun initUpComingMovies(list: List<MovieModel>) {

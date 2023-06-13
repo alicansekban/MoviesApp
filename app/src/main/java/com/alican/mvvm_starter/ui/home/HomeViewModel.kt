@@ -26,22 +26,24 @@ class HomeViewModel @Inject constructor(
     val progressLiveData: MutableLiveData<Boolean> = MutableLiveData()
 
 
+    private val _uiState = MutableStateFlow<List<MovieModel>>(emptyList())
+    val uiState: StateFlow<List<MovieModel>> = _uiState.asStateFlow()
 
     private val _popularMovies = MutableStateFlow<List<MovieModel>>(emptyList())
-    val popularMovies: StateFlow<List<MovieModel>> get() = _popularMovies.asStateFlow()
+    val popularMovies: StateFlow<List<MovieModel>> = _popularMovies.asStateFlow()
 
 
     private val _upComingMovies = MutableStateFlow<List<MovieModel>>(emptyList())
-    val upComingMovies: StateFlow<List<MovieModel>> get() = _upComingMovies.asStateFlow()
+    val upComingMovies: StateFlow<List<MovieModel>> = _upComingMovies.asStateFlow()
 
 
     private val _topRatedMovies = MutableStateFlow<List<MovieModel>>(emptyList())
-    val topRatedMovies: StateFlow<List<MovieModel>> get() = _topRatedMovies.asStateFlow()
+    val topRatedMovies: StateFlow<List<MovieModel>>  = _topRatedMovies.asStateFlow()
 
 
 
     private val _nowPlayingMovies = MutableStateFlow<List<MovieModel>>(emptyList())
-    val nowPlayingMovies: StateFlow<List<MovieModel>> get() = _nowPlayingMovies.asStateFlow()
+    val nowPlayingMovies: StateFlow<List<MovieModel>> = _nowPlayingMovies.asStateFlow()
 
     init {
         getPopularMovies()

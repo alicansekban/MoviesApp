@@ -1,12 +1,11 @@
 package com.alican.mvvm_starter.data.remote.webservice
 
 import com.alican.mvvm_starter.base.BasePagingResponse
-import com.alican.mvvm_starter.data.remote.dto.GetDataDto
 import com.alican.mvvm_starter.base.BaseResponse
+import com.alican.mvvm_starter.data.model.MovieDetailResponse
 import com.alican.mvvm_starter.data.model.MovieResponseModel
-import com.alican.mvvm_starter.data.model.NowPlayingMoviesModel
-import retrofit2.Response
 import retrofit2.http.GET
+import retrofit2.http.Path
 import retrofit2.http.Query
 
 interface WebService {
@@ -18,6 +17,8 @@ interface WebService {
     @GET("discover/tv")
     suspend fun getDiscoverTvShows(@Query("page") page : Int): BasePagingResponse<MovieResponseModel>
 
+
+    // MOVIE LISTS
     @GET("movie/upcoming")
     suspend fun getUpComingMovies(@Query("page") page : Int): BasePagingResponse<MovieResponseModel>
 
@@ -34,5 +35,9 @@ interface WebService {
         @Query("page") page: Int,
         @Query("query") query: String
     ): BasePagingResponse<MovieResponseModel>
+
+
+    @GET("movie/details/{id}")
+    suspend fun getMovieDetail(@Path("id") id : Int) : BaseResponse<MovieDetailResponse>
 
 }

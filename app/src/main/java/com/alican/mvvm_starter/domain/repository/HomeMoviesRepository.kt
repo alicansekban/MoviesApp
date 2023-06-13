@@ -13,8 +13,10 @@ import com.alican.mvvm_starter.data.remote.webservice.WebService
 import com.alican.mvvm_starter.domain.mapper.toMovieModel
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.flow.flowOn
+import java.lang.IllegalArgumentException
 import javax.inject.Inject
 
 class HomeMoviesRepository @Inject constructor(
@@ -47,6 +49,8 @@ class HomeMoviesRepository @Inject constructor(
 
         emit(movieModels)
 
+    }.catch { e ->
+        if (e is IllegalArgumentException ) throw e else emit(emptyList())
     }.flowOn(Dispatchers.IO)
 
     suspend fun getPopularMovies(): Flow<List<MovieModel>> = flow {
@@ -58,6 +62,8 @@ class HomeMoviesRepository @Inject constructor(
         emit(movieModels)
 
 
+    }.catch { e ->
+        if (e is IllegalArgumentException ) throw e else emit(emptyList())
     }.flowOn(Dispatchers.IO)
 
     suspend fun getTopRatedMovies(): Flow<List<MovieModel>> = flow {
@@ -66,6 +72,8 @@ class HomeMoviesRepository @Inject constructor(
             it.toMovieModel()
         }
         emit(movieModels)
+    }.catch { e ->
+        if (e is IllegalArgumentException ) throw e else emit(emptyList())
     }.flowOn(Dispatchers.IO)
 
     suspend fun getNowPlayingMovies(): Flow<List<MovieModel>> = flow {
@@ -74,5 +82,7 @@ class HomeMoviesRepository @Inject constructor(
             it.toMovieModel()
         }
         emit(movieModels)
+    }.catch { e ->
+        if (e is IllegalArgumentException ) throw e else emit(emptyList())
     }.flowOn(Dispatchers.IO)
 }
