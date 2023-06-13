@@ -6,95 +6,49 @@ import androidx.lifecycle.viewModelScope
 import androidx.paging.cachedIn
 import com.alican.mvvm_starter.data.remote.webservice.WebService
 import com.alican.mvvm_starter.data.model.MovieModel
-import com.alican.mvvm_starter.domain.repository.HomeMoviesRepository
+import com.alican.mvvm_starter.data.repository.HomeMoviesRepository
+import com.alican.mvvm_starter.domain.interactor.HomeMoviesInteractor
+import com.alican.mvvm_starter.domain.model.BaseUIModel
+import com.alican.mvvm_starter.domain.model.Loading
+import com.alican.mvvm_starter.domain.model.MovieUIModel
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.flow.flowOn
+import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 @HiltViewModel
 class HomeViewModel @Inject constructor(
     private val webService: WebService,
-    val repository: HomeMoviesRepository
-
+    val repository: HomeMoviesRepository,
+    val interactor: HomeMoviesInteractor
 ) : ViewModel() {
     val progressLiveData: MutableLiveData<Boolean> = MutableLiveData()
 
-
-    private val _uiState = MutableStateFlow<List<MovieModel>>(emptyList())
-    val uiState: StateFlow<List<MovieModel>> = _uiState.asStateFlow()
-
-    private val _popularMovies = MutableStateFlow<List<MovieModel>>(emptyList())
-    val popularMovies: StateFlow<List<MovieModel>> = _popularMovies.asStateFlow()
+    private val _popularMovies = interactor.getPopularMovies()
+    val popularMovies: StateFlow<BaseUIModel<List<MovieUIModel>>> = _popularMovies.stateIn(viewModelScope, SharingStarted.Eagerly, Loading())
 
 
-    private val _upComingMovies = MutableStateFlow<List<MovieModel>>(emptyList())
-    val upComingMovies: StateFlow<List<MovieModel>> = _upComingMovies.asStateFlow()
+    private val _upComingMovies = interactor.getUpcomingMovies()
+    val upComingMovies: StateFlow<BaseUIModel<List<MovieUIModel>>> = _upComingMovies.stateIn(viewModelScope, SharingStarted.Eagerly, Loading())
 
 
-    private val _topRatedMovies = MutableStateFlow<List<MovieModel>>(emptyList())
-    val topRatedMovies: StateFlow<List<MovieModel>>  = _topRatedMovies.asStateFlow()
+    private val _topRatedMovies = interactor.getTopRatedMovies()
+    val topRatedMovies: StateFlow<BaseUIModel<List<MovieUIModel>>>  = _topRatedMovies.stateIn(viewModelScope, SharingStarted.Eagerly,Loading())
 
 
 
-    private val _nowPlayingMovies = MutableStateFlow<List<MovieModel>>(emptyList())
-    val nowPlayingMovies: StateFlow<List<MovieModel>> = _nowPlayingMovies.asStateFlow()
-
-    init {
-        getPopularMovies()
-        getUpcomingMovies()
-        getTopRatedMovies()
-        getNowPlayingMovies()
-    }
+    private val _nowPlayingMovies = interactor.getNowPlayingMovies()
+    val nowPlayingMovies:  StateFlow<BaseUIModel<List<MovieUIModel>>> = _nowPlayingMovies.stateIn(viewModelScope, SharingStarted.Eagerly,Loading())
 
 
-    private fun getPopularMovies() {
-        progressLiveData.postValue(true)
-        viewModelScope.launch {
-            repository.getPopularMovies().collectLatest {
-                _popularMovies.emit(it)
-                progressLiveData.postValue(false)
 
-            }
-        }
-    }
-    private fun getUpcomingMovies() {
-        progressLiveData.postValue(true)
-        viewModelScope.launch {
-            repository.getUpComingMovies().collectLatest {
-                _upComingMovies.emit(it)
-                progressLiveData.postValue(false)
-
-            }
-        }
-    }
-
-    private fun getTopRatedMovies() {
-        progressLiveData.postValue(true)
-        viewModelScope.launch {
-            repository.getTopRatedMovies().collectLatest {
-                _topRatedMovies.emit(it)
-                progressLiveData.postValue(false)
-
-            }
-        }
-    }
-
-    private fun getNowPlayingMovies() {
-        progressLiveData.postValue(true)
-        viewModelScope.launch {
-            repository.getNowPlayingMovies().collectLatest {
-                _nowPlayingMovies.emit(it)
-                progressLiveData.postValue(false)
-
-            }
-        }
-    }
 
     val movies = repository.discoverMovie()
         .flowOn(Dispatchers.IO)

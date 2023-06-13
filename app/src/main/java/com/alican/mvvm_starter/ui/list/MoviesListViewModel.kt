@@ -6,75 +6,28 @@ import androidx.paging.PagingData
 import androidx.paging.cachedIn
 import androidx.paging.map
 import com.alican.mvvm_starter.data.model.MovieModel
-import com.alican.mvvm_starter.domain.repository.ListMoviesRepository
+import com.alican.mvvm_starter.data.repository.ListMoviesRepository
+import com.alican.mvvm_starter.domain.interactor.MoviesListInteractor
+import com.alican.mvvm_starter.domain.model.MovieUIModel
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.collectLatest
+import kotlinx.coroutines.flow.emptyFlow
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 @HiltViewModel
 class MoviesListViewModel @Inject constructor(
-    private val repository: ListMoviesRepository
+    private val repository: ListMoviesRepository,
+     val interactor: MoviesListInteractor
 ) : ViewModel() {
 
 
-    private val _movies = MutableStateFlow<PagingData<MovieModel>>(PagingData.empty())
-    val movies: StateFlow<PagingData<MovieModel>> get() = _movies
+     var _movies = interactor.getPopularMovies()
+    val movies: Flow<PagingData<MovieUIModel>> get() = _movies
 
 
-    fun getPopularMovies() {
-        viewModelScope.launch {
-            repository.getPopularMovie().cachedIn(viewModelScope).collectLatest {
-                _movies.emit(it)
-
-            }
-        }
-    }
-
-    fun getNowPlayingMovies() {
-        viewModelScope.launch {
-            repository.getNowPlayingMovies().cachedIn(viewModelScope).collectLatest {
-                _movies.emit(it)
-
-            }
-        }
-    }
-
-    fun getLatestMovies() {
-        viewModelScope.launch {
-            repository.getLatestMovies().cachedIn(viewModelScope).collectLatest {
-                _movies.emit(it)
-
-            }
-        }
-    }
-
-    fun getUpComingMovies() {
-        viewModelScope.launch {
-            repository.getUpComingMovie().cachedIn(viewModelScope).collectLatest {
-                _movies.emit(it)
-
-            }
-        }
-    }
-
-    fun getTopRatedMovies() {
-        viewModelScope.launch {
-            repository.getTopRatedMovie().cachedIn(viewModelScope).collectLatest {
-                _movies.emit(it)
-
-            }
-        }
-    }
-
-    fun getMoviesWithQuery(query: String = "") {
-        viewModelScope.launch {
-            repository.getSearchMovies(query).cachedIn(viewModelScope).collectLatest {
-                _movies.emit(it)
-            }
-        }
-    }
 }

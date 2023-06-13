@@ -14,56 +14,19 @@ import javax.inject.Inject
 
 class HomeDataSource @Inject constructor(private val webService: WebService) {
 
-    suspend fun getPopularMovies() : List<MovieResponseModel> {
-        val list = mutableListOf<MovieResponseModel>()
-        when (val response = safeApiCall(Dispatchers.IO) { webService.getPopularMovies(1) }) {
-            is ResultWrapper.Success -> {
-                list.addAll(response.value.results)
-            }
-            is ResultWrapper.GenericError -> {
-
-            }
-            else -> {}
-        }
-        return list
+    suspend fun getPopularMovies():ResultWrapper<BasePagingResponse<MovieResponseModel>> {
+        return safeApiCall(Dispatchers.IO) { webService.getPopularMovies(1) }
     }
-    suspend fun getUpComingMovies() : List<MovieResponseModel> {
-        val list = mutableListOf<MovieResponseModel>()
-        when (val response = safeApiCall(Dispatchers.IO) { webService.getUpComingMovies(1) }) {
-            is ResultWrapper.Success -> {
-                list.addAll(response.value.results)
-            }
-            is ResultWrapper.GenericError -> {
 
-            }
-            else -> {}
-        }
-        return list
+    suspend fun getUpComingMovies(): ResultWrapper<BasePagingResponse<MovieResponseModel>> {
+        return safeApiCall(Dispatchers.IO) { webService.getUpComingMovies(1) }
     }
-    suspend fun getTopRatedMovies() : List<MovieResponseModel> {
-        val list = mutableListOf<MovieResponseModel>()
-        when (val response = safeApiCall(Dispatchers.IO) { webService.getTopRatedApi(1) }) {
-            is ResultWrapper.Success -> {
-                list.addAll(response.value.results)
-            }
-            is ResultWrapper.GenericError -> {
 
-            }
-            else -> {}
-        }
-        return list
+    suspend fun getTopRatedMovies(): ResultWrapper<BasePagingResponse<MovieResponseModel>> {
+        return safeApiCall(Dispatchers.IO) { webService.getTopRatedApi(1) }
     }
-    suspend fun getNowPlayingMovies() : List<MovieResponseModel> {
-        val list = mutableListOf<MovieResponseModel>()
-        when (val response = safeApiCall(Dispatchers.IO) { webService.getNowPlayingMovies(1) }) {
-            is ResultWrapper.Success -> {
-                list.addAll(response.value.results)
-            }
-            is ResultWrapper.GenericError -> {
 
-            }
-            else -> {}
+        suspend fun getNowPlayingMovies(): ResultWrapper<BasePagingResponse<MovieResponseModel>> {
+            return safeApiCall(Dispatchers.IO) { webService.getNowPlayingMovies(1) }
         }
-        return list
-    }
 }

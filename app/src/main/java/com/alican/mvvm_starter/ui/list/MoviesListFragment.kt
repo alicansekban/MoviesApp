@@ -35,20 +35,13 @@ class MoviesListFragment:BaseFragment<FragmentMoviesListBinding>() {
     private fun observeArgs() {
         when(args.type) {
             Constant.POPULAR_MOVIES -> {
-                viewModel.getPopularMovies()
-
+                viewModel._movies = viewModel.interactor.getUpcomingMovies()
             }
             Constant.UP_COMING_MOVIES -> {
-                viewModel.getUpComingMovies()
-
+                viewModel._movies = viewModel.interactor.getUpcomingMovies()
             }
             Constant.TOP_RATED_MOVIES -> {
-                viewModel.getTopRatedMovies()
-
-            }
-            Constant.SEARCH_QUERY_MOVIES -> {
-                viewModel.getMoviesWithQuery()
-
+                viewModel._movies = viewModel.interactor.getTopRatedMovies()
             }
         }
     }
@@ -61,8 +54,8 @@ class MoviesListFragment:BaseFragment<FragmentMoviesListBinding>() {
 
     private fun initObserver() {
         lifecycleScope.launch {
-            viewModel.movies.collectLatest {
-                adapter.submitData(it)
+            viewModel.movies.collectLatest { response ->
+                adapter.submitData(response)
             }
         }
 

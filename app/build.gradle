@@ -103,6 +103,9 @@ dependencies {
     implementation "com.blankj:utilcodex:1.30.6"
 
 
+    // Dot Indicator
+    implementation 'com.github.msayan:dotsindicator:4.0.0'
+
     // Alerter
     implementation 'com.tapadoo.android:alerter:2.0.0'
 

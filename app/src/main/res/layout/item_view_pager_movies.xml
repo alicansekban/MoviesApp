@@ -4,7 +4,7 @@
     <data>
         <variable
             name="data"
-            type="com.alican.mvvm_starter.data.model.MovieModel" />
+            type="com.alican.mvvm_starter.domain.model.MovieUIModel" />
     </data>
 <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"

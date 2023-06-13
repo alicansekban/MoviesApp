@@ -8,6 +8,7 @@ import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
 import androidx.paging.LoadState
 import androidx.paging.PagingData
+import androidx.viewpager2.widget.ViewPager2
 import com.alican.mvvm_starter.R
 import com.alican.mvvm_starter.databinding.FragmentHomeBinding
 import com.alican.mvvm_starter.base.BaseFragment
@@ -15,6 +16,10 @@ import com.alican.mvvm_starter.data.local.model.MovieEntity
 import com.alican.mvvm_starter.data.model.MovieModel
 import com.alican.mvvm_starter.data.model.MovieResponseModel
 import com.alican.mvvm_starter.domain.mapper.toMovieModel
+import com.alican.mvvm_starter.domain.model.Error
+import com.alican.mvvm_starter.domain.model.Loading
+import com.alican.mvvm_starter.domain.model.MovieUIModel
+import com.alican.mvvm_starter.domain.model.Success
 import com.alican.mvvm_starter.ui.home.adapter.HomeMoviesAdapter
 import com.alican.mvvm_starter.ui.home.adapter.HomeMoviesPagingAdapter
 import com.alican.mvvm_starter.ui.home.adapter.HomeViewPagerAdapter
@@ -46,7 +51,18 @@ class HomeFragment : BaseFragment<FragmentHomeBinding>() {
         super.onViewCreated(view, savedInstanceState)
         initViews()
         initObserver()
+        initViewPager()
     }
+
+    private fun initViewPager() {
+        binding.rvBanner.apply {
+            offscreenPageLimit = 3
+            setPageTransformer(SliderTransformer(3))
+        }
+
+    }
+
+
 
 
     private fun initViews() {
@@ -71,6 +87,7 @@ class HomeFragment : BaseFragment<FragmentHomeBinding>() {
         homeBannerAdapter = HomeViewPagerAdapter {
         }
         binding.rvBanner.adapter = homeBannerAdapter
+
     }
 
     private fun initObserver() {
@@ -83,33 +100,52 @@ class HomeFragment : BaseFragment<FragmentHomeBinding>() {
             }
         }
         lifecycleScope.launch {
-            viewModel.popularMovies.collect { list ->
-                initPopularMoviesAdapter(list)
+            viewModel.popularMovies.collect { response ->
+                when (response) {
+                    is Error -> {}
+                    is Loading -> {}
+                    is Success ->
+                        initPopularMoviesAdapter(response.response.take(7))
+                }
             }
         }
         lifecycleScope.launch {
-            viewModel.upComingMovies.collect { list ->
-                initUpComingMovies(list)
+            viewModel.upComingMovies.collect { response ->
+                when (response) {
+                    is Error -> {}
+                    is Loading -> {}
+                    is Success -> {
+                        initUpComingMovies(response.response.take(7))
+                    }
+                }
             }
         }
         lifecycleScope.launch {
-            viewModel.topRatedMovies.collect { list ->
-                initTopRatedAdapters(list)
+            viewModel.topRatedMovies.collect { response ->
+                when (response) {
+                    is Error -> {}
+                    is Loading -> {}
+                    is Success -> initTopRatedAdapters(response.response.take(7))
+                }
             }
         }
         lifecycleScope.launch{
-            viewModel.nowPlayingMovies.collect { list ->
-                initNowPlayingMovies(list)
+            viewModel.nowPlayingMovies.collect { response ->
+                when (response) {
+                    is Error -> {}
+                    is Loading -> {}
+                    is Success -> initNowPlayingMovies(response.response.take(7))
+                }
             }
 
         }
     }
 
-    private fun initNowPlayingMovies(list: List<MovieModel>) {
+    private fun initNowPlayingMovies(list: List<MovieUIModel>) {
         (binding.rvNowPlaying.adapter as? HomeMoviesAdapter)?.submitList(list.map { it.copy() })
     }
 
-    private fun initTopRatedAdapters(list: List<MovieModel>) {
+    private fun initTopRatedAdapters(list: List<MovieUIModel>) {
 
         (binding.rvTopRatedMovies.adapter as? HomeMoviesAdapter)?.submitList(list.map { it.copy() })
     }
@@ -122,13 +158,15 @@ class HomeFragment : BaseFragment<FragmentHomeBinding>() {
        findNavController().navigate(HomeFragmentDirections.actionHomeFragmentToMovieDetailFragment(id))
     }
 
-    private fun initUpComingMovies(list: List<MovieModel>) {
+    private fun initUpComingMovies(list: List<MovieUIModel>) {
         (binding.rvUpcomingMovies.adapter as? HomeMoviesAdapter)?.submitList(list.map { it.copy() })
     }
 
-    private fun initPopularMoviesAdapter(list: List<MovieModel>) {
-        (binding.rvPopularMovies.adapter as? HomeMoviesAdapter)?.submitList(list.map { it.copy() }.sortedByDescending { it.popularity })
+    private fun initPopularMoviesAdapter(list: List<MovieUIModel>) {
+        (binding.rvPopularMovies.adapter as? HomeMoviesAdapter)?.submitList(list.map { it.copy() })
         homeBannerAdapter.submitList(list.map { it.copy() })
+
+        binding.indicator.setViewPager2(binding.rvBanner)
 
 
     }

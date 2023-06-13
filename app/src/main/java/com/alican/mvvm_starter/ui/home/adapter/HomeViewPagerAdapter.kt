@@ -9,15 +9,16 @@ import com.alican.mvvm_starter.data.model.MovieModel
 import com.alican.mvvm_starter.databinding.ItemHomeMoviesBinding
 import com.alican.mvvm_starter.databinding.ItemMoviesBinding
 import com.alican.mvvm_starter.databinding.ItemViewPagerMoviesBinding
+import com.alican.mvvm_starter.domain.model.MovieUIModel
 
-class HomeViewPagerAdapter(val onClick: (MovieModel) -> Unit) : ListAdapter<MovieModel, HomeViewPagerAdapter.ViewHolder>(object : DiffUtil.ItemCallback<MovieModel>() {
-    override fun areItemsTheSame(oldItem: MovieModel, newItem: MovieModel): Boolean {
+class HomeViewPagerAdapter(val onClick: (MovieUIModel) -> Unit) : ListAdapter<MovieUIModel, HomeViewPagerAdapter.ViewHolder>(object : DiffUtil.ItemCallback<MovieUIModel>() {
+    override fun areItemsTheSame(oldItem: MovieUIModel, newItem: MovieUIModel): Boolean {
         return oldItem.id == newItem.id
     }
 
     override fun areContentsTheSame(
-        oldItem: MovieModel,
-        newItem: MovieModel
+        oldItem: MovieUIModel,
+        newItem: MovieUIModel
     ): Boolean {
         return oldItem == newItem
     }
