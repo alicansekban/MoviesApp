@@ -25,6 +25,10 @@ interface WebService {
     suspend fun getPopularMovies(@Query("page") page : Int): BasePagingResponse<MovieResponseModel>
     @GET("movie/top_rated")
     suspend fun getTopRatedApi(@Query("page") page: Int): BasePagingResponse<MovieResponseModel>
+    @GET("movie/now_playing")
+    suspend fun getNowPlayingMovies(@Query("page") page: Int): BasePagingResponse<MovieResponseModel>
+    @GET("movie/latest")
+    suspend fun getLatestMovies(@Query("page") page: Int): BasePagingResponse<MovieResponseModel>
     @GET("search/movie")
     suspend fun getSearchMovieApi(
         @Query("page") page: Int,

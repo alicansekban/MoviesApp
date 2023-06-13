@@ -8,6 +8,7 @@ import com.alican.mvvm_starter.data.local.AppDatabase
 import com.alican.mvvm_starter.data.local.model.MovieEntity
 import com.alican.mvvm_starter.data.model.MovieModel
 import com.alican.mvvm_starter.data.remote.mediator.HomeMoviesMediator
+import com.alican.mvvm_starter.data.remote.source.HomeDataSource
 import com.alican.mvvm_starter.data.remote.webservice.WebService
 import com.alican.mvvm_starter.domain.mapper.toMovieModel
 import kotlinx.coroutines.Dispatchers
@@ -18,7 +19,8 @@ import javax.inject.Inject
 
 class HomeMoviesRepository @Inject constructor(
     private val webService: WebService,
-    private val database: AppDatabase
+    private val database: AppDatabase,
+    private val homeDataSource: HomeDataSource
 ) {
     @OptIn(ExperimentalPagingApi::class)
     fun discoverMovie(): Flow<PagingData<MovieEntity>> {
@@ -38,8 +40,8 @@ class HomeMoviesRepository @Inject constructor(
     }
 
     suspend fun getUpComingMovies(): Flow<List<MovieModel>> = flow {
-        val response = webService.getUpComingMovies(1)
-        val movieModels = response.results.take(7).map {
+        val response = homeDataSource.getUpComingMovies()
+        val movieModels = response.take(7).map {
             it.toMovieModel()
         }
 
@@ -48,8 +50,8 @@ class HomeMoviesRepository @Inject constructor(
     }.flowOn(Dispatchers.IO)
 
     suspend fun getPopularMovies(): Flow<List<MovieModel>> = flow {
-        val response = webService.getPopularMovies(1)
-        val movieModels = response.results.take(7).map {
+        val response = homeDataSource.getPopularMovies()
+        val movieModels = response.take(7).map {
             it.toMovieModel()
         }
 
@@ -58,4 +60,19 @@ class HomeMoviesRepository @Inject constructor(
 
     }.flowOn(Dispatchers.IO)
 
+    suspend fun getTopRatedMovies(): Flow<List<MovieModel>> = flow {
+        val response = homeDataSource.getTopRatedMovies()
+        val movieModels = response.take(7).map {
+            it.toMovieModel()
+        }
+        emit(movieModels)
+    }.flowOn(Dispatchers.IO)
+
+    suspend fun getNowPlayingMovies(): Flow<List<MovieModel>> = flow {
+        val response = homeDataSource.getNowPlayingMovies()
+        val movieModels = response.take(7).map {
+            it.toMovieModel()
+        }
+        emit(movieModels)
+    }.flowOn(Dispatchers.IO)
 }

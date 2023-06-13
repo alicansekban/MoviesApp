@@ -31,11 +31,21 @@ class MoviePagingSource(
                 MovieTypeEnum.POPULAR_MOVIES -> {
                     api.getPopularMovies(page)
                 }
+
                 MovieTypeEnum.TOP_RATED_MOVIES -> {
                     api.getTopRatedApi(page)
                 }
+
                 MovieTypeEnum.UP_COMING_MOVIES -> {
                     api.getUpComingMovies(page)
+                }
+
+                MovieTypeEnum.LATEST -> {
+                    api.getLatestMovies(page)
+                }
+
+                MovieTypeEnum.NOW_PLAYING -> {
+                    api.getNowPlayingMovies(page)
                 }
 
                 MovieTypeEnum.SEARCH_MOVIES -> {
@@ -44,7 +54,7 @@ class MoviePagingSource(
             }
 
             LoadResult.Page(
-                data = response.results ,
+                data = response.results,
                 prevKey = if (page == 1) null else page.minus(1),
                 nextKey = if (response.results.isEmpty()) null else page.plus(1)
             )

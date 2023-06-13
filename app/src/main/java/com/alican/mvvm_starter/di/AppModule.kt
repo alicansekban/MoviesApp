@@ -7,6 +7,7 @@ import androidx.datastore.preferences.core.Preferences
 import androidx.datastore.preferences.preferencesDataStoreFile
 import androidx.room.Room
 import com.alican.mvvm_starter.data.local.AppDatabase
+import com.alican.mvvm_starter.data.remote.source.HomeDataSource
 import com.alican.mvvm_starter.data.remote.webservice.AuthInterceptor
 import com.alican.mvvm_starter.data.remote.webservice.WebService
 import com.alican.mvvm_starter.domain.repository.HomeMoviesRepository
@@ -102,9 +103,10 @@ object AppModule {
     @Singleton
     fun provideMovieRepository(
         service: WebService,
-        database: AppDatabase
+        database: AppDatabase,
+        dataSource: HomeDataSource
     ) : HomeMoviesRepository {
-        return HomeMoviesRepository(service, database)
+        return HomeMoviesRepository(service, database,dataSource)
     }
 
 }

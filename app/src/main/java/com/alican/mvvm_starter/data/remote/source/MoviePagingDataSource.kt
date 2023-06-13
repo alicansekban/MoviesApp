@@ -3,7 +3,6 @@ package com.alican.mvvm_starter.data.remote.source
 import androidx.paging.Pager
 import androidx.paging.PagingConfig
 import androidx.paging.PagingData
-import com.alican.mvvm_starter.data.model.MovieModel
 import com.alican.mvvm_starter.data.model.MovieResponseModel
 import com.alican.mvvm_starter.data.remote.paging.MoviePagingSource
 import com.alican.mvvm_starter.data.remote.webservice.WebService
@@ -11,7 +10,7 @@ import com.alican.mvvm_starter.util.MovieTypeEnum
 import kotlinx.coroutines.flow.Flow
 import javax.inject.Inject
 
-class MovieDataSource @Inject constructor(private val webService: WebService) {
+class MoviePagingDataSource @Inject constructor(private val webService: WebService) {
 
 
 
@@ -48,6 +47,30 @@ class MovieDataSource @Inject constructor(private val webService: WebService) {
         ),
         pagingSourceFactory = {
             MoviePagingSource(webService, MovieTypeEnum.UP_COMING_MOVIES)
+        }
+    ).flow
+
+    fun getLatestMovies(): Flow<PagingData<MovieResponseModel>> = Pager(
+        config = PagingConfig(
+            pageSize = 20,
+            maxSize = PagingConfig.MAX_SIZE_UNBOUNDED,
+            jumpThreshold = Int.MIN_VALUE,
+            enablePlaceholders = true
+        ),
+        pagingSourceFactory = {
+            MoviePagingSource(webService, MovieTypeEnum.LATEST)
+        }
+    ).flow
+
+    fun getNowPlayingMovies(): Flow<PagingData<MovieResponseModel>> = Pager(
+        config = PagingConfig(
+            pageSize = 20,
+            maxSize = PagingConfig.MAX_SIZE_UNBOUNDED,
+            jumpThreshold = Int.MIN_VALUE,
+            enablePlaceholders = true
+        ),
+        pagingSourceFactory = {
+            MoviePagingSource(webService, MovieTypeEnum.NOW_PLAYING)
         }
     ).flow
 

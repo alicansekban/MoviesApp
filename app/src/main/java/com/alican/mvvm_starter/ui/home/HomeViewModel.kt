@@ -34,9 +34,20 @@ class HomeViewModel @Inject constructor(
     private val _upComingMovies = MutableStateFlow<List<MovieModel>>(emptyList())
     val upComingMovies: StateFlow<List<MovieModel>> get() = _upComingMovies.asStateFlow()
 
+
+    private val _topRatedMovies = MutableStateFlow<List<MovieModel>>(emptyList())
+    val topRatedMovies: StateFlow<List<MovieModel>> get() = _topRatedMovies.asStateFlow()
+
+
+
+    private val _nowPlayingMovies = MutableStateFlow<List<MovieModel>>(emptyList())
+    val nowPlayingMovies: StateFlow<List<MovieModel>> get() = _nowPlayingMovies.asStateFlow()
+
     init {
         getPopularMovies()
         getUpcomingMovies()
+        getTopRatedMovies()
+        getNowPlayingMovies()
     }
 
 
@@ -60,6 +71,29 @@ class HomeViewModel @Inject constructor(
             }
         }
     }
+
+    private fun getTopRatedMovies() {
+        progressLiveData.postValue(true)
+        viewModelScope.launch {
+            repository.getTopRatedMovies().collectLatest {
+                _topRatedMovies.emit(it)
+                progressLiveData.postValue(false)
+
+            }
+        }
+    }
+
+    private fun getNowPlayingMovies() {
+        progressLiveData.postValue(true)
+        viewModelScope.launch {
+            repository.getNowPlayingMovies().collectLatest {
+                _nowPlayingMovies.emit(it)
+                progressLiveData.postValue(false)
+
+            }
+        }
+    }
+
     val movies = repository.discoverMovie()
         .flowOn(Dispatchers.IO)
         .cachedIn(viewModelScope)

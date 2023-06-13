@@ -57,6 +57,12 @@ class HomeFragment : BaseFragment<FragmentHomeBinding>() {
         binding.rvPopularMovies.adapter = HomeMoviesAdapter {
             goToListFragment(Constant.POPULAR_MOVIES)
         }
+        binding.rvNowPlaying.adapter = HomeMoviesAdapter {
+            goToListFragment(Constant.NOW_PLAYING)
+        }
+        binding.rvTopRatedMovies.adapter = HomeMoviesAdapter {
+            goToListFragment(Constant.TOP_RATED_MOVIES)
+        }
 
         binding.rvUpcomingMovies.adapter = HomeMoviesAdapter {
             goToListFragment(Constant.UP_COMING_MOVIES)
@@ -78,7 +84,7 @@ class HomeFragment : BaseFragment<FragmentHomeBinding>() {
         }
         lifecycleScope.launch {
             viewModel.popularMovies.collect { list ->
-                initAdapter(list)
+                initPopularMoviesAdapter(list)
             }
         }
         lifecycleScope.launch {
@@ -86,7 +92,28 @@ class HomeFragment : BaseFragment<FragmentHomeBinding>() {
                 initUpComingMovies(list)
             }
         }
+        lifecycleScope.launch {
+            viewModel.topRatedMovies.collect { list ->
+                initTopRatedAdapters(list)
+            }
+        }
+        lifecycleScope.launch{
+            viewModel.nowPlayingMovies.collect { list ->
+                initNowPlayingMovies(list)
+            }
+
+        }
     }
+
+    private fun initNowPlayingMovies(list: List<MovieModel>) {
+        (binding.rvNowPlaying.adapter as? HomeMoviesAdapter)?.submitList(list.map { it.copy() })
+    }
+
+    private fun initTopRatedAdapters(list: List<MovieModel>) {
+
+        (binding.rvTopRatedMovies.adapter as? HomeMoviesAdapter)?.submitList(list.map { it.copy() })
+    }
+
     private fun goToListFragment(type: String) {
         val action = findNavController().navigate(HomeFragmentDirections.actionHomeFragmentToMoviesListFragment(type))
     }
@@ -95,8 +122,8 @@ class HomeFragment : BaseFragment<FragmentHomeBinding>() {
         (binding.rvUpcomingMovies.adapter as? HomeMoviesAdapter)?.submitList(list.map { it.copy() })
     }
 
-    private fun initAdapter(list: List<MovieModel>) {
-        (binding.rvPopularMovies.adapter as? HomeMoviesAdapter)?.submitList(list.map { it.copy() })
+    private fun initPopularMoviesAdapter(list: List<MovieModel>) {
+        (binding.rvPopularMovies.adapter as? HomeMoviesAdapter)?.submitList(list.map { it.copy() }.sortedByDescending { it.popularity })
         homeBannerAdapter.submitList(list.map { it.copy() })
 
 

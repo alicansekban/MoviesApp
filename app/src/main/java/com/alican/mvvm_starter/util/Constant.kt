@@ -11,5 +11,6 @@ object Constant {
     const val TOP_RATED_MOVIES = "TOP_RATED_MOVIES"
     const val UP_COMING_MOVIES = "UP_COMING_MOVIES"
     const val POPULAR_MOVIES = "POPULAR_MOVIES"
+    const val NOW_PLAYING = "NOW_PLAYING"
     const val SEARCH_QUERY_MOVIES = "SEARCH_QUERY_MOVIES"
 }

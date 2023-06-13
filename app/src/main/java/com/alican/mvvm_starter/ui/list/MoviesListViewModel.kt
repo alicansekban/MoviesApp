@@ -34,6 +34,24 @@ class MoviesListViewModel @Inject constructor(
         }
     }
 
+    fun getNowPlayingMovies() {
+        viewModelScope.launch {
+            repository.getNowPlayingMovies().cachedIn(viewModelScope).collectLatest {
+                _movies.emit(it)
+
+            }
+        }
+    }
+
+    fun getLatestMovies() {
+        viewModelScope.launch {
+            repository.getLatestMovies().cachedIn(viewModelScope).collectLatest {
+                _movies.emit(it)
+
+            }
+        }
+    }
+
     fun getUpComingMovies() {
         viewModelScope.launch {
             repository.getUpComingMovie().cachedIn(viewModelScope).collectLatest {
