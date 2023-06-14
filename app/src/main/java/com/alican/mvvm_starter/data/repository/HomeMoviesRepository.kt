@@ -7,19 +7,12 @@ import androidx.paging.PagingData
 import com.alican.mvvm_starter.base.BasePagingResponse
 import com.alican.mvvm_starter.data.local.AppDatabase
 import com.alican.mvvm_starter.data.local.model.MovieEntity
-import com.alican.mvvm_starter.data.model.MovieModel
 import com.alican.mvvm_starter.data.model.MovieResponseModel
 import com.alican.mvvm_starter.data.remote.mediator.HomeMoviesMediator
 import com.alican.mvvm_starter.data.remote.source.HomeDataSource
-import com.alican.mvvm_starter.data.remote.webservice.WebService
-import com.alican.mvvm_starter.domain.mapper.toMovieModel
+import com.alican.mvvm_starter.data.remote.api.WebService
 import com.alican.mvvm_starter.util.ResultWrapper
-import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.catch
-import kotlinx.coroutines.flow.flow
-import kotlinx.coroutines.flow.flowOn
-import java.lang.IllegalArgumentException
 import javax.inject.Inject
 
 class HomeMoviesRepository @Inject constructor(

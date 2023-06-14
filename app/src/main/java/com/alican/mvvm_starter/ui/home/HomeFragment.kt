@@ -102,20 +102,24 @@ class HomeFragment : BaseFragment<FragmentHomeBinding>() {
         lifecycleScope.launch {
             viewModel.popularMovies.collect { response ->
                 when (response) {
-                    is Error -> {}
-                    is Loading -> {}
-                    is Success ->
-                        initPopularMoviesAdapter(response.response.take(7))
+                    is Error -> { response.errorMessage}
+                    is Loading -> { showProgressDialog()}
+                    is Success ->{
+
+                        hideProgressDialog()
+                        initPopularMoviesAdapter(response.response)
+                    }
                 }
             }
         }
         lifecycleScope.launch {
             viewModel.upComingMovies.collect { response ->
                 when (response) {
-                    is Error -> {}
-                    is Loading -> {}
+                    is Error -> { response.errorMessage}
+                    is Loading -> { showProgressDialog()}
                     is Success -> {
-                        initUpComingMovies(response.response.take(7))
+                        hideProgressDialog()
+                        initUpComingMovies(response.response)
                     }
                 }
             }
@@ -123,18 +127,24 @@ class HomeFragment : BaseFragment<FragmentHomeBinding>() {
         lifecycleScope.launch {
             viewModel.topRatedMovies.collect { response ->
                 when (response) {
-                    is Error -> {}
-                    is Loading -> {}
-                    is Success -> initTopRatedAdapters(response.response.take(7))
+                    is Error -> { response.errorMessage}
+                    is Loading -> { showProgressDialog()}
+                    is Success ->{
+                        hideProgressDialog()
+                        initTopRatedAdapters(response.response)
+                    }
                 }
             }
         }
         lifecycleScope.launch{
             viewModel.nowPlayingMovies.collect { response ->
                 when (response) {
-                    is Error -> {}
-                    is Loading -> {}
-                    is Success -> initNowPlayingMovies(response.response.take(7))
+                    is Error -> { response.errorMessage}
+                    is Loading -> { showProgressDialog()}
+                    is Success -> {
+                        hideProgressDialog()
+                        initNowPlayingMovies(response.response)
+                    }
                 }
             }
 

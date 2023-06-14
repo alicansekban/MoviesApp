@@ -8,7 +8,7 @@ import androidx.room.withTransaction
 import com.alican.mvvm_starter.data.local.AppDatabase
 import com.alican.mvvm_starter.data.local.model.MovieEntity
 import com.alican.mvvm_starter.data.local.model.RemoteKey
-import com.alican.mvvm_starter.data.remote.webservice.WebService
+import com.alican.mvvm_starter.data.remote.api.WebService
 import com.alican.mvvm_starter.domain.mapper.toMovieEntity
 import java.util.concurrent.TimeUnit
 import javax.inject.Inject

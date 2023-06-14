@@ -5,13 +5,11 @@ import android.view.View
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.navArgs
+import androidx.paging.LoadState
 import com.alican.mvvm_starter.R
 import com.alican.mvvm_starter.base.BaseFragment
 import com.alican.mvvm_starter.databinding.FragmentMoviesListBinding
-import com.alican.mvvm_starter.databinding.FragmentMoviesListBindingImpl
-import com.alican.mvvm_starter.ui.home.HomeViewModel
-import com.alican.mvvm_starter.ui.home.adapter.HomeMoviesPagingAdapter
-import com.alican.mvvm_starter.ui.home.adapter.ListMoviesPagingAdapter
+import com.alican.mvvm_starter.ui.list.adapter.ListMoviesPagingAdapter
 import com.alican.mvvm_starter.util.Constant
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.flow.collectLatest
@@ -56,6 +54,9 @@ class MoviesListFragment:BaseFragment<FragmentMoviesListBinding>() {
         lifecycleScope.launch {
             viewModel.movies.collectLatest { response ->
                 adapter.submitData(response)
+            }
+            adapter.loadStateFlow.collectLatest { loadStates ->
+                if (loadStates.refresh is LoadState.Loading) showProgressDialog() else hideProgressDialog()
             }
         }
 

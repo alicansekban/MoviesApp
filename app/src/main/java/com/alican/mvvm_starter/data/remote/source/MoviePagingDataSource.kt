@@ -5,7 +5,7 @@ import androidx.paging.PagingConfig
 import androidx.paging.PagingData
 import com.alican.mvvm_starter.data.model.MovieResponseModel
 import com.alican.mvvm_starter.data.remote.paging.MoviePagingSource
-import com.alican.mvvm_starter.data.remote.webservice.WebService
+import com.alican.mvvm_starter.data.remote.api.WebService
 import com.alican.mvvm_starter.util.MovieTypeEnum
 import kotlinx.coroutines.flow.Flow
 import javax.inject.Inject

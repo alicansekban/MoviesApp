@@ -8,8 +8,7 @@ import androidx.datastore.preferences.preferencesDataStoreFile
 import androidx.room.Room
 import com.alican.mvvm_starter.data.local.AppDatabase
 import com.alican.mvvm_starter.data.remote.source.HomeDataSource
-import com.alican.mvvm_starter.data.remote.webservice.AuthInterceptor
-import com.alican.mvvm_starter.data.remote.webservice.WebService
+import com.alican.mvvm_starter.data.remote.api.WebService
 import com.alican.mvvm_starter.data.repository.HomeMoviesRepository
 import com.alican.mvvm_starter.util.Constant
 import com.alican.mvvm_starter.util.Constant.BASE_URL
@@ -48,11 +47,6 @@ object AppModule {
             level = HttpLoggingInterceptor.Level.BODY
         }
     }
-
-    @Singleton
-    @Provides
-    fun provideBasicAuth() = AuthInterceptor()
-
     @Provides
     @Singleton
     fun provideOkHttp(

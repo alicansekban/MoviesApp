@@ -26,7 +26,7 @@ class HomeMoviesInteractor @Inject constructor(
                     is ResultWrapper.GenericError -> Error("Bir hata olustu!")
                     ResultWrapper.Loading -> Loading()
                     ResultWrapper.NetworkError -> Error("Internetinizi kontrol edin!")
-                    is ResultWrapper.Success -> Success(result.value.results.map {
+                    is ResultWrapper.Success -> Success(result.value.results.take(7).map {
                        mapper.mapOnMovieResponse(it)
                     })
                 }
@@ -42,7 +42,7 @@ class HomeMoviesInteractor @Inject constructor(
                     is ResultWrapper.GenericError -> Error("Bir hata olustu!")
                     ResultWrapper.Loading -> Loading()
                     ResultWrapper.NetworkError -> Error("Internetinizi kontrol edin!")
-                    is ResultWrapper.Success -> Success(result.value.results.map {
+                    is ResultWrapper.Success -> Success(result.value.results.take(7).map {
                         mapper.mapOnMovieResponse(it)
                     })
                 }
@@ -58,7 +58,7 @@ class HomeMoviesInteractor @Inject constructor(
                     is ResultWrapper.GenericError -> Error("Bir hata olustu!")
                     ResultWrapper.Loading -> Loading()
                     ResultWrapper.NetworkError -> Error("Internetinizi kontrol edin!")
-                    is ResultWrapper.Success -> Success(result.value.results.map {
+                    is ResultWrapper.Success -> Success(result.value.results.take(7).map {
                         mapper.mapOnMovieResponse(it)
                     })
                 }
@@ -74,7 +74,7 @@ class HomeMoviesInteractor @Inject constructor(
                     is ResultWrapper.GenericError -> Error("Bir hata olustu!")
                     ResultWrapper.Loading -> Loading()
                     ResultWrapper.NetworkError -> Error("Internetinizi kontrol edin!")
-                    is ResultWrapper.Success -> Success(result.value.results.map {
+                    is ResultWrapper.Success -> Success(result.value.results.take(7).map {
                         mapper.mapOnMovieResponse(it)
                     })
                 }

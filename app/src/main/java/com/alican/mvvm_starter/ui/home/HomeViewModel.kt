@@ -4,8 +4,7 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import androidx.paging.cachedIn
-import com.alican.mvvm_starter.data.remote.webservice.WebService
-import com.alican.mvvm_starter.data.model.MovieModel
+import com.alican.mvvm_starter.data.remote.api.WebService
 import com.alican.mvvm_starter.data.repository.HomeMoviesRepository
 import com.alican.mvvm_starter.domain.interactor.HomeMoviesInteractor
 import com.alican.mvvm_starter.domain.model.BaseUIModel
@@ -13,14 +12,10 @@ import com.alican.mvvm_starter.domain.model.Loading
 import com.alican.mvvm_starter.domain.model.MovieUIModel
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
-import kotlinx.coroutines.flow.asStateFlow
-import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.flow.flowOn
 import kotlinx.coroutines.flow.stateIn
-import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 @HiltViewModel

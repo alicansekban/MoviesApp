@@ -2,11 +2,8 @@ package com.alican.mvvm_starter.data.remote.paging
 
 import androidx.paging.PagingSource
 import androidx.paging.PagingState
-import com.alican.mvvm_starter.data.model.MovieModel
 import com.alican.mvvm_starter.data.model.MovieResponseModel
-import com.alican.mvvm_starter.data.remote.webservice.WebService
-import com.alican.mvvm_starter.domain.mapper.MovieMapper
-import com.alican.mvvm_starter.domain.mapper.toMovieModel
+import com.alican.mvvm_starter.data.remote.api.WebService
 import com.alican.mvvm_starter.util.MovieTypeEnum
 import okio.IOException
 import retrofit2.HttpException
@@ -14,7 +11,8 @@ import retrofit2.HttpException
 class MoviePagingSource(
     private val api: WebService,
     private val movieTypeEnum: MovieTypeEnum,
-    private val query: String = ""
+    private val query: String = "",
+    private val id : Int = 0
 ) : PagingSource<Int, MovieResponseModel>() {
     override fun getRefreshKey(state: PagingState<Int, MovieResponseModel>): Int? {
         return state.anchorPosition?.let { anchorPosition ->
@@ -50,6 +48,9 @@ class MoviePagingSource(
 
                 MovieTypeEnum.SEARCH_MOVIES -> {
                     api.getSearchMovieApi(page, query)
+                }
+                MovieTypeEnum.MOVIE_REVIEWS -> {
+                    api.getMovieReviews(page, id)
                 }
             }
 

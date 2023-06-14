@@ -1,18 +1,17 @@
-package com.alican.mvvm_starter.ui.home.adapter
+package com.alican.mvvm_starter.ui.list.adapter
 
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.paging.PagingDataAdapter
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.RecyclerView
-import com.alican.mvvm_starter.data.local.model.MovieEntity
-import com.alican.mvvm_starter.data.model.MovieModel
-import com.alican.mvvm_starter.databinding.ItemHomeMoviesBinding
 import com.alican.mvvm_starter.databinding.ItemMoviesListBinding
 import com.alican.mvvm_starter.domain.model.MovieUIModel
 import com.alican.mvvm_starter.util.utils.loadImage
 
-class ListMoviesPagingAdapter(private val onItemClick: (MovieUIModel) -> Unit) : PagingDataAdapter<MovieUIModel, ListMoviesPagingAdapter.ListMoviesViewHolder>(DIFF_CALLBACK) {
+class ListMoviesPagingAdapter(private val onItemClick: (MovieUIModel) -> Unit) : PagingDataAdapter<MovieUIModel, ListMoviesPagingAdapter.ListMoviesViewHolder>(
+    DIFF_CALLBACK
+) {
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ListMoviesViewHolder {
         val inflater = LayoutInflater.from(parent.context)
