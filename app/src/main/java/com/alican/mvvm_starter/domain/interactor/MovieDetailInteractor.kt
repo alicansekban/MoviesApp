@@ -1,21 +1,27 @@
 package com.alican.mvvm_starter.domain.interactor
 
+import androidx.paging.PagingData
+import androidx.paging.map
 import com.alican.mvvm_starter.data.repository.MovieDetailRepository
 import com.alican.mvvm_starter.domain.mapper.MovieMapper
 import com.alican.mvvm_starter.domain.model.BaseUIModel
 import com.alican.mvvm_starter.domain.model.Error
 import com.alican.mvvm_starter.domain.model.Loading
+import com.alican.mvvm_starter.domain.model.MovieCreditsUIModel
+import com.alican.mvvm_starter.domain.model.MovieDetailReviewsUIModel
+import com.alican.mvvm_starter.domain.model.MovieDetailUIModel
 import com.alican.mvvm_starter.domain.model.MovieUIModel
 import com.alican.mvvm_starter.domain.model.Success
 import com.alican.mvvm_starter.util.ResultWrapper
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flow
+import kotlinx.coroutines.flow.map
 import java.nio.channels.Pipe
 import javax.inject.Inject
 
 class MovieDetailInteractor @Inject constructor(val repository: MovieDetailRepository,val mapper: MovieMapper) {
 
-    fun getUpcomingMovies(id:Int): Flow<BaseUIModel<MovieUIModel>> {
+    fun getMovieDetail(id:Int): Flow<BaseUIModel<MovieDetailUIModel>> {
         return flow {
             emit(Loading())
             emit(
@@ -23,9 +29,28 @@ class MovieDetailInteractor @Inject constructor(val repository: MovieDetailRepos
                     is ResultWrapper.GenericError -> Error("Bir hata olustu!")
                     ResultWrapper.Loading -> Loading()
                     ResultWrapper.NetworkError -> Error("Internetinizi kontrol edin!")
-                    is ResultWrapper.Success -> Success(mapper.mapOnMovieResponse(result.value))
+                    is ResultWrapper.Success -> Success(mapper.mapMovieDetailResponseToMovieDetailUIModel(result.value))
                 }
             )
         }
+    }
+
+    fun getMovieCredits(id:Int): Flow<BaseUIModel<MovieCreditsUIModel>> {
+        return flow {
+            emit(Loading())
+            emit(
+                when (val result = repository.getMovieCredits(id)) {
+                    is ResultWrapper.GenericError -> Error("Bir hata olustu!")
+                    ResultWrapper.Loading -> Loading()
+                    ResultWrapper.NetworkError -> Error("Internetinizi kontrol edin!")
+                    is ResultWrapper.Success -> Success(mapper.mapMovieCreditResponseToMovieCreditsUIModel(result.value))
+                }
+            )
+        }
+    }
+
+    fun getMovieReviews(id:Int): Flow<PagingData<MovieDetailReviewsUIModel>> {
+        return repository.getMovieReviews(id)
+            .map { pagingData -> pagingData.map { mapper.mapMovieReviewResponseToMovieReviewUIModel(it) } }
     }
 }

@@ -6,7 +6,6 @@ enum class MovieTypeEnum {
     UP_COMING_MOVIES,
     NOW_PLAYING,
     LATEST,
-    SEARCH_MOVIES,
-    MOVIE_REVIEWS
+    SEARCH_MOVIES
 
 }

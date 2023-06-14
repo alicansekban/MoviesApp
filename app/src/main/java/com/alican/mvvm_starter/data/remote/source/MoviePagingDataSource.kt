@@ -50,18 +50,6 @@ class MoviePagingDataSource @Inject constructor(private val webService: WebServi
         }
     ).flow
 
-    fun getLatestMovies(): Flow<PagingData<MovieResponseModel>> = Pager(
-        config = PagingConfig(
-            pageSize = 20,
-            maxSize = PagingConfig.MAX_SIZE_UNBOUNDED,
-            jumpThreshold = Int.MIN_VALUE,
-            enablePlaceholders = true
-        ),
-        pagingSourceFactory = {
-            MoviePagingSource(webService, MovieTypeEnum.LATEST)
-        }
-    ).flow
-
     fun getNowPlayingMovies(): Flow<PagingData<MovieResponseModel>> = Pager(
         config = PagingConfig(
             pageSize = 20,

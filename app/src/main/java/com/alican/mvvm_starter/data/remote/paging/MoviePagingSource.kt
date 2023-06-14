@@ -12,7 +12,6 @@ class MoviePagingSource(
     private val api: WebService,
     private val movieTypeEnum: MovieTypeEnum,
     private val query: String = "",
-    private val id : Int = 0
 ) : PagingSource<Int, MovieResponseModel>() {
     override fun getRefreshKey(state: PagingState<Int, MovieResponseModel>): Int? {
         return state.anchorPosition?.let { anchorPosition ->
@@ -48,9 +47,6 @@ class MoviePagingSource(
 
                 MovieTypeEnum.SEARCH_MOVIES -> {
                     api.getSearchMovieApi(page, query)
-                }
-                MovieTypeEnum.MOVIE_REVIEWS -> {
-                    api.getMovieReviews(page, id)
                 }
             }
 
