@@ -18,7 +18,7 @@ import kotlinx.coroutines.launch
 class MoreLikeThisFragment : BaseFragment<FragmentMoreLikeThisBinding>() {
 
 
-    private val viewModel by viewModels <MoreLikeThisViewModel>()
+    private val viewModel by viewModels <MovieDetailViewModel>()
     override fun getLayoutId(): Int = R.layout.fragment_more_like_this
 
     private lateinit var adapter: HomeMoviesPagingAdapter
