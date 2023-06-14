@@ -24,7 +24,7 @@ class MovieDetailReviewsSource(
         val page = params.key ?: 1
 
         return try {
-            val response = api.getMovieReviews(page, id)
+            val response = api.getMovieReviews(id, page)
 
             LoadResult.Page(
                 data = response.results,

@@ -11,12 +11,11 @@ import com.alican.mvvm_starter.databinding.FragmentMovieDetailBinding
 import com.alican.mvvm_starter.domain.model.Cast
 import com.alican.mvvm_starter.domain.model.Error
 import com.alican.mvvm_starter.domain.model.Loading
-import com.alican.mvvm_starter.domain.model.MovieDetailUIModel
 import com.alican.mvvm_starter.domain.model.Success
+import com.alican.mvvm_starter.ui.detail.adapter.MovieCastAdapter
 import com.alican.mvvm_starter.ui.detail.tabfragments.MoreLikeThisFragment
-import com.alican.mvvm_starter.ui.detail.tabfragments.MovieDetailCommentsFragment
+import com.alican.mvvm_starter.ui.detail.tabfragments.MovieReviewsFragment
 import com.alican.mvvm_starter.util.utils.GeneralPagerAdapter
-import com.alican.mvvm_starter.util.utils.loadImage
 import com.google.android.material.tabs.TabLayoutMediator
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.flow.collectLatest
@@ -31,14 +30,22 @@ class MovieDetailFragment : BaseFragment<FragmentMovieDetailBinding>() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        initViews()
         initObserver()
         initTabs()
         fetchData()
     }
 
+    private fun initViews() {
+        binding.rvCast.adapter = MovieCastAdapter {
+
+        }
+    }
+
     private fun fetchData() {
         viewModel.getMovieDetail(args.id)
         viewModel.getMovieCredits(args.id)
+        viewModel.getMovieReviews(args.id)
     }
 
     private fun initObserver() {
@@ -63,6 +70,7 @@ class MovieDetailFragment : BaseFragment<FragmentMovieDetailBinding>() {
     }
 
     private fun initCastAdapter(cast: List<Cast>?) {
+        (binding.rvCast.adapter as? MovieCastAdapter)?.submitList(cast?.map { it.copy() })
 
     }
 
@@ -72,10 +80,12 @@ class MovieDetailFragment : BaseFragment<FragmentMovieDetailBinding>() {
             "Comments"
         )
 
+
+
         val viewPagerAdapter =
             GeneralPagerAdapter(requireActivity().supportFragmentManager, this, array)
         viewPagerAdapter.addFragment(MoreLikeThisFragment())
-        viewPagerAdapter.addFragment(MovieDetailCommentsFragment())
+        viewPagerAdapter.addFragment(MovieReviewsFragment())
         binding.viewPager.adapter = viewPagerAdapter
 
         val tabLayoutMediator =

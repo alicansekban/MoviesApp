@@ -44,7 +44,5 @@ class HomeViewModel @Inject constructor(
 
 
 
-    val movies = repository.discoverMovie()
-        .flowOn(Dispatchers.IO)
-        .cachedIn(viewModelScope)
+
 }

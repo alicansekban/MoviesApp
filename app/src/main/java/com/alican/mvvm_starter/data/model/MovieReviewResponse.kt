@@ -4,16 +4,16 @@ import com.squareup.moshi.Json
 
 data class MovieReviewResponse(
     @Json(name = "author_details")
-    val authorDetails: AuthorDetails? = null,
+    val author_details: AuthorDetails? = null,
 
     @Json(name = "updated_at")
-    val updatedAt: String? = null,
+    val updated_at: String? = null,
 
     @Json(name = "author")
     val author: String? = null,
 
     @Json(name = "created_at")
-    val createdAt: String? = null,
+    val created_at: String? = null,
 
     @Json(name = "id")
     val id: String? = null,
@@ -28,7 +28,7 @@ data class MovieReviewResponse(
 data class AuthorDetails(
 
     @Json(name = "avatar_path")
-    val avatarPath: String? = null,
+    val avatar_path: String? = null,
 
     @Json(name = "name")
     val name: String? = null,

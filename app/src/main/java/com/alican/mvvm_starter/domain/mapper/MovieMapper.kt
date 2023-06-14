@@ -7,7 +7,6 @@ import com.alican.mvvm_starter.data.model.MovieReviewResponse
 import com.alican.mvvm_starter.domain.model.AuthorDetails
 import com.alican.mvvm_starter.domain.model.BelongsToCollection
 import com.alican.mvvm_starter.domain.model.Cast
-import com.alican.mvvm_starter.domain.model.Crew
 import com.alican.mvvm_starter.domain.model.Genre
 import com.alican.mvvm_starter.domain.model.MovieCreditsUIModel
 import com.alican.mvvm_starter.domain.model.MovieDetailReviewsUIModel
@@ -105,9 +104,9 @@ class MovieMapper @Inject constructor() {
     }
 
     fun mapMovieReviewResponseToMovieReviewUIModel(movieReviewResponse: MovieReviewResponse): MovieDetailReviewsUIModel {
-        val authorDetails = movieReviewResponse.authorDetails?.let { authorDetails ->
+        val authorDetails = movieReviewResponse.author_details?.let { authorDetails ->
             AuthorDetails(
-                authorDetails.avatarPath,
+                authorDetails.avatar_path,
                 authorDetails.name,
                 authorDetails.rating,
                 authorDetails.username
@@ -119,8 +118,8 @@ class MovieMapper @Inject constructor() {
             movieReviewResponse.author,
             movieReviewResponse.content,
             movieReviewResponse.url,
-            movieReviewResponse.createdAt,
-            movieReviewResponse.updatedAt,
+            movieReviewResponse.created_at,
+            movieReviewResponse.updated_at,
             authorDetails
         )
     }
@@ -128,41 +127,23 @@ class MovieMapper @Inject constructor() {
     fun mapMovieCreditResponseToMovieCreditsUIModel(movieCreditResponse: MovieCreditResponse): MovieCreditsUIModel {
         val cast = movieCreditResponse.cast?.map { castItem ->
             Cast(
-                castItem?.castId,
+                castItem?.cast_id,
                 castItem?.character,
                 castItem?.gender,
-                castItem?.creditId,
-                castItem?.knownForDepartment,
-                castItem?.originalName,
+                castItem?.credit_id,
+                castItem?.known_for_department,
+                castItem?.original_name,
                 castItem?.popularity,
                 castItem?.name,
-                castItem?.profilePath,
+                castItem?.profile_path,
                 castItem?.id,
                 castItem?.adult,
                 castItem?.order
             )
         }
-
-        val crew = movieCreditResponse.crew?.map { crewItem ->
-            Crew(
-                crewItem?.gender,
-                crewItem?.creditId,
-                crewItem?.knownForDepartment,
-                crewItem?.originalName,
-                crewItem?.popularity,
-                crewItem?.name,
-                crewItem?.profilePath,
-                crewItem?.id,
-                crewItem?.adult,
-                crewItem?.department,
-                crewItem?.job
-            )
-        }
-
         return MovieCreditsUIModel(
             movieCreditResponse.id,
-            cast,
-            crew
+            cast
         )
     }
 

@@ -46,7 +46,7 @@ interface WebService {
     suspend fun getSimilarMovies(@Path("id") id : Int) : BasePagingResponse<MovieResponseModel>
 
     @GET("movie/{id}/reviews")
-    suspend fun getMovieReviews(@Query("page") page: Int,@Path("id") id : Int) : BasePagingResponse<MovieReviewResponse>
+    suspend fun getMovieReviews(@Path("id") id : Int,@Query("page") page: Int) : BasePagingResponse<MovieReviewResponse>
 
     @GET("movie/{id}/credits")
     suspend fun getMovieCredits(@Path("id") id : Int) : MovieCreditResponse

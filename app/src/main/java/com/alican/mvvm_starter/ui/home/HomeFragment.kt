@@ -42,7 +42,6 @@ import kotlinx.coroutines.launch
 @AndroidEntryPoint
 class HomeFragment : BaseFragment<FragmentHomeBinding>() {
     private val viewModel by viewModels<HomeViewModel>()
-    private lateinit var adapter: HomeMoviesPagingAdapter
     private lateinit var homeBannerAdapter: HomeViewPagerAdapter
 
 
@@ -66,10 +65,7 @@ class HomeFragment : BaseFragment<FragmentHomeBinding>() {
 
 
     private fun initViews() {
-        adapter = HomeMoviesPagingAdapter {
 
-        }
-        binding.rvMovies.adapter = adapter
         binding.rvPopularMovies.adapter = HomeMoviesAdapter {
             goToDetailFragment(it.id)
         }
@@ -91,11 +87,6 @@ class HomeFragment : BaseFragment<FragmentHomeBinding>() {
     }
 
     private fun initObserver() {
-        lifecycleScope.launch {
-            viewModel.movies.collect {
-                adapter.submitData(it)
-            }
-        }
         lifecycleScope.launch {
             viewModel.popularMovies.collect { response ->
                 when (response) {
