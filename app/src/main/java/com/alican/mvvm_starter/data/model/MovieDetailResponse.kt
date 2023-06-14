@@ -5,10 +5,10 @@ import com.squareup.moshi.Json
 data class MovieDetailResponse(
 
 	@Json(name="original_language")
-	val originalLanguage: String? = null,
+	val original_language: String? = null,
 
 	@Json(name="imdb_id")
-	val imdbId: String? = null,
+	val imdb_id: String? = null,
 
 	@Json(name="video")
 	val video: Boolean? = null,
@@ -17,7 +17,7 @@ data class MovieDetailResponse(
 	val title: String? = null,
 
 	@Json(name="backdrop_path")
-	val backdropPath: String? = null,
+	val backdrop_path: String? = null,
 
 	@Json(name="revenue")
 	val revenue: Int? = null,
@@ -26,7 +26,7 @@ data class MovieDetailResponse(
 	val genres: List<GenresItem?>? = null,
 
 	@Json(name="popularity")
-	val popularity: Any? = null,
+	val popularity: Double? = null,
 
 	@Json(name="production_countries")
 	val productionCountries: List<ProductionCountriesItem?>? = null,
@@ -50,22 +50,22 @@ data class MovieDetailResponse(
 	val runtime: Int? = null,
 
 	@Json(name="poster_path")
-	val posterPath: String? = null,
+	val poster_path: String? = null,
 
 	@Json(name="spoken_languages")
-	val spokenLanguages: List<SpokenLanguagesItem?>? = null,
+	val spoken_languages: List<SpokenLanguagesItem?>? = null,
 
 	@Json(name="production_companies")
-	val productionCompanies: List<ProductionCompaniesItem?>? = null,
+	val production_companies: List<ProductionCompaniesItem?>? = null,
 
 	@Json(name="release_date")
-	val releaseDate: String? = null,
+	val release_date: String? = null,
 
 	@Json(name="vote_average")
-	val voteAverage: Any? = null,
+	val vote_average: Double? = null,
 
 	@Json(name="belongs_to_collection")
-	val belongsToCollection: BelongsToCollection? = null,
+	val belongs_to_collection: BelongsToCollection? = null,
 
 	@Json(name="tagline")
 	val tagline: String? = null,
@@ -86,7 +86,7 @@ data class SpokenLanguagesItem(
 	val name: String? = null,
 
 	@Json(name="iso_639_1")
-	val iso6391: String? = null,
+	val iso_639_1: String? = null,
 
 	@Json(name="english_name")
 	val englishName: String? = null
@@ -95,7 +95,7 @@ data class SpokenLanguagesItem(
 data class BelongsToCollection(
 
 	@Json(name="backdrop_path")
-	val backdropPath: String? = null,
+	val backdrop_path: String? = null,
 
 	@Json(name="name")
 	val name: String? = null,
@@ -104,7 +104,7 @@ data class BelongsToCollection(
 	val id: Int? = null,
 
 	@Json(name="poster_path")
-	val posterPath: String? = null
+	val poster_path: String? = null
 )
 
 data class GenresItem(
@@ -119,7 +119,7 @@ data class GenresItem(
 data class ProductionCountriesItem(
 
 	@Json(name="iso_3166_1")
-	val iso31661: String? = null,
+	val iso_3166_1: String? = null,
 
 	@Json(name="name")
 	val name: String? = null
@@ -128,7 +128,7 @@ data class ProductionCountriesItem(
 data class ProductionCompaniesItem(
 
 	@Json(name="logo_path")
-	val logoPath: String? = null,
+	val logo_path: String? = null,
 
 	@Json(name="name")
 	val name: String? = null,
@@ -137,5 +137,5 @@ data class ProductionCompaniesItem(
 	val id: Int? = null,
 
 	@Json(name="origin_country")
-	val originCountry: String? = null
+	val origin_country: String? = null
 )

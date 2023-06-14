@@ -91,9 +91,6 @@ class HomeFragment : BaseFragment<FragmentHomeBinding>() {
     }
 
     private fun initObserver() {
-        viewModel.progressLiveData.observe(viewLifecycleOwner) {
-            if (it) showProgressDialog() else hideProgressDialog()
-        }
         lifecycleScope.launch {
             viewModel.movies.collect {
                 adapter.submitData(it)

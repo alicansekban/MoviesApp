@@ -5,12 +5,17 @@ import com.alican.mvvm_starter.data.model.MovieDetailResponse
 import com.alican.mvvm_starter.data.model.MovieResponseModel
 import com.alican.mvvm_starter.data.model.MovieReviewResponse
 import com.alican.mvvm_starter.domain.model.AuthorDetails
+import com.alican.mvvm_starter.domain.model.BelongsToCollection
 import com.alican.mvvm_starter.domain.model.Cast
 import com.alican.mvvm_starter.domain.model.Crew
+import com.alican.mvvm_starter.domain.model.Genre
 import com.alican.mvvm_starter.domain.model.MovieCreditsUIModel
 import com.alican.mvvm_starter.domain.model.MovieDetailReviewsUIModel
 import com.alican.mvvm_starter.domain.model.MovieDetailUIModel
 import com.alican.mvvm_starter.domain.model.MovieUIModel
+import com.alican.mvvm_starter.domain.model.ProductionCompany
+import com.alican.mvvm_starter.domain.model.ProductionCountry
+import com.alican.mvvm_starter.domain.model.SpokenLanguage
 import javax.inject.Inject
 
 class MovieMapper @Inject constructor() {
@@ -35,39 +40,39 @@ class MovieMapper @Inject constructor() {
 
     fun mapMovieDetailResponseToMovieDetailUIModel(movieDetailResponse: MovieDetailResponse): MovieDetailUIModel {
         val genres = movieDetailResponse.genres?.map { genreItem ->
-            MovieDetailUIModel.Genre(genreItem?.id, genreItem?.name)
+            Genre(genreItem?.id, genreItem?.name)
         }
 
-        val spokenLanguages = movieDetailResponse.spokenLanguages?.map { spokenLanguageItem ->
-            MovieDetailUIModel.SpokenLanguage(
-                spokenLanguageItem?.iso6391,
+        val spokenLanguages = movieDetailResponse.spoken_languages?.map { spokenLanguageItem ->
+            SpokenLanguage(
+                spokenLanguageItem?.iso_639_1,
                 spokenLanguageItem?.name,
                 spokenLanguageItem?.englishName
             )
         }
 
         val productionCountries = movieDetailResponse.productionCountries?.map { productionCountryItem ->
-            MovieDetailUIModel.ProductionCountry(
-                productionCountryItem?.iso31661,
+            ProductionCountry(
+                productionCountryItem?.iso_3166_1,
                 productionCountryItem?.name
             )
         }
 
-        val productionCompanies = movieDetailResponse.productionCompanies?.map { productionCompanyItem ->
-            MovieDetailUIModel.ProductionCompany(
+        val productionCompanies = movieDetailResponse.production_companies?.map { productionCompanyItem ->
+            ProductionCompany(
                 productionCompanyItem?.id,
                 productionCompanyItem?.name,
-                productionCompanyItem?.logoPath,
-                productionCompanyItem?.originCountry
+                productionCompanyItem?.logo_path,
+                productionCompanyItem?.origin_country
             )
         }
 
-        val belongsToCollection = movieDetailResponse.belongsToCollection?.let { belongsToCollection ->
-            MovieDetailUIModel.BelongsToCollection(
+        val belongsToCollection = movieDetailResponse.belongs_to_collection?.let { belongsToCollection ->
+            BelongsToCollection(
                 belongsToCollection.id,
                 belongsToCollection.name,
-                belongsToCollection.posterPath,
-                belongsToCollection.backdropPath
+                belongsToCollection.poster_path,
+                belongsToCollection.backdrop_path
             )
         }
 
@@ -75,18 +80,18 @@ class MovieMapper @Inject constructor() {
             movieDetailResponse.id,
             movieDetailResponse.title,
             movieDetailResponse.originalTitle,
-            movieDetailResponse.posterPath,
-            movieDetailResponse.backdropPath,
+            movieDetailResponse.poster_path,
+            movieDetailResponse.backdrop_path,
             movieDetailResponse.overview,
-            movieDetailResponse.releaseDate,
-            movieDetailResponse.voteAverage,
+            movieDetailResponse.release_date,
+            movieDetailResponse.vote_average,
             movieDetailResponse.voteCount,
             movieDetailResponse.popularity,
             movieDetailResponse.budget,
             movieDetailResponse.revenue,
             movieDetailResponse.runtime,
-            movieDetailResponse.originalLanguage,
-            movieDetailResponse.imdbId,
+            movieDetailResponse.original_language,
+            movieDetailResponse.imdb_id,
             movieDetailResponse.video,
             movieDetailResponse.adult,
             movieDetailResponse.homepage,

@@ -1,6 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
 <layout xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools">
+    <data>
+        <variable
+            name="data"
+            type="com.alican.mvvm_starter.domain.model.MovieDetailUIModel" />
+    </data>
 
     <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
         android:layout_width="match_parent"
@@ -9,8 +14,12 @@
         <ImageView
             android:id="@+id/iv_movie"
             android:layout_width="match_parent"
-            android:layout_height="200dp"
-            app:layout_constraintTop_toTopOf="parent" />
+            android:layout_height="300dp"
+            android:adjustViewBounds="true"
+            downloadImage="@{data.imagePath}"
+            android:scaleType="fitXY"
+            app:layout_constraintTop_toTopOf="parent"
+            tools:src="@tools:sample/backgrounds/scenic" />
 
         <androidx.constraintlayout.widget.ConstraintLayout
             android:id="@+id/cl_movie"
@@ -23,6 +32,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="16dp"
+                android:text="@{data.title}"
                 android:fontFamily="@font/sfprodisplay_bold"
                 android:textColor="@color/black"
                 android:textSize="16sp"
@@ -51,6 +61,7 @@
                 android:layout_marginBottom="4dp"
                 android:textColor="@color/red"
                 android:textSize="20sp"
+                android:text="@{data.voteAverage.toString()}"
                 app:layout_constraintBottom_toBottomOf="@id/ratingBar"
                 app:layout_constraintStart_toEndOf="@id/ratingBar"
                 app:layout_constraintTop_toTopOf="@id/ratingBar"
@@ -61,10 +72,11 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="24dp"
+                android:text="@{data.releaseDate}"
                 android:fontFamily="@font/sfprodisplay_bold"
                 android:textColor="@color/black"
                 android:textSize="18sp"
-                app:layout_constraintBottom_toBottomOf="@id/tv_rating"
+                app:layout_constraintTop_toTopOf="@id/tv_rating"
                 app:layout_constraintStart_toEndOf="@id/tv_rating"
                 tools:text="2023-05-17" />
 
@@ -75,6 +87,7 @@
                 android:layout_marginStart="16dp"
                 android:fontFamily="@font/sfprodisplay_semi_bold"
                 android:textSize="16sp"
+                android:text="@{data.genreTexts}"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@id/ratingBar"
                 tools:text="Genra : Action, Crime, Thriller" />
@@ -86,6 +99,7 @@
                 android:layout_marginStart="8dp"
                 android:layout_marginTop="16dp"
                 android:ellipsize="end"
+                android:text="@{data.overview}"
                 android:fontFamily="@font/sfprodisplay_semi_bold"
                 android:maxLines="3"
                 android:textSize="15sp"

@@ -24,7 +24,6 @@ class HomeViewModel @Inject constructor(
     val repository: HomeMoviesRepository,
     val interactor: HomeMoviesInteractor
 ) : ViewModel() {
-    val progressLiveData: MutableLiveData<Boolean> = MutableLiveData()
 
     private val _popularMovies = interactor.getPopularMovies()
     val popularMovies: StateFlow<BaseUIModel<List<MovieUIModel>>> = _popularMovies.stateIn(viewModelScope, SharingStarted.Eagerly, Loading())

@@ -39,7 +39,7 @@ interface WebService {
     ): BasePagingResponse<MovieResponseModel>
 
 
-    @GET("movie/details/{id}")
+    @GET("movie/{id}")
     suspend fun getMovieDetail(@Path("id") id : Int) : MovieDetailResponse
 
     @GET("movie/{id}/similar")
