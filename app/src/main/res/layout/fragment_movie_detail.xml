@@ -1,152 +1,156 @@
 <?xml version="1.0" encoding="utf-8"?>
-<layout xmlns:app="http://schemas.android.com/apk/res-auto"
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools">
+
     <data>
+
         <variable
             name="data"
             type="com.alican.mvvm_starter.domain.model.MovieDetailUIModel" />
     </data>
+
     <ScrollView
-        xmlns:android="http://schemas.android.com/apk/res/android"
         android:layout_width="match_parent"
         android:layout_height="match_parent">
 
-
-    <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent">
-
-        <ImageView
-            android:id="@+id/iv_movie"
-            android:layout_width="match_parent"
-            android:layout_height="300dp"
-            android:adjustViewBounds="true"
-            downloadImage="@{data.imagePath}"
-            android:scaleType="fitXY"
-            app:layout_constraintTop_toTopOf="parent"
-            tools:src="@tools:sample/backgrounds/scenic" />
 
         <androidx.constraintlayout.widget.ConstraintLayout
-            android:id="@+id/cl_movie"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            app:layout_constraintTop_toBottomOf="@id/iv_movie">
+            android:layout_height="wrap_content">
 
-            <TextView
-                android:id="@+id/tv_movie_title"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginStart="16dp"
-                android:text="@{data.title}"
-                android:fontFamily="@font/sfprodisplay_bold"
-                android:textColor="@color/black"
-                android:textSize="16sp"
-                app:layout_constraintStart_toStartOf="parent"
+            <ImageView
+                android:id="@+id/iv_movie"
+                downloadImage="@{data.imagePath}"
+                android:layout_width="match_parent"
+                android:layout_height="300dp"
+                android:adjustViewBounds="true"
+                android:scaleType="fitXY"
                 app:layout_constraintTop_toTopOf="parent"
-                tools:text="FAST X" />
+                tools:src="@tools:sample/backgrounds/scenic" />
 
-            <RatingBar
-                android:id="@+id/ratingBar"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginStart="16dp"
-                android:numStars="1"
-                android:progressBackgroundTint="@color/white"
-                android:progressTint="@color/red"
-                android:rating="3.5"
-                android:stepSize="0.5"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@id/tv_movie_title" />
-
-            <TextView
-                android:id="@+id/tv_rating"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginStart="8dp"
-                android:layout_marginBottom="4dp"
-                android:textColor="@color/red"
-                android:textSize="20sp"
-                android:text="@{data.voteAverage.toString()}"
-                app:layout_constraintBottom_toBottomOf="@id/ratingBar"
-                app:layout_constraintStart_toEndOf="@id/ratingBar"
-                app:layout_constraintTop_toTopOf="@id/ratingBar"
-                tools:text="7.5" />
-
-            <TextView
-                android:id="@+id/tv_release_date"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginStart="24dp"
-                android:text="@{data.releaseDate}"
-                android:fontFamily="@font/sfprodisplay_bold"
-                android:textColor="@color/black"
-                android:textSize="18sp"
-                app:layout_constraintTop_toTopOf="@id/tv_rating"
-                app:layout_constraintStart_toEndOf="@id/tv_rating"
-                tools:text="2023-05-17" />
-
-            <TextView
-                android:id="@+id/tv_genre"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginStart="16dp"
-                android:fontFamily="@font/sfprodisplay_semi_bold"
-                android:textSize="16sp"
-                android:text="@{data.genreTexts}"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@id/ratingBar"
-                tools:text="Genra : Action, Crime, Thriller" />
-
-            <TextView
-                android:id="@+id/tv_movie_desc"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_marginStart="8dp"
-                android:layout_marginTop="16dp"
-                android:ellipsize="end"
-                android:text="@{data.overview}"
-                android:fontFamily="@font/sfprodisplay_semi_bold"
-                android:maxLines="3"
-                android:textSize="15sp"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/tv_genre"
-                tools:text="After reuniting with Gwen Stacy, Brooklyn’s full-time, friendly neighborhood Spider-Man is catapulted across the Multiverse, where he encounters the Spider Society, a team of Spider-People charged with protecting the Multiverse’s very existence. But when the heroes clash on how to handle a new threat, Miles finds himself pitted against the other Spiders and must set out on his own to save those he loves most." />
-
-            <androidx.recyclerview.widget.RecyclerView
-                android:id="@+id/rv_cast"
+            <androidx.constraintlayout.widget.ConstraintLayout
+                android:id="@+id/cl_movie"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginStart="16dp"
-                android:orientation="horizontal"
-                app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
-                app:layout_constraintTop_toBottomOf="@id/tv_movie_desc"
-                tools:listitem="@layout/item_movies" />
+                app:layout_constraintTop_toBottomOf="@id/iv_movie">
+
+                <TextView
+                    android:id="@+id/tv_movie_title"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="16dp"
+                    android:fontFamily="@font/sfprodisplay_bold"
+                    android:text="@{data.title}"
+                    android:textColor="@color/black"
+                    android:textSize="16sp"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="parent"
+                    tools:text="FAST X" />
+
+                <RatingBar
+                    android:id="@+id/ratingBar"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="16dp"
+                    android:numStars="1"
+                    android:progressBackgroundTint="@color/white"
+                    android:progressTint="@color/red"
+                    android:rating="3.5"
+                    android:stepSize="0.5"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@id/tv_movie_title" />
+
+                <TextView
+                    android:id="@+id/tv_rating"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="8dp"
+                    android:layout_marginBottom="4dp"
+                    android:text="@{data.voteAverage.toString()}"
+                    android:textColor="@color/red"
+                    android:textSize="20sp"
+                    app:layout_constraintBottom_toBottomOf="@id/ratingBar"
+                    app:layout_constraintStart_toEndOf="@id/ratingBar"
+                    app:layout_constraintTop_toTopOf="@id/ratingBar"
+                    tools:text="7.5" />
+
+                <TextView
+                    android:id="@+id/tv_release_date"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="24dp"
+                    android:fontFamily="@font/sfprodisplay_bold"
+                    android:text="@{data.releaseDate}"
+                    android:textColor="@color/black"
+                    android:textSize="18sp"
+                    app:layout_constraintStart_toEndOf="@id/tv_rating"
+                    app:layout_constraintTop_toTopOf="@id/tv_rating"
+                    tools:text="2023-05-17" />
+
+                <TextView
+                    android:id="@+id/tv_genre"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="16dp"
+                    android:fontFamily="@font/sfprodisplay_semi_bold"
+                    android:text="@{data.genreTexts}"
+                    android:textSize="16sp"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@id/ratingBar"
+                    tools:text="Genra : Action, Crime, Thriller" />
+
+                <TextView
+                    android:id="@+id/tv_movie_desc"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="8dp"
+                    android:layout_marginTop="16dp"
+                    android:ellipsize="end"
+                    android:fontFamily="@font/sfprodisplay_semi_bold"
+                    android:maxLines="3"
+                    android:text="@{data.overview}"
+                    android:textSize="15sp"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@+id/tv_genre"
+                    tools:text="After reuniting with Gwen Stacy, Brooklyn’s full-time, friendly neighborhood Spider-Man is catapulted across the Multiverse, where he encounters the Spider Society, a team of Spider-People charged with protecting the Multiverse’s very existence. But when the heroes clash on how to handle a new threat, Miles finds himself pitted against the other Spiders and must set out on his own to save those he loves most." />
+
+                <androidx.recyclerview.widget.RecyclerView
+                    android:id="@+id/rv_cast"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="16dp"
+                    android:orientation="horizontal"
+                    app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
+                    app:layout_constraintTop_toBottomOf="@id/tv_movie_desc"
+                    tools:listitem="@layout/item_movies" />
+
+
+                <TextView
+                    android:id="@+id/tv_comments_title"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="16dp"
+                    android:fontFamily="@font/sfprodisplay_bold"
+                    android:text="Comments"
+                    android:textColor="@color/black"
+                    android:textSize="20sp"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@id/rv_cast" />
+
+                <androidx.recyclerview.widget.RecyclerView
+                    android:id="@+id/rv_reviews"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical"
+                    tools:listitem="@layout/item_review"
+                    app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
+                    app:layout_constraintTop_toBottomOf="@id/tv_comments_title" />
+
+            </androidx.constraintlayout.widget.ConstraintLayout>
 
         </androidx.constraintlayout.widget.ConstraintLayout>
-
-
-        <com.google.android.material.tabs.TabLayout
-            android:id="@+id/tabLayout"
-            android:layout_width="match_parent"
-            android:layout_height="50dp"
-            android:background="@color/page_background"
-            app:layout_constraintTop_toBottomOf="@id/cl_movie"
-            app:tabIndicatorColor="@color/white"
-            app:tabSelectedTextColor="@color/text_color"
-            app:tabTextAppearance="@style/TabLayoutStyle"
-            app:tabTextColor="@color/grey" />
-
-        <androidx.viewpager2.widget.ViewPager2
-            android:id="@+id/viewPager"
-            android:layout_width="match_parent"
-            android:layout_height="0dp"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/tabLayout" />
-
-    </androidx.constraintlayout.widget.ConstraintLayout>
 
 
     </ScrollView>

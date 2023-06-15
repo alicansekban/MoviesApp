@@ -2,7 +2,7 @@ package com.alican.mvvm_starter.ui.detail
 
 import android.os.Bundle
 import android.view.View
-import androidx.fragment.app.activityViewModels
+import androidx.fragment.app.viewModels
 import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.navArgs
 import com.alican.mvvm_starter.R
@@ -13,10 +13,7 @@ import com.alican.mvvm_starter.domain.model.Error
 import com.alican.mvvm_starter.domain.model.Loading
 import com.alican.mvvm_starter.domain.model.Success
 import com.alican.mvvm_starter.ui.detail.adapter.MovieCastAdapter
-import com.alican.mvvm_starter.ui.detail.tabfragments.MoreLikeThisFragment
-import com.alican.mvvm_starter.ui.detail.tabfragments.MovieReviewsFragment
-import com.alican.mvvm_starter.util.utils.GeneralPagerAdapter
-import com.google.android.material.tabs.TabLayoutMediator
+import com.alican.mvvm_starter.ui.detail.adapter.MovieReviewsPagingAdapter
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
@@ -24,15 +21,16 @@ import kotlinx.coroutines.launch
 @AndroidEntryPoint
 class MovieDetailFragment : BaseFragment<FragmentMovieDetailBinding>() {
 
-    private val viewModel: MovieDetailViewModel by activityViewModels()
+    private val viewModel by viewModels<MovieDetailViewModel>()
     private val args: MovieDetailFragmentArgs by navArgs()
+    private lateinit var reviewsAdapter: MovieReviewsPagingAdapter
+
     override fun getLayoutId(): Int = R.layout.fragment_movie_detail
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         initViews()
         initObserver()
-        initTabs()
         fetchData()
     }
 
@@ -40,6 +38,10 @@ class MovieDetailFragment : BaseFragment<FragmentMovieDetailBinding>() {
         binding.rvCast.adapter = MovieCastAdapter {
 
         }
+        reviewsAdapter = MovieReviewsPagingAdapter {
+        }
+        binding.rvReviews.adapter = reviewsAdapter
+
     }
 
     private fun fetchData() {
@@ -67,6 +69,12 @@ class MovieDetailFragment : BaseFragment<FragmentMovieDetailBinding>() {
                 }
             }
         }
+        lifecycleScope.launch {
+            viewModel.reviews.collectLatest {
+                reviewsAdapter.submitData(it)
+            }
+        }
+
     }
 
     private fun initCastAdapter(cast: List<Cast>?) {
@@ -74,24 +82,5 @@ class MovieDetailFragment : BaseFragment<FragmentMovieDetailBinding>() {
 
     }
 
-    private fun initTabs() {
-        val array = arrayOf(
-            "More Like This",
-            "Comments"
-        )
 
-
-
-        val viewPagerAdapter =
-            GeneralPagerAdapter(requireActivity().supportFragmentManager, this, array)
-        viewPagerAdapter.addFragment(MoreLikeThisFragment())
-        viewPagerAdapter.addFragment(MovieReviewsFragment())
-        binding.viewPager.adapter = viewPagerAdapter
-
-        val tabLayoutMediator =
-            TabLayoutMediator(binding.tabLayout, binding.viewPager) { tab, position ->
-                tab.text = array[position]
-            }
-        tabLayoutMediator.attach()
-    }
 }

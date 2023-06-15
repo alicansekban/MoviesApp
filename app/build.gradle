@@ -94,6 +94,10 @@ dependencies {
 
 
 
+    // Sticky Tab
+    implementation 'com.github.amarjain07:StickyScrollView:1.0.3'
+
+
     // Reactive Network
     def reactiveNetworkVersion = '3.0.8'
     implementation "com.github.pwittchen:reactivenetwork-rx2:$reactiveNetworkVersion"

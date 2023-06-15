@@ -40,7 +40,6 @@ class MovieDetailViewModel @Inject constructor(val interactor: MovieDetailIntera
 
     private val _reviews = MutableStateFlow<PagingData<MovieDetailReviewsUIModel>>(PagingData.empty())
     val reviews: StateFlow<PagingData<MovieDetailReviewsUIModel>> get() = _reviews
-
     fun getMovieDetail(id:Int) {
         viewModelScope.launch {
             interactor.getMovieDetail(id).collectLatest {
