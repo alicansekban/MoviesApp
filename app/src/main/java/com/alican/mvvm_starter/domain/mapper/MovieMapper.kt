@@ -5,16 +5,12 @@ import com.alican.mvvm_starter.data.model.MovieDetailResponse
 import com.alican.mvvm_starter.data.model.MovieResponseModel
 import com.alican.mvvm_starter.data.model.MovieReviewResponse
 import com.alican.mvvm_starter.domain.model.AuthorDetails
-import com.alican.mvvm_starter.domain.model.BelongsToCollection
 import com.alican.mvvm_starter.domain.model.Cast
 import com.alican.mvvm_starter.domain.model.Genre
 import com.alican.mvvm_starter.domain.model.MovieCreditsUIModel
 import com.alican.mvvm_starter.domain.model.MovieDetailReviewsUIModel
 import com.alican.mvvm_starter.domain.model.MovieDetailUIModel
 import com.alican.mvvm_starter.domain.model.MovieUIModel
-import com.alican.mvvm_starter.domain.model.ProductionCompany
-import com.alican.mvvm_starter.domain.model.ProductionCountry
-import com.alican.mvvm_starter.domain.model.SpokenLanguage
 import javax.inject.Inject
 
 class MovieMapper @Inject constructor() {
@@ -34,65 +30,14 @@ class MovieMapper @Inject constructor() {
         val genres = movieDetailResponse.genres?.map { genreItem ->
             Genre(genreItem?.id, genreItem?.name)
         }
-
-        val spokenLanguages = movieDetailResponse.spoken_languages?.map { spokenLanguageItem ->
-            SpokenLanguage(
-                spokenLanguageItem?.iso_639_1,
-                spokenLanguageItem?.name,
-                spokenLanguageItem?.englishName
-            )
-        }
-
-        val productionCountries = movieDetailResponse.productionCountries?.map { productionCountryItem ->
-            ProductionCountry(
-                productionCountryItem?.iso_3166_1,
-                productionCountryItem?.name
-            )
-        }
-
-        val productionCompanies = movieDetailResponse.production_companies?.map { productionCompanyItem ->
-            ProductionCompany(
-                productionCompanyItem?.id,
-                productionCompanyItem?.name,
-                productionCompanyItem?.logo_path,
-                productionCompanyItem?.origin_country
-            )
-        }
-
-        val belongsToCollection = movieDetailResponse.belongs_to_collection?.let { belongsToCollection ->
-            BelongsToCollection(
-                belongsToCollection.id,
-                belongsToCollection.name,
-                belongsToCollection.poster_path,
-                belongsToCollection.backdrop_path
-            )
-        }
-
         return MovieDetailUIModel(
             movieDetailResponse.id,
             movieDetailResponse.title,
             movieDetailResponse.originalTitle,
             movieDetailResponse.poster_path,
             movieDetailResponse.backdrop_path,
-            movieDetailResponse.overview,
-            movieDetailResponse.release_date,
             movieDetailResponse.vote_average,
-            movieDetailResponse.voteCount,
-            movieDetailResponse.popularity,
-            movieDetailResponse.budget,
-            movieDetailResponse.revenue,
-            movieDetailResponse.runtime,
-            movieDetailResponse.original_language,
-            movieDetailResponse.imdb_id,
-            movieDetailResponse.video,
-            movieDetailResponse.adult,
-            movieDetailResponse.homepage,
-            movieDetailResponse.status,
-            genres,
-            spokenLanguages,
-            productionCountries,
-            productionCompanies,
-            belongsToCollection
+            genres
         )
     }
 
@@ -122,16 +67,9 @@ class MovieMapper @Inject constructor() {
             Cast(
                 castItem?.cast_id,
                 castItem?.character,
-                castItem?.gender,
-                castItem?.credit_id,
-                castItem?.known_for_department,
-                castItem?.original_name,
-                castItem?.popularity,
                 castItem?.name,
                 castItem?.profile_path,
-                castItem?.id,
-                castItem?.adult,
-                castItem?.order
+                castItem?.id
             )
         }
         return MovieCreditsUIModel(

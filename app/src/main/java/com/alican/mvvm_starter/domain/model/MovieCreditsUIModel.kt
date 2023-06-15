@@ -12,16 +12,9 @@ data class MovieCreditsUIModel(
 data class Cast(
     val castId: Int?,
     val character: String?,
-    val gender: Int?,
-    val creditId: String?,
-    val knownForDepartment: String?,
-    val originalName: String?,
-    val popularity: Double?,
     val name: String?,
     val profilePath: String?,
     val id: Int?,
-    val adult: Boolean?,
-    val order: Int?
 ) : Parcelable {
     fun getImagePath(): String {
         return Constant.BASE_POSTER_URL + profilePath
