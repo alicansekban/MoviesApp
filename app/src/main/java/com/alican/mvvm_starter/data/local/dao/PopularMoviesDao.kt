@@ -4,11 +4,8 @@ import androidx.paging.PagingSource
 import androidx.room.Dao
 import androidx.room.Insert
 import androidx.room.OnConflictStrategy
-import androidx.room.OnConflictStrategy.Companion.REPLACE
 import androidx.room.Query
-import com.alican.mvvm_starter.data.local.model.DataModel
 import com.alican.mvvm_starter.data.local.model.MovieEntity
-import kotlinx.coroutines.flow.Flow
 
 @Dao
 interface NowPlayingMoviesDao {
@@ -23,10 +20,4 @@ interface NowPlayingMoviesDao {
 
     @Query("select * from movies order by id asc")
     fun getPagingMovie() : PagingSource<Int, MovieEntity>
-
-    @Query("select * from movies where title like '%' || :searchQuery || '%' order by id asc")
-    fun getPagingMovieQuery(searchQuery: String) : PagingSource<Int, MovieEntity>
-
-    @Query("select * from movies order by id asc limit :limit")
-    fun getFlowMovies(limit: Int): Flow<List<MovieEntity>>
 }

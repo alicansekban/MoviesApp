@@ -2,7 +2,6 @@ package com.alican.mvvm_starter.domain.interactor
 
 import com.alican.mvvm_starter.data.repository.HomeMoviesRepository
 import com.alican.mvvm_starter.domain.mapper.MovieMapper
-import com.alican.mvvm_starter.domain.mapper.toMovieModel
 import com.alican.mvvm_starter.domain.model.BaseUIModel
 import com.alican.mvvm_starter.domain.model.Error
 import com.alican.mvvm_starter.domain.model.Loading

@@ -1,42 +1,22 @@
 package com.alican.mvvm_starter.ui.home
 
 import android.os.Bundle
-import android.util.Log
 import android.view.View
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
-import androidx.paging.LoadState
-import androidx.paging.PagingData
-import androidx.viewpager2.widget.ViewPager2
 import com.alican.mvvm_starter.R
-import com.alican.mvvm_starter.databinding.FragmentHomeBinding
 import com.alican.mvvm_starter.base.BaseFragment
-import com.alican.mvvm_starter.data.local.model.MovieEntity
-import com.alican.mvvm_starter.data.model.MovieModel
-import com.alican.mvvm_starter.data.model.MovieResponseModel
-import com.alican.mvvm_starter.domain.mapper.toMovieModel
+import com.alican.mvvm_starter.databinding.FragmentHomeBinding
 import com.alican.mvvm_starter.domain.model.Error
 import com.alican.mvvm_starter.domain.model.Loading
 import com.alican.mvvm_starter.domain.model.MovieUIModel
 import com.alican.mvvm_starter.domain.model.Success
 import com.alican.mvvm_starter.ui.home.adapter.HomeMoviesAdapter
-import com.alican.mvvm_starter.ui.home.adapter.HomeMoviesPagingAdapter
 import com.alican.mvvm_starter.ui.home.adapter.HomeViewPagerAdapter
 import com.alican.mvvm_starter.util.Constant
 import com.alican.mvvm_starter.util.utils.SliderTransformer
-import com.murgupluoglu.request.STATUS_ERROR
-import com.murgupluoglu.request.STATUS_LOADING
-import com.murgupluoglu.request.STATUS_SUCCESS
 import dagger.hilt.android.AndroidEntryPoint
-import dagger.hilt.android.migration.CustomInjection.inject
-import koleton.api.hideSkeleton
-import koleton.api.loadSkeleton
-import kotlinx.coroutines.delay
-import kotlinx.coroutines.flow.collect
-import kotlinx.coroutines.flow.collectLatest
-import kotlinx.coroutines.flow.distinctUntilChangedBy
-import kotlinx.coroutines.flow.filter
 import kotlinx.coroutines.launch
 
 @AndroidEntryPoint
