@@ -9,7 +9,7 @@ import com.alican.mvvm_starter.data.local.model.ReviewsEntity
 import com.alican.mvvm_starter.databinding.ItemReviewBinding
 import com.alican.mvvm_starter.util.utils.loadImage
 
-class MovieReviewsPagingAdapter(private val onItemClick: (ReviewsEntity) -> Unit) : PagingDataAdapter<ReviewsEntity, MovieReviewsPagingAdapter.MovieReviewsViewHolder>(
+class MovieReviewsPagingAdapter() : PagingDataAdapter<ReviewsEntity, MovieReviewsPagingAdapter.MovieReviewsViewHolder>(
     DIFF_CALLBACK
 ) {
 
@@ -28,9 +28,6 @@ class MovieReviewsPagingAdapter(private val onItemClick: (ReviewsEntity) -> Unit
 
     inner class MovieReviewsViewHolder(private val binding: ItemReviewBinding) : RecyclerView.ViewHolder(binding.root) {
         fun bind(item: ReviewsEntity) {
-            binding.root.setOnClickListener {
-                onItemClick(item)
-            }
             item.let {
                 binding.tvTitle.text = it.authorDetails?.name
                 binding.tvDesc.text = it.content

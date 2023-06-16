@@ -5,6 +5,8 @@ import android.view.View
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.navArgs
+import androidx.recyclerview.widget.DividerItemDecoration
+import androidx.recyclerview.widget.LinearLayoutManager
 import com.alican.mvvm_starter.R
 import com.alican.mvvm_starter.base.BaseFragment
 import com.alican.mvvm_starter.databinding.FragmentMovieDetailBinding
@@ -38,8 +40,9 @@ class MovieDetailFragment : BaseFragment<FragmentMovieDetailBinding>() {
         binding.rvCast.adapter = MovieCastAdapter {
 
         }
-        reviewsAdapter = MovieReviewsPagingAdapter {
-        }
+        reviewsAdapter = MovieReviewsPagingAdapter()
+        val itemDecoration = DividerItemDecoration(context, LinearLayoutManager.VERTICAL)
+     //   binding.rvReviews.addItemDecoration(itemDecoration)
         binding.rvReviews.adapter = reviewsAdapter
 
     }
