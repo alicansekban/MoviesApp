@@ -1,7 +1,6 @@
 package com.alican.mvvm_starter.data.remote.api
 
 import com.alican.mvvm_starter.base.BasePagingResponse
-import com.alican.mvvm_starter.base.BaseResponse
 import com.alican.mvvm_starter.data.model.MovieCreditResponse
 import com.alican.mvvm_starter.data.model.MovieDetailResponse
 import com.alican.mvvm_starter.data.model.MovieResponseModel
