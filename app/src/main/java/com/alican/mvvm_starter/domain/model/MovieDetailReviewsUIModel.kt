@@ -8,9 +8,6 @@ data class MovieDetailReviewsUIModel(
     val id: String?,
     val author: String?,
     val content: String?,
-    val url: String?,
-    val createdAt: String?,
-    val updatedAt: String?,
     val authorDetails: AuthorDetails?
 )
 @Parcelize

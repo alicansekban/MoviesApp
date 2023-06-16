@@ -55,9 +55,6 @@ class MovieMapper @Inject constructor() {
             movieReviewResponse.id,
             movieReviewResponse.author,
             movieReviewResponse.content,
-            movieReviewResponse.url,
-            movieReviewResponse.created_at,
-            movieReviewResponse.updated_at,
             authorDetails
         )
     }
