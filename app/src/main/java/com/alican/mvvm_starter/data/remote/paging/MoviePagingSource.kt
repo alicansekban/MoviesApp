@@ -37,10 +37,6 @@ class MoviePagingSource(
                     api.getUpComingMovies(page)
                 }
 
-                MovieTypeEnum.LATEST -> {
-                    api.getLatestMovies(page)
-                }
-
                 MovieTypeEnum.NOW_PLAYING -> {
                     api.getNowPlayingMovies(page)
                 }
