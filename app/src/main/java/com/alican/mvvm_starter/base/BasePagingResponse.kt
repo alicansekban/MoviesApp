@@ -1,7 +1,5 @@
 package com.alican.mvvm_starter.base
 
-import com.squareup.moshi.Json
-import com.squareup.moshi.JsonClass
 
 
 data class BasePagingResponse<T>(
