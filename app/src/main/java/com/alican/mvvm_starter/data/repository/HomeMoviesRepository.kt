@@ -6,11 +6,12 @@ import androidx.paging.PagingConfig
 import androidx.paging.PagingData
 import com.alican.mvvm_starter.base.BasePagingResponse
 import com.alican.mvvm_starter.data.local.AppDatabase
-import com.alican.mvvm_starter.data.local.model.MovieEntity
+import com.alican.mvvm_starter.data.local.model.ReviewsEntity
 import com.alican.mvvm_starter.data.model.MovieResponseModel
+import com.alican.mvvm_starter.data.remote.api.WebService
 import com.alican.mvvm_starter.data.remote.mediator.HomeMoviesMediator
 import com.alican.mvvm_starter.data.remote.source.HomeDataSource
-import com.alican.mvvm_starter.data.remote.api.WebService
+import com.alican.mvvm_starter.domain.mapper.MovieMapper
 import com.alican.mvvm_starter.util.ResultWrapper
 import kotlinx.coroutines.flow.Flow
 import javax.inject.Inject
@@ -18,19 +19,20 @@ import javax.inject.Inject
 class HomeMoviesRepository @Inject constructor(
     private val webService: WebService,
     private val database: AppDatabase,
-    private val homeDataSource: HomeDataSource
+    private val homeDataSource: HomeDataSource,
+    private val mapper: MovieMapper
 ) {
     @OptIn(ExperimentalPagingApi::class)
-    fun discoverMovie(): Flow<PagingData<MovieEntity>> {
+    fun discoverMovie(id: Int): Flow<PagingData<ReviewsEntity>> {
         val dbSource = {
-            database.homeMoviesDao().getPagingMovie()
+            database.reviewsDao().getPagingReviews()
         }
         return Pager(
             config = PagingConfig(
                 pageSize = 20
             ),
             remoteMediator = HomeMoviesMediator(
-                database, webService
+                database, webService, mapper, id
             ),
             pagingSourceFactory = dbSource
         )

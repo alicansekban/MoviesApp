@@ -42,7 +42,7 @@ fun ImageView.loadImageDrawable(drawableRes: Int) {
 fun ImageView.loadImage(url: String?) {
     Glide.with(this.context)
         .load(url)
-        .error(R.drawable.ic_launcher_background)
+        .error(R.drawable.ic_launcher_foreground)
         .into(this)
 }
 

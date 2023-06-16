@@ -5,14 +5,11 @@ import android.view.ViewGroup
 import androidx.paging.PagingDataAdapter
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.RecyclerView
-import com.alican.mvvm_starter.databinding.ItemMoviesListBinding
+import com.alican.mvvm_starter.data.local.model.ReviewsEntity
 import com.alican.mvvm_starter.databinding.ItemReviewBinding
-import com.alican.mvvm_starter.domain.model.Cast
-import com.alican.mvvm_starter.domain.model.MovieDetailReviewsUIModel
-import com.alican.mvvm_starter.domain.model.MovieUIModel
 import com.alican.mvvm_starter.util.utils.loadImage
 
-class MovieReviewsPagingAdapter(private val onItemClick: (MovieDetailReviewsUIModel) -> Unit) : PagingDataAdapter<MovieDetailReviewsUIModel, MovieReviewsPagingAdapter.MovieReviewsViewHolder>(
+class MovieReviewsPagingAdapter(private val onItemClick: (ReviewsEntity) -> Unit) : PagingDataAdapter<ReviewsEntity, MovieReviewsPagingAdapter.MovieReviewsViewHolder>(
     DIFF_CALLBACK
 ) {
 
@@ -30,7 +27,7 @@ class MovieReviewsPagingAdapter(private val onItemClick: (MovieDetailReviewsUIMo
     }
 
     inner class MovieReviewsViewHolder(private val binding: ItemReviewBinding) : RecyclerView.ViewHolder(binding.root) {
-        fun bind(item: MovieDetailReviewsUIModel) {
+        fun bind(item: ReviewsEntity) {
             binding.root.setOnClickListener {
                 onItemClick(item)
             }
@@ -44,12 +41,12 @@ class MovieReviewsPagingAdapter(private val onItemClick: (MovieDetailReviewsUIMo
     }
 
     companion object {
-        private val DIFF_CALLBACK = object : DiffUtil.ItemCallback<MovieDetailReviewsUIModel>() {
-            override fun areItemsTheSame(oldItem: MovieDetailReviewsUIModel, newItem: MovieDetailReviewsUIModel): Boolean {
+        private val DIFF_CALLBACK = object : DiffUtil.ItemCallback<ReviewsEntity>() {
+            override fun areItemsTheSame(oldItem: ReviewsEntity, newItem: ReviewsEntity): Boolean {
                 return oldItem.id == newItem.id
             }
 
-            override fun areContentsTheSame(oldItem: MovieDetailReviewsUIModel, newItem: MovieDetailReviewsUIModel): Boolean {
+            override fun areContentsTheSame(oldItem: ReviewsEntity, newItem: ReviewsEntity): Boolean {
                 return oldItem == newItem
             }
         }

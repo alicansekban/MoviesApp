@@ -33,13 +33,16 @@ class MoviesListFragment:BaseFragment<FragmentMoviesListBinding>() {
     private fun observeArgs() {
         when(args.type) {
             Constant.POPULAR_MOVIES -> {
-                viewModel._movies = viewModel.interactor.getUpcomingMovies()
+                viewModel._movies = viewModel.interactor.getPopularMovies()
             }
             Constant.UP_COMING_MOVIES -> {
                 viewModel._movies = viewModel.interactor.getUpcomingMovies()
             }
             Constant.TOP_RATED_MOVIES -> {
                 viewModel._movies = viewModel.interactor.getTopRatedMovies()
+            }
+            Constant.NOW_PLAYING -> {
+                viewModel._movies = viewModel.interactor.getNowPlayingMovies()
             }
         }
     }

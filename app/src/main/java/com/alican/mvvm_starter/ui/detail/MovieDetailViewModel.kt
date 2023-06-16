@@ -3,22 +3,18 @@ package com.alican.mvvm_starter.ui.detail
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import androidx.paging.PagingData
-import androidx.paging.cachedIn
-import com.alican.mvvm_starter.data.local.model.MovieEntity
+import com.alican.mvvm_starter.data.local.model.ReviewsEntity
 import com.alican.mvvm_starter.data.repository.HomeMoviesRepository
 import com.alican.mvvm_starter.domain.interactor.MovieDetailInteractor
 import com.alican.mvvm_starter.domain.model.BaseUIModel
 import com.alican.mvvm_starter.domain.model.Loading
 import com.alican.mvvm_starter.domain.model.MovieCreditsUIModel
-import com.alican.mvvm_starter.domain.model.MovieDetailReviewsUIModel
 import com.alican.mvvm_starter.domain.model.MovieDetailUIModel
 import dagger.hilt.android.lifecycle.HiltViewModel
-import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.collectLatest
-import kotlinx.coroutines.flow.flowOn
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
 import javax.inject.Inject
@@ -39,56 +35,38 @@ class MovieDetailViewModel @Inject constructor(
         _movieCredits.stateIn(viewModelScope, SharingStarted.Eagerly, Loading())
 
 
-    private val _reviews =
-        MutableStateFlow<PagingData<MovieDetailReviewsUIModel>>(PagingData.empty())
-    val reviews: StateFlow<PagingData<MovieDetailReviewsUIModel>> get() = _reviews
-
-
-    private val _movieListState = MutableStateFlow<PagingData<MovieEntity>>(PagingData.empty())
-    val movieListState: StateFlow<PagingData<MovieEntity>> get() = _movieListState
+    private val _reviews = MutableStateFlow<PagingData<ReviewsEntity>>(PagingData.empty())
+    val reviews: StateFlow<PagingData<ReviewsEntity>> get() = _reviews
 
     fun getReviews(id: Int) {
         viewModelScope.launch {
             try {
-                repository.discoverMovie()
+                repository.discoverMovie(id)
                     .collectLatest { movies ->
-                        _movieListState.emit(movies)
+                        _reviews.emit(movies)
                     }
             } catch (e: Exception) {
                 // Hata durumunda gerekli işlemleri yapabilirsiniz
             }
         }
 
+    }
 
-        fun getMovieDetail(id: Int) {
-            viewModelScope.launch {
-                interactor.getMovieDetail(id).collectLatest {
-                    _movieDetail.emit(it)
-                }
+    fun getMovieDetail(id: Int) {
+        viewModelScope.launch {
+            interactor.getMovieDetail(id).collectLatest {
+                _movieDetail.emit(it)
             }
         }
+    }
 
-        fun getMovieCredits(id: Int) {
-            viewModelScope.launch {
-                interactor.getMovieCredits(id).collectLatest {
-                    _movieCredits.emit(it)
-                }
+    fun getMovieCredits(id: Int) {
+        viewModelScope.launch {
+            interactor.getMovieCredits(id).collectLatest {
+                _movieCredits.emit(it)
             }
         }
-
-        fun getMovieReviews(id: Int) {
-            viewModelScope.launch {
-                val movies = repository.discoverMovie()
-                interactor.getMovieReviews(id).collectLatest {
-                    _reviews.emit(it)
-                }
-            }
-        }
-
-        val movies = repository.discoverMovie()
-            .flowOn(Dispatchers.IO)
-            .cachedIn(viewModelScope)
-
     }
 
 }
+

@@ -31,6 +31,22 @@ class HomeFragment : BaseFragment<FragmentHomeBinding>() {
         initViews()
         initObserver()
         initViewPager()
+        setListeners()
+    }
+
+    private fun setListeners() {
+        binding.btnAllPopularMovies.setOnClickListener {
+            goToListFragment(Constant.POPULAR_MOVIES)
+        }
+        binding.btnAllNowPlayingMovies.setOnClickListener {
+            goToListFragment(Constant.NOW_PLAYING)
+        }
+        binding.btnAllTopRatedMovies.setOnClickListener {
+            goToListFragment(Constant.TOP_RATED_MOVIES)
+        }
+        binding.btnAllUpcomingMovies.setOnClickListener {
+            goToListFragment(Constant.UP_COMING_MOVIES)
+        }
     }
 
     private fun initViewPager() {
@@ -42,22 +58,20 @@ class HomeFragment : BaseFragment<FragmentHomeBinding>() {
     }
 
 
-
-
     private fun initViews() {
 
         binding.rvPopularMovies.adapter = HomeMoviesAdapter {
             goToDetailFragment(it.id)
         }
         binding.rvNowPlaying.adapter = HomeMoviesAdapter {
-            goToListFragment(Constant.NOW_PLAYING)
+            goToDetailFragment(it.id)
         }
         binding.rvTopRatedMovies.adapter = HomeMoviesAdapter {
-            goToListFragment(Constant.TOP_RATED_MOVIES)
+            goToDetailFragment(it.id)
         }
 
         binding.rvUpcomingMovies.adapter = HomeMoviesAdapter {
-            goToListFragment(Constant.UP_COMING_MOVIES)
+            goToDetailFragment(it.id)
 
         }
         homeBannerAdapter = HomeViewPagerAdapter {
@@ -70,9 +84,15 @@ class HomeFragment : BaseFragment<FragmentHomeBinding>() {
         lifecycleScope.launch {
             viewModel.popularMovies.collect { response ->
                 when (response) {
-                    is Error -> { response.errorMessage}
-                    is Loading -> { showProgressDialog()}
-                    is Success ->{
+                    is Error -> {
+                        response.errorMessage
+                    }
+
+                    is Loading -> {
+                        showProgressDialog()
+                    }
+
+                    is Success -> {
 
                         hideProgressDialog()
                         initPopularMoviesAdapter(response.response)
@@ -83,8 +103,14 @@ class HomeFragment : BaseFragment<FragmentHomeBinding>() {
         lifecycleScope.launch {
             viewModel.upComingMovies.collect { response ->
                 when (response) {
-                    is Error -> { response.errorMessage}
-                    is Loading -> { showProgressDialog()}
+                    is Error -> {
+                        response.errorMessage
+                    }
+
+                    is Loading -> {
+                        showProgressDialog()
+                    }
+
                     is Success -> {
                         hideProgressDialog()
                         initUpComingMovies(response.response)
@@ -95,20 +121,32 @@ class HomeFragment : BaseFragment<FragmentHomeBinding>() {
         lifecycleScope.launch {
             viewModel.topRatedMovies.collect { response ->
                 when (response) {
-                    is Error -> { response.errorMessage}
-                    is Loading -> { showProgressDialog()}
-                    is Success ->{
+                    is Error -> {
+                        response.errorMessage
+                    }
+
+                    is Loading -> {
+                        showProgressDialog()
+                    }
+
+                    is Success -> {
                         hideProgressDialog()
                         initTopRatedAdapters(response.response)
                     }
                 }
             }
         }
-        lifecycleScope.launch{
+        lifecycleScope.launch {
             viewModel.nowPlayingMovies.collect { response ->
                 when (response) {
-                    is Error -> { response.errorMessage}
-                    is Loading -> { showProgressDialog()}
+                    is Error -> {
+                        response.errorMessage
+                    }
+
+                    is Loading -> {
+                        showProgressDialog()
+                    }
+
                     is Success -> {
                         hideProgressDialog()
                         initNowPlayingMovies(response.response)
@@ -129,11 +167,19 @@ class HomeFragment : BaseFragment<FragmentHomeBinding>() {
     }
 
     private fun goToListFragment(type: String) {
-        findNavController().navigate(HomeFragmentDirections.actionHomeFragmentToMoviesListFragment(type))
+        findNavController().navigate(
+            HomeFragmentDirections.actionHomeFragmentToMoviesListFragment(
+                type
+            )
+        )
     }
 
-    private fun goToDetailFragment(id:Int) {
-       findNavController().navigate(HomeFragmentDirections.actionHomeFragmentToMovieDetailFragment(id))
+    private fun goToDetailFragment(id: Int) {
+        findNavController().navigate(
+            HomeFragmentDirections.actionHomeFragmentToMovieDetailFragment(
+                id
+            )
+        )
     }
 
     private fun initUpComingMovies(list: List<MovieUIModel>) {

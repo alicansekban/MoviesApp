@@ -6,21 +6,23 @@ import androidx.paging.PagingState
 import androidx.paging.RemoteMediator
 import androidx.room.withTransaction
 import com.alican.mvvm_starter.data.local.AppDatabase
-import com.alican.mvvm_starter.data.local.model.MovieEntity
 import com.alican.mvvm_starter.data.local.model.RemoteKey
+import com.alican.mvvm_starter.data.local.model.ReviewsEntity
 import com.alican.mvvm_starter.data.remote.api.WebService
-import com.alican.mvvm_starter.domain.mapper.toMovieEntity
+import com.alican.mvvm_starter.domain.mapper.MovieMapper
 import java.util.concurrent.TimeUnit
 import javax.inject.Inject
 
 @OptIn(ExperimentalPagingApi::class)
 class HomeMoviesMediator @Inject constructor(
     private val database: AppDatabase,
-    private val webService: WebService
-) : RemoteMediator<Int, MovieEntity>() {
+    private val webService: WebService,
+    private val mapper : MovieMapper,
+    private val id :Int
+) : RemoteMediator<Int, ReviewsEntity>() {
 
     private val remoteKeyDao = database.remoteKeyDao()
-    private val movieDao = database.homeMoviesDao()
+    private val movieDao = database.reviewsDao()
     override suspend fun initialize(): InitializeAction {
         val remoteKey = database.withTransaction {
             remoteKeyDao.getKeyByMovie("discover_movie")
@@ -37,7 +39,7 @@ class HomeMoviesMediator @Inject constructor(
 
     override suspend fun load(
         loadType: LoadType,
-        state: PagingState<Int, MovieEntity>
+        state: PagingState<Int, ReviewsEntity>
     ): MediatorResult {
         return try {
             val page = when(loadType) {
@@ -60,13 +62,14 @@ class HomeMoviesMediator @Inject constructor(
                 }
             }
 
-            val result = webService.getDiscoverMovies(
+            val result = webService.getMovieReviews(
+                id,
                 page = page,
             )
 
             database.withTransaction {
                 if(loadType == LoadType.REFRESH) {
-                    movieDao.clearMovies()
+                    movieDao.clearReviews()
                 }
 
                 val nextPage = if(result.results.isEmpty()) {
@@ -75,8 +78,8 @@ class HomeMoviesMediator @Inject constructor(
                     page+1
                 }
 
-                val movieEntities = result.results.map {
-                    it.toMovieEntity()
+                val reviewsEntity = result.results.map {
+                    mapper.mapMovieReviewResponseToMovieReviewUIModel(it)
                 }
 
                 remoteKeyDao.insertKey(
@@ -86,7 +89,7 @@ class HomeMoviesMediator @Inject constructor(
                     last_updated = System.currentTimeMillis()
                 )
                 )
-                movieDao.insertMovies(movieEntities)
+                movieDao.insertReviews(reviewsEntity)
             }
 
             MediatorResult.Success(

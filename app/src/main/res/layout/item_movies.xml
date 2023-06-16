@@ -9,10 +9,14 @@
             type="com.alican.mvvm_starter.domain.model.MovieUIModel" />
     </data>
 
-    <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    <com.google.android.material.card.MaterialCardView xmlns:android="http://schemas.android.com/apk/res/android"
         android:layout_width="100dp"
+        app:cardCornerRadius="15dp"
+        app:strokeWidth="1dp"
+        app:strokeColor="@color/grey"
         android:layout_margin="8dp"
         android:layout_height="200dp">
+
 
 
         <androidx.constraintlayout.widget.ConstraintLayout
@@ -41,6 +45,8 @@
                 android:gravity="center"
                 android:text="@{data.title}"
                 android:textColor="@color/black"
+                android:ellipsize="end"
+                android:maxLines="2"
                 android:textSize="16sp"
                 app:layout_constraintEnd_toEndOf="@id/iv_catalog"
                 app:layout_constraintStart_toStartOf="@id/iv_catalog"
@@ -50,5 +56,5 @@
         </androidx.constraintlayout.widget.ConstraintLayout>
 
 
-    </androidx.constraintlayout.widget.ConstraintLayout>
+    </com.google.android.material.card.MaterialCardView>
 </layout>

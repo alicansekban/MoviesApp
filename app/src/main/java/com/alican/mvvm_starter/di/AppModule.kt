@@ -7,9 +7,10 @@ import androidx.datastore.preferences.core.Preferences
 import androidx.datastore.preferences.preferencesDataStoreFile
 import androidx.room.Room
 import com.alican.mvvm_starter.data.local.AppDatabase
-import com.alican.mvvm_starter.data.remote.source.HomeDataSource
 import com.alican.mvvm_starter.data.remote.api.WebService
+import com.alican.mvvm_starter.data.remote.source.HomeDataSource
 import com.alican.mvvm_starter.data.repository.HomeMoviesRepository
+import com.alican.mvvm_starter.domain.mapper.MovieMapper
 import com.alican.mvvm_starter.util.Constant
 import com.alican.mvvm_starter.util.Constant.BASE_URL
 import com.alican.mvvm_starter.util.Constant.DATA_STORE_NAME
@@ -98,9 +99,10 @@ object AppModule {
     fun provideMovieRepository(
         service: WebService,
         database: AppDatabase,
-        dataSource: HomeDataSource
+        dataSource: HomeDataSource,
+        mapper: MovieMapper
     ) : HomeMoviesRepository {
-        return HomeMoviesRepository(service, database,dataSource)
+        return HomeMoviesRepository(service, database,dataSource,mapper)
     }
 
 }

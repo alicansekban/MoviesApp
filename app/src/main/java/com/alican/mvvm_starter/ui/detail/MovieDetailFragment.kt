@@ -47,7 +47,7 @@ class MovieDetailFragment : BaseFragment<FragmentMovieDetailBinding>() {
     private fun fetchData() {
         viewModel.getMovieDetail(args.id)
         viewModel.getMovieCredits(args.id)
-        viewModel.getMovieReviews(args.id)
+        viewModel.getReviews(args.id)
     }
 
     private fun initObserver() {

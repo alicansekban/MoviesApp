@@ -1,14 +1,14 @@
 package com.alican.mvvm_starter.domain.mapper
 
+import com.alican.mvvm_starter.data.local.model.AuthorDetails
+import com.alican.mvvm_starter.data.local.model.ReviewsEntity
 import com.alican.mvvm_starter.data.model.MovieCreditResponse
 import com.alican.mvvm_starter.data.model.MovieDetailResponse
 import com.alican.mvvm_starter.data.model.MovieResponseModel
 import com.alican.mvvm_starter.data.model.MovieReviewResponse
-import com.alican.mvvm_starter.domain.model.AuthorDetails
 import com.alican.mvvm_starter.domain.model.Cast
 import com.alican.mvvm_starter.domain.model.Genre
 import com.alican.mvvm_starter.domain.model.MovieCreditsUIModel
-import com.alican.mvvm_starter.domain.model.MovieDetailReviewsUIModel
 import com.alican.mvvm_starter.domain.model.MovieDetailUIModel
 import com.alican.mvvm_starter.domain.model.MovieUIModel
 import javax.inject.Inject
@@ -31,17 +31,17 @@ class MovieMapper @Inject constructor() {
             Genre(genreItem?.id, genreItem?.name)
         }
         return MovieDetailUIModel(
-            movieDetailResponse.id,
-            movieDetailResponse.title,
-            movieDetailResponse.originalTitle,
-            movieDetailResponse.poster_path,
-            movieDetailResponse.backdrop_path,
-            movieDetailResponse.vote_average,
-            genres
+            id = movieDetailResponse.id,
+            title = movieDetailResponse.title,
+            posterPath = movieDetailResponse.poster_path,
+            overview = movieDetailResponse.overview,
+            releaseDate = movieDetailResponse.release_date,
+            voteAverage = movieDetailResponse.vote_average,
+            genres = genres
         )
     }
 
-    fun mapMovieReviewResponseToMovieReviewUIModel(movieReviewResponse: MovieReviewResponse): MovieDetailReviewsUIModel {
+    fun mapMovieReviewResponseToMovieReviewUIModel(movieReviewResponse: MovieReviewResponse): ReviewsEntity {
         val authorDetails = movieReviewResponse.author_details?.let { authorDetails ->
             AuthorDetails(
                 authorDetails.avatar_path,
@@ -51,8 +51,8 @@ class MovieMapper @Inject constructor() {
             )
         }
 
-        return MovieDetailReviewsUIModel(
-            movieReviewResponse.id,
+        return ReviewsEntity(
+            movieReviewResponse.id.toString(),
             movieReviewResponse.author,
             movieReviewResponse.content,
             authorDetails
