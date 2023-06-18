@@ -32,20 +32,25 @@ class HomeFragment : BaseFragment<FragmentHomeBinding>() {
         initObserver()
         initViewPager()
         setListeners()
+        initToolbar()
+    }
+
+    private fun initToolbar() {
+        binding.toolBar.tvTitle.text = getString(R.string.get_home_title)
     }
 
     private fun setListeners() {
         binding.btnAllPopularMovies.setOnClickListener {
-            goToListFragment(Constant.POPULAR_MOVIES)
+            goToListFragment(Constant.POPULAR_MOVIES,getString(R.string.txt_popular_movies))
         }
         binding.btnAllNowPlayingMovies.setOnClickListener {
-            goToListFragment(Constant.NOW_PLAYING)
+            goToListFragment(Constant.NOW_PLAYING,getString(R.string.txt_now_playing_movies))
         }
         binding.btnAllTopRatedMovies.setOnClickListener {
-            goToListFragment(Constant.TOP_RATED_MOVIES)
+            goToListFragment(Constant.TOP_RATED_MOVIES,getString(R.string.txt_top_rated_movies))
         }
         binding.btnAllUpcomingMovies.setOnClickListener {
-            goToListFragment(Constant.UP_COMING_MOVIES)
+            goToListFragment(Constant.UP_COMING_MOVIES,getString(R.string.txt_upcoming_movies))
         }
     }
 
@@ -166,10 +171,11 @@ class HomeFragment : BaseFragment<FragmentHomeBinding>() {
         (binding.rvTopRatedMovies.adapter as? HomeMoviesAdapter)?.submitList(list.map { it.copy() })
     }
 
-    private fun goToListFragment(type: String) {
+    private fun goToListFragment(type: String,title:String) {
         findNavController().navigate(
             HomeFragmentDirections.actionHomeFragmentToMoviesListFragment(
-                type
+                type,
+                title
             )
         )
     }

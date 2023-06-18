@@ -4,6 +4,7 @@ import android.os.Bundle
 import android.view.View
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.lifecycleScope
+import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
 import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -31,12 +32,21 @@ class MovieDetailFragment : BaseFragment<FragmentMovieDetailBinding>() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        initToolbar()
         initViews()
         initObserver()
         fetchData()
     }
 
-    private fun initViews() {
+    private fun initToolbar() {
+        binding.toolBar.clBack.visibility = View.VISIBLE
+        binding.toolBar.ivBack.setOnClickListener {
+            findNavController().popBackStack()
+        }
+        binding.toolBar.tvTitle.text = getString(R.string.txt_movie_detail_title)
+    }
+
+        private fun initViews() {
         binding.rvCast.adapter = MovieCastAdapter {
 
         }

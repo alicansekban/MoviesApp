@@ -2,4 +2,15 @@
     <string name="app_name">MoviesApp</string>
     <!-- TODO: Remove or change this placeholder text -->
     <string name="hello_blank_fragment">Hello blank fragment</string>
+    <string name="txt_search">Search Movie</string>
+    <string name="txt_adult">+18</string>
+    <string name="txt_popular_movies">Popular Movies</string>
+    <string name="txt_see_all">See All</string>
+    <string name="txt_upcoming_movies">Upcoming Movies</string>
+    <string name="txt_top_rated_movies">Top Rated Movies</string>
+    <string name="txt_now_playing_movies">Now Playing Movies</string>
+    <string name="txt_reviews">Reviews</string>
+    <string name="txt_cast">Cast</string>
+    <string name="get_home_title">Home Page</string>
+    <string name="txt_movie_detail_title">Movie Detail</string>
 </resources>

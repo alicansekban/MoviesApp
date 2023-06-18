@@ -27,4 +27,9 @@ class MoviesListInteractor @Inject constructor( private val repository: ListMovi
         return repository.getNowPlayingMovies()
             .map { pagingData -> pagingData.map { mapper.mapOnMovieResponse(it) } }
     }
+
+    fun searchMovies(query:String): Flow<PagingData<MovieUIModel>> {
+        return repository.getSearchMovies(query)
+            .map { pagingData -> pagingData.map { mapper.mapOnMovieResponse(it) } }
+    }
 }

@@ -13,10 +13,15 @@ data class MovieUIModel(
     val release_date: String,
     val title: String,
     val vote_average: Double,
+    val adult : Boolean
 ) : Parcelable {
 
     fun getImagePath(): String {
         return Constant.BASE_POSTER_URL + poster_path
+    }
+
+    fun getTitleText() : String{
+        return title
     }
 
     fun rateFormat(): String {

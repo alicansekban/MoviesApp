@@ -105,7 +105,7 @@
     </style>
 
     <style name="ThemeOverlay.AppTheme.TextInputEditText.Outlined" parent="">
-        <item name="colorControlActivated">@color/text_color_50</item>
+        <item name="colorControlActivated">@color/divide_color</item>
     </style>
 
 

@@ -15,7 +15,7 @@
     <color name="text_color">#FFFFFF</color>
     <color name="lineColorWhite">#F4F4F4</color>
     <color name="grey">#3C3E48</color>
-    <color name="text_color_50">#80B2B3B6</color>
+    <color name="divide_color">#80B2B3B6</color>
     <color name="border_color_grey">#0DF4F4F4</color>
     <color name="text_color_60">#993C3E48</color>
     <color name="text_color_70">#B33C3E48</color>

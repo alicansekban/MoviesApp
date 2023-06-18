@@ -18,15 +18,22 @@
         <androidx.constraintlayout.widget.ConstraintLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content">
+            <include
+                android:id="@+id/toolBar"
+                layout="@layout/layout_main_toolbar"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent" />
 
             <ImageView
                 android:id="@+id/iv_movie"
                 downloadImage="@{data.imagePath}"
                 android:layout_width="match_parent"
                 android:layout_height="300dp"
+                android:layout_margin="4dp"
                 android:adjustViewBounds="true"
                 android:scaleType="fitXY"
-                app:layout_constraintTop_toTopOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/toolBar"
                 tools:src="@tools:sample/backgrounds/scenic" />
 
             <androidx.constraintlayout.widget.ConstraintLayout
@@ -117,6 +124,18 @@
                     app:layout_constraintTop_toBottomOf="@+id/tv_genre"
                     tools:text="After reuniting with Gwen Stacy, Brooklyn’s full-time, friendly neighborhood Spider-Man is catapulted across the Multiverse, where he encounters the Spider Society, a team of Spider-People charged with protecting the Multiverse’s very existence. But when the heroes clash on how to handle a new threat, Miles finds himself pitted against the other Spiders and must set out on his own to save those he loves most." />
 
+                <TextView
+                    android:id="@+id/tv_cast"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="16dp"
+                    android:fontFamily="@font/sfprodisplay_bold_italic"
+                    android:text="@string/txt_cast"
+                    android:textColor="@color/black"
+                    android:textSize="16sp"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@id/tv_movie_desc" />
+
                 <androidx.recyclerview.widget.RecyclerView
                     android:id="@+id/rv_cast"
                     android:layout_width="match_parent"
@@ -124,7 +143,7 @@
                     android:layout_marginStart="16dp"
                     android:orientation="horizontal"
                     app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
-                    app:layout_constraintTop_toBottomOf="@id/tv_movie_desc"
+                    app:layout_constraintTop_toBottomOf="@id/tv_cast"
                     tools:listitem="@layout/item_movies" />
 
 
@@ -133,8 +152,8 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginStart="16dp"
-                    android:fontFamily="@font/sfprodisplay_bold"
-                    android:text="Comments"
+                    android:fontFamily="@font/sfprodisplay_bold_italic"
+                    android:text="@string/txt_reviews"
                     android:textColor="@color/black"
                     android:textSize="20sp"
                     app:layout_constraintStart_toStartOf="parent"
@@ -145,9 +164,9 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:orientation="vertical"
-                    tools:listitem="@layout/item_review"
                     app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
-                    app:layout_constraintTop_toBottomOf="@id/tv_comments_title" />
+                    app:layout_constraintTop_toBottomOf="@id/tv_comments_title"
+                    tools:listitem="@layout/item_review" />
 
             </androidx.constraintlayout.widget.ConstraintLayout>
 

@@ -1,6 +1,7 @@
 package com.alican.mvvm_starter.ui.list.adapter
 
 import android.view.LayoutInflater
+import android.view.View
 import android.view.ViewGroup
 import androidx.paging.PagingDataAdapter
 import androidx.recyclerview.widget.DiffUtil
@@ -33,7 +34,10 @@ class ListMoviesPagingAdapter(private val onItemClick: (MovieUIModel) -> Unit) :
             }
             item.let {
                 binding.tvTitle.text = it.title
+                binding.tvAvarage.text = it.rateFormat()
+                binding.tvReleaseDate.text = it.release_date
                 binding.ivCatalog.loadImage(it.getImagePath())
+                if (it.adult) binding.tvAdult.visibility = View.VISIBLE else binding.tvAdult.visibility = View.GONE
             }
         }
     }

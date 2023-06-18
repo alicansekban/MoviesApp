@@ -23,6 +23,7 @@ class MovieMapper @Inject constructor() {
             release_date = model.release_date,
             title = model.title,
             vote_average = model.vote_average,
+            adult = model.adult
         )
     }
 
