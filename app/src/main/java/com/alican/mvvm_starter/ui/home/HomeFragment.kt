@@ -2,6 +2,7 @@ package com.alican.mvvm_starter.ui.home
 
 import android.os.Bundle
 import android.view.View
+import android.widget.Toast
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
@@ -41,16 +42,16 @@ class HomeFragment : BaseFragment<FragmentHomeBinding>() {
 
     private fun setListeners() {
         binding.btnAllPopularMovies.setOnClickListener {
-            goToListFragment(Constant.POPULAR_MOVIES,getString(R.string.txt_popular_movies))
+            goToListFragment(Constant.POPULAR_MOVIES, getString(R.string.txt_popular_movies))
         }
         binding.btnAllNowPlayingMovies.setOnClickListener {
-            goToListFragment(Constant.NOW_PLAYING,getString(R.string.txt_now_playing_movies))
+            goToListFragment(Constant.NOW_PLAYING, getString(R.string.txt_now_playing_movies))
         }
         binding.btnAllTopRatedMovies.setOnClickListener {
-            goToListFragment(Constant.TOP_RATED_MOVIES,getString(R.string.txt_top_rated_movies))
+            goToListFragment(Constant.TOP_RATED_MOVIES, getString(R.string.txt_top_rated_movies))
         }
         binding.btnAllUpcomingMovies.setOnClickListener {
-            goToListFragment(Constant.UP_COMING_MOVIES,getString(R.string.txt_upcoming_movies))
+            goToListFragment(Constant.UP_COMING_MOVIES, getString(R.string.txt_upcoming_movies))
         }
     }
 
@@ -90,7 +91,8 @@ class HomeFragment : BaseFragment<FragmentHomeBinding>() {
             viewModel.popularMovies.collect { response ->
                 when (response) {
                     is Error -> {
-                        response.errorMessage
+                        Toast.makeText(requireContext(), response.errorMessage, Toast.LENGTH_LONG)
+                            .show()
                     }
 
                     is Loading -> {
@@ -98,7 +100,6 @@ class HomeFragment : BaseFragment<FragmentHomeBinding>() {
                     }
 
                     is Success -> {
-
                         hideProgressDialog()
                         initPopularMoviesAdapter(response.response)
                     }
@@ -109,7 +110,8 @@ class HomeFragment : BaseFragment<FragmentHomeBinding>() {
             viewModel.upComingMovies.collect { response ->
                 when (response) {
                     is Error -> {
-                        response.errorMessage
+                        Toast.makeText(requireContext(), response.errorMessage, Toast.LENGTH_LONG)
+                            .show()
                     }
 
                     is Loading -> {
@@ -127,7 +129,8 @@ class HomeFragment : BaseFragment<FragmentHomeBinding>() {
             viewModel.topRatedMovies.collect { response ->
                 when (response) {
                     is Error -> {
-                        response.errorMessage
+                        Toast.makeText(requireContext(), response.errorMessage, Toast.LENGTH_LONG)
+                            .show()
                     }
 
                     is Loading -> {
@@ -145,7 +148,8 @@ class HomeFragment : BaseFragment<FragmentHomeBinding>() {
             viewModel.nowPlayingMovies.collect { response ->
                 when (response) {
                     is Error -> {
-                        response.errorMessage
+                        Toast.makeText(requireContext(), response.errorMessage, Toast.LENGTH_LONG)
+                            .show()
                     }
 
                     is Loading -> {
@@ -171,7 +175,7 @@ class HomeFragment : BaseFragment<FragmentHomeBinding>() {
         (binding.rvTopRatedMovies.adapter as? HomeMoviesAdapter)?.submitList(list.map { it.copy() })
     }
 
-    private fun goToListFragment(type: String,title:String) {
+    private fun goToListFragment(type: String, title: String) {
         findNavController().navigate(
             HomeFragmentDirections.actionHomeFragmentToMoviesListFragment(
                 type,
@@ -195,9 +199,6 @@ class HomeFragment : BaseFragment<FragmentHomeBinding>() {
     private fun initPopularMoviesAdapter(list: List<MovieUIModel>) {
         (binding.rvPopularMovies.adapter as? HomeMoviesAdapter)?.submitList(list.map { it.copy() })
         homeBannerAdapter.submitList(list.map { it.copy() })
-
         binding.indicator.setViewPager2(binding.rvBanner)
-
-
     }
 }

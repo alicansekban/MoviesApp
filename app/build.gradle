@@ -90,10 +90,6 @@ dependencies {
     implementation "com.squareup.okhttp3:okhttp:5.0.0-alpha.2"
     implementation "com.squareup.okhttp3:logging-interceptor:5.0.0-alpha.2"
 
-
-    // Skeleton
-    implementation("com.ericktijerou.koleton:koleton:1.0.0-beta01")
-
     // Image Loading
     implementation "io.coil-kt:coil:2.2.2"
 
@@ -111,7 +107,7 @@ dependencies {
     def moshiVersion = "1.13.0"
     implementation "com.squareup.moshi:moshi:$moshiVersion"
     kapt "com.squareup.moshi:moshi-kotlin-codegen:$moshiVersion"
-    implementation "com.squareup.moshi:moshi-kotlin:1.9.2"
+    implementation "com.squareup.moshi:moshi-kotlin:$moshiVersion"
 
 
 
@@ -131,9 +127,6 @@ dependencies {
     // Dot Indicator
     implementation 'com.github.msayan:dotsindicator:4.0.0'
 
-    // Alerter
-    implementation 'com.tapadoo.android:alerter:2.0.0'
-
 
 
     // Glide
@@ -141,16 +134,6 @@ dependencies {
     implementation "com.github.bumptech.glide:glide:$glideVersion"
     kapt "com.github.bumptech.glide:compiler:$glideVersion"
     kapt "com.github.bumptech.glide:annotations:$glideVersion"
-
-
-    // Helper for easy request with retrofit & view model
-    implementation "com.github.murgupluoglu:request-android:4.2.0"
-
-
-    // Last Adapter
-    implementation "com.github.nitrico.lastadapter:lastadapter:2.3.0"
-    // datastore
-    implementation "androidx.datastore:datastore-preferences:1.0.0"
 
     // Room
     implementation "androidx.room:room-runtime:2.5.0"

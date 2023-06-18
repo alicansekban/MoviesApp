@@ -10,9 +10,12 @@
             type="com.alican.mvvm_starter.domain.model.MovieDetailUIModel" />
     </data>
 
-    <ScrollView
+
+    <com.amar.library.ui.StickyScrollView
         android:layout_width="match_parent"
-        android:layout_height="match_parent">
+        android:layout_height="match_parent"
+        android:orientation="vertical"
+        app:stickyHeader="@id/toolBar">
 
 
         <androidx.constraintlayout.widget.ConstraintLayout
@@ -21,6 +24,7 @@
             <include
                 android:id="@+id/toolBar"
                 layout="@layout/layout_main_toolbar"
+                android:tag="sticky"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent" />
@@ -173,5 +177,5 @@
         </androidx.constraintlayout.widget.ConstraintLayout>
 
 
-    </ScrollView>
+    </com.amar.library.ui.StickyScrollView>
 </layout>

@@ -2,6 +2,7 @@ package com.alican.mvvm_starter.ui.detail
 
 import android.os.Bundle
 import android.view.View
+import android.widget.Toast
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
@@ -67,8 +68,8 @@ class MovieDetailFragment : BaseFragment<FragmentMovieDetailBinding>() {
         lifecycleScope.launch {
             viewModel.movieDetail.collectLatest {
                 when (it) {
-                    is Error -> {}
-                    is Loading -> {}
+                    is Error -> { Toast.makeText(requireContext(),it.errorMessage, Toast.LENGTH_LONG).show()}
+                    is Loading -> {showProgressDialog()}
                     is Success -> binding.data = it.response
                 }
             }
@@ -76,9 +77,12 @@ class MovieDetailFragment : BaseFragment<FragmentMovieDetailBinding>() {
         lifecycleScope.launch {
             viewModel.movieCredits.collectLatest {
                 when (it) {
-                    is Error -> {}
-                    is Loading -> {}
-                    is Success -> initCastAdapter(it.response.cast)
+                    is Error -> { Toast.makeText(requireContext(),it.errorMessage, Toast.LENGTH_LONG).show()}
+                    is Loading -> {showProgressDialog()}
+                    is Success -> {
+                        hideProgressDialog()
+                        initCastAdapter(it.response.cast)
+                    }
                 }
             }
         }

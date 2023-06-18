@@ -1,10 +1,6 @@
-package com.rohitjakhar.mvvmtemplate.di
+package com.alican.mvvm_starter.di
 
 import android.content.Context
-import androidx.datastore.core.DataStore
-import androidx.datastore.preferences.core.PreferenceDataStoreFactory
-import androidx.datastore.preferences.core.Preferences
-import androidx.datastore.preferences.preferencesDataStoreFile
 import androidx.room.Room
 import com.alican.mvvm_starter.data.local.AppDatabase
 import com.alican.mvvm_starter.data.remote.api.WebService
@@ -13,7 +9,6 @@ import com.alican.mvvm_starter.data.repository.HomeMoviesRepository
 import com.alican.mvvm_starter.domain.mapper.MovieMapper
 import com.alican.mvvm_starter.util.Constant
 import com.alican.mvvm_starter.util.Constant.BASE_URL
-import com.alican.mvvm_starter.util.Constant.DATA_STORE_NAME
 import com.alican.mvvm_starter.util.Constant.ROOM_DATA_BASE_NAME
 import dagger.Module
 import dagger.Provides
@@ -33,13 +28,6 @@ import javax.inject.Singleton
 @InstallIn(SingletonComponent::class)
 object AppModule {
 
-    @Provides
-    @Singleton
-    fun provideDataStore(@ApplicationContext context: Context): DataStore<Preferences> {
-        return PreferenceDataStoreFactory.create {
-            context.preferencesDataStoreFile(DATA_STORE_NAME)
-        }
-    }
 
     @Provides
     @Singleton
