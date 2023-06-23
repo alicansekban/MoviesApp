@@ -8,6 +8,7 @@ import com.alican.mvvm_starter.data.remote.api.WebService
 import com.alican.mvvm_starter.data.remote.source.HomeDataSource
 import com.alican.mvvm_starter.util.ResultWrapper
 import io.mockk.clearAllMocks
+import io.mockk.mockk
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.runBlocking
 import org.junit.Assert.assertEquals
@@ -39,7 +40,7 @@ class HomeMoviesRepositoryTest {
     fun setup() {
         clearAllMocks()
         MockitoAnnotations.openMocks(this)
-        homeMoviesRepository = HomeMoviesRepository(webService, database, homeDataSource)
+        homeMoviesRepository = HomeMoviesRepository(webService, database, homeDataSource, mockk())
     }
 
 
