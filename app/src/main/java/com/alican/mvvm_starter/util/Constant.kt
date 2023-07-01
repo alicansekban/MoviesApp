@@ -14,3 +14,7 @@ object Constant {
     const val NOW_PLAYING = "NOW_PLAYING"
     const val SEARCH_QUERY_MOVIES = "SEARCH_QUERY_MOVIES"
 }
+
+object ComposeRoutes {
+
+}

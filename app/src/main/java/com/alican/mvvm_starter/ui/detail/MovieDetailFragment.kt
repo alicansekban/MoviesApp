@@ -92,6 +92,5 @@ class MovieDetailFragment : BaseFragment<FragmentMovieDetailBinding>() {
 
     private fun initCastAdapter(cast: List<Cast>?) {
         (binding.rvCast.adapter as? MovieCastAdapter)?.submitList(cast?.map { it.copy() })
-
     }
 }
