@@ -1,8 +1,11 @@
 package com.alican.mvvm_starter.ui.home
 
+import androidx.compose.foundation.ExperimentalFoundationApi
+import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -12,6 +15,8 @@ import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.foundation.lazy.rememberLazyListState
+import androidx.compose.foundation.pager.HorizontalPager
+import androidx.compose.foundation.pager.rememberPagerState
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
@@ -20,17 +25,22 @@ import androidx.compose.material.TopAppBar
 import androidx.compose.material.primarySurface
 import androidx.compose.material.rememberScaffoldState
 import androidx.compose.material3.Button
+import androidx.compose.material3.Card
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.Font
 import androidx.compose.ui.text.font.FontFamily
+import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -45,15 +55,16 @@ import com.bumptech.glide.integration.compose.ExperimentalGlideComposeApi
 import com.bumptech.glide.integration.compose.GlideImage
 
 
+@OptIn(ExperimentalFoundationApi::class)
 @Composable
 fun HomeScreen(
     openList: () -> Unit,
     openDetail: (Int) -> Unit,
-    navController: NavController,
-    viewModel: HomeViewModel = hiltViewModel()
+    navController: NavController
 ) {
 
 
+    val viewModel: HomeViewModel = hiltViewModel()
     val popularMovies by viewModel.popularMovies.collectAsState()
     val nowPlayingMovies by viewModel.nowPlayingMovies.collectAsState()
     val topRatedMovies by viewModel.topRatedMovies.collectAsState()
@@ -62,7 +73,7 @@ fun HomeScreen(
     val listState = rememberLazyListState()
 
     Scaffold(
-        topBar = { HomeScreenToolbar() }
+        topBar = { }
     ) { padding ->
 
         Column(
@@ -71,13 +82,36 @@ fun HomeScreen(
                 .verticalScroll(rememberScrollState())
                 .padding(horizontal = 16.dp)
         ) {
+
             when (popularMovies) {
                 is Error -> {}
                 is Loading -> {}
                 is Success -> {
+
+                    val response = (popularMovies as Success<List<MovieUIModel>>).response
+                    Box(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .height(300.dp)
+                            .padding(top = 16.dp)
+                    ) {
+
+                        val pagerState = rememberPagerState()
+                        HorizontalPager(pageCount = response.size, state = pagerState) { index ->
+                            loadImage(url = response[index].getImagePath()) {
+                            }
+
+                        }
+
+                    }
+                    Spacer(
+                        modifier = Modifier
+                            .fillMaxSize()
+                            .padding(top = 12.dp)
+                    )
                     HomeSection(
                         title = stringResource(R.string.txt_popular_movies),
-                        movies = (popularMovies as Success<List<MovieUIModel>>).response,
+                        movies = response,
                         onSeeAllClick = { openList() },
                         onItemClick = { openDetail(it) }
                     )
@@ -88,7 +122,7 @@ fun HomeScreen(
                 is Loading -> {}
                 is Success -> {
                     HomeSection(
-                        title = stringResource(R.string.txt_popular_movies),
+                        title = stringResource(R.string.txt_upcoming_movies),
                         movies = (upComingMovies as Success<List<MovieUIModel>>).response,
                         onSeeAllClick = { openList() },
                         onItemClick = { openDetail(it) }
@@ -100,7 +134,7 @@ fun HomeScreen(
                 is Loading -> {}
                 is Success -> {
                     HomeSection(
-                        title = stringResource(R.string.txt_popular_movies),
+                        title = stringResource(R.string.txt_now_playing_movies),
                         movies = (nowPlayingMovies as Success<List<MovieUIModel>>).response,
                         onSeeAllClick = { openList() },
                         onItemClick = { openDetail(it) }
@@ -112,7 +146,7 @@ fun HomeScreen(
                 is Loading -> {}
                 is Success -> {
                     HomeSection(
-                        title = stringResource(R.string.txt_popular_movies),
+                        title = stringResource(R.string.txt_top_rated_movies),
                         movies = (topRatedMovies as Success<List<MovieUIModel>>).response,
                         onSeeAllClick = { openList() },
                         onItemClick = { openDetail(it) }
@@ -120,8 +154,10 @@ fun HomeScreen(
                 }
             }
         }
+
     }
 }
+
 
 @Composable
 fun HomeSection(
@@ -131,13 +167,39 @@ fun HomeSection(
     onItemClick: (Int) -> Unit
 ) {
     Column(modifier = Modifier.padding(vertical = 16.dp)) {
-        Text(
-            text = title,
-            style = TextStyle.Default,
-            fontSize = 16.sp,
-            color = Color.White,
-            modifier = Modifier.fillMaxWidth()
-        )
+
+        Card(
+            modifier = Modifier
+                .fillMaxWidth()
+                .height(30.dp),
+            shape = RoundedCornerShape(12.dp)
+        ) {
+            Row(
+                verticalAlignment = Alignment.CenterVertically,
+                modifier = Modifier
+                    .fillMaxSize()
+                    .background(color = Color.Black)
+            ) {
+                Text(
+                    text = title,
+                    color = Color.White,
+                    fontSize = 16.sp,
+                    fontWeight = FontWeight.Bold,
+                    modifier = Modifier
+                        .weight(1f)
+                        .padding(start = 16.dp)
+                )
+
+                Text(
+                    text = stringResource(id = R.string.txt_see_all),
+                    color = Color.White,
+                    fontSize = 16.sp,
+                    fontWeight = FontWeight.Bold,
+                    modifier = Modifier.padding(end = 16.dp).clickable { onSeeAllClick() }
+                )
+            }
+        }
+
 
         Spacer(modifier = Modifier.height(8.dp))
 
@@ -151,30 +213,17 @@ fun HomeSection(
                 HomeMovieItem(movie = value, onItemClick = onItemClick)
             }
         }
-
-        Spacer(modifier = Modifier.height(16.dp))
-
-        Button(
-            onClick = onSeeAllClick,
-            shape = RoundedCornerShape(12.dp),
-            modifier = Modifier.fillMaxWidth()
-        ) {
-            Text(
-                text = stringResource(R.string.txt_see_all),
-                fontFamily = FontFamily(Font(R.font.sfprodisplay_semi_bold)),
-                fontSize = 16.sp,
-                color = Color.Black
-            )
-        }
     }
 }
 
 @Composable
 fun HomeMovieItem(movie: MovieUIModel, onItemClick: (Int) -> Unit) {
 
-    Column(modifier = Modifier
-        .width(120.dp)
-        .padding(top = 32.dp, start = 8.dp)) {
+    Column(
+        modifier = Modifier
+            .width(120.dp)
+            .padding(top = 16.dp, start = 8.dp)
+    ) {
         loadImage(url = movie.getImagePath()) {
             onItemClick(movie.id)
         }
@@ -185,26 +234,29 @@ fun HomeMovieItem(movie: MovieUIModel, onItemClick: (Int) -> Unit) {
             fontSize = 14.sp,
             color = Color.Black,
             maxLines = 2,
-            overflow = TextOverflow.Ellipsis
+            overflow = TextOverflow.Ellipsis,
+            textAlign = TextAlign.Center
         )
     }
 }
 
 @OptIn(ExperimentalGlideComposeApi::class)
 @Composable
-fun loadImage(url: String,onItemClick: () -> Unit) {
-    GlideImage(model = url, contentDescription = "loadImage", Modifier.fillMaxSize()) {
-        it.error(R.drawable.ic_launcher_background)
-            .placeholder(R.drawable.ic_launcher_foreground)
-            .load(url)
+fun loadImage(url: String, onItemClick: () -> Unit) {
 
-    }
     // Image'a tıklandığında onItemClick fonksiyonunu tetikleyin
     Box(
         modifier = Modifier
             .fillMaxSize()
             .clickable { onItemClick() }
-    )
+    ) {
+        GlideImage(model = url, contentDescription = "loadImage", Modifier.fillMaxSize()) {
+            it.error(R.drawable.ic_launcher_background)
+                .placeholder(R.drawable.ic_launcher_foreground)
+                .load(url)
+
+        }
+    }
 }
 
 

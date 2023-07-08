@@ -34,20 +34,25 @@ class ComposeActivity: ComponentActivity() {
                                 navController.navigate("list/{type}")
                             },
                             openDetail = {
-                                navController.navigate("detail/{id}")
+                                navController.navigate("detail/{id}".replace(oldValue = "{id}", newValue = it.toString()))
                             },
                             navController
                         )
                     }
-                    composable(route =  "list/{type}",
+                    composable(
+                        route = "list/{type}",
                         arguments = listOf(
-                            navArgument("type"){
+                            navArgument("type") {
                                 type = NavType.StringType
                             }
                         )
-                    ) {
-                        val type = it.arguments?.getString("type")
-                        ListScreen(navController,type)
+                    ) { entry ->
+                        val type = entry.arguments?.getString("type")
+                        if (type != null) {
+                            ListScreen(navController, type)
+                        } else {
+                            // Hata durumunda yapılacak işlem
+                        }
                     }
                     composable(
                         route = "detail/{id}",
@@ -56,10 +61,12 @@ class ComposeActivity: ComponentActivity() {
                                 type = NavType.IntType
                             }
                         )
-                    ) {
-                        val id = it.arguments?.getInt("id")
+                    ) { entry ->
+                        val id = entry.arguments?.getInt("id")
                         if (id != null) {
                             MovieDetailScreen(id)
+                        } else {
+                            // Hata durumunda yapılacak işlem
                         }
                     }
                 }
