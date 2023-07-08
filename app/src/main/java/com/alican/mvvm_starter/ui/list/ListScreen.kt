@@ -11,6 +11,8 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.grid.GridCells
+import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.text.KeyboardOptions
@@ -29,6 +31,7 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
@@ -65,7 +68,7 @@ fun ListScreen(
     LaunchedEffect(key1 = type) {
         viewModel.getData(type)
     }
-    val title: String = when(type) {
+    val title: String = when (type) {
         Constant.POPULAR_MOVIES -> {
             stringResource(id = R.string.txt_popular_movies)
         }
@@ -80,7 +83,11 @@ fun ListScreen(
 
         Constant.NOW_PLAYING -> {
             stringResource(id = R.string.txt_now_playing_movies)
-        } else -> {""}
+        }
+
+        else -> {
+            ""
+        }
     }
 
     Scaffold(
@@ -111,23 +118,21 @@ fun ListScreen(
                     }
                 )
 
-                LazyColumn(
-                    modifier = Modifier.weight(1f),
-                    state = rememberLazyListState()
+                LazyVerticalGrid(
+                    columns = GridCells.Fixed(2)
                 ) {
-                    itemsIndexed(
-                        items = movies,
-                        key = { _, movie ->
-                            movie.id
-                        }
-                    ) { index, value ->
-                        value?.let {
-                            MovieItem(movie = it) { id ->
-                                navController.navigate("detail/{id}".replace(oldValue = "{id}", newValue = "$id"))
-                            }
+                    items(movies.itemCount) { index ->
+                        MovieItem(movie = movies[index]!!) { id ->
+                            navController.navigate(
+                                "detail/{id}".replace(
+                                    oldValue = "{id}",
+                                    newValue = "$id"
+                                )
+                            )
                         }
                     }
                 }
+
             }
         }
     )

@@ -2,7 +2,6 @@ package com.alican.mvvm_starter.ui.detail
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
-import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -55,7 +54,6 @@ import com.alican.mvvm_starter.domain.model.Loading
 import com.alican.mvvm_starter.domain.model.MovieCreditsUIModel
 import com.alican.mvvm_starter.domain.model.MovieDetailUIModel
 import com.alican.mvvm_starter.domain.model.Success
-import com.alican.mvvm_starter.ui.home.HomeMovieItem
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
