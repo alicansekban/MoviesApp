@@ -51,6 +51,7 @@ import com.alican.mvvm_starter.domain.model.Error
 import com.alican.mvvm_starter.domain.model.Loading
 import com.alican.mvvm_starter.domain.model.MovieUIModel
 import com.alican.mvvm_starter.domain.model.Success
+import com.alican.mvvm_starter.util.Constant
 import com.bumptech.glide.integration.compose.ExperimentalGlideComposeApi
 import com.bumptech.glide.integration.compose.GlideImage
 
@@ -58,9 +59,8 @@ import com.bumptech.glide.integration.compose.GlideImage
 @OptIn(ExperimentalFoundationApi::class)
 @Composable
 fun HomeScreen(
-    openList: () -> Unit,
-    openDetail: (Int) -> Unit,
-    navController: NavController
+    openList: (String) -> Unit,
+    openDetail: (Int) -> Unit
 ) {
 
 
@@ -112,7 +112,7 @@ fun HomeScreen(
                     HomeSection(
                         title = stringResource(R.string.txt_popular_movies),
                         movies = response,
-                        onSeeAllClick = { openList() },
+                        onSeeAllClick = { openList(Constant.POPULAR_MOVIES) },
                         onItemClick = { openDetail(it) }
                     )
                 }
@@ -124,7 +124,7 @@ fun HomeScreen(
                     HomeSection(
                         title = stringResource(R.string.txt_upcoming_movies),
                         movies = (upComingMovies as Success<List<MovieUIModel>>).response,
-                        onSeeAllClick = { openList() },
+                        onSeeAllClick = { openList(Constant.UP_COMING_MOVIES) },
                         onItemClick = { openDetail(it) }
                     )
                 }
@@ -136,7 +136,7 @@ fun HomeScreen(
                     HomeSection(
                         title = stringResource(R.string.txt_now_playing_movies),
                         movies = (nowPlayingMovies as Success<List<MovieUIModel>>).response,
-                        onSeeAllClick = { openList() },
+                        onSeeAllClick = { openList(Constant.NOW_PLAYING) },
                         onItemClick = { openDetail(it) }
                     )
                 }
@@ -148,7 +148,7 @@ fun HomeScreen(
                     HomeSection(
                         title = stringResource(R.string.txt_top_rated_movies),
                         movies = (topRatedMovies as Success<List<MovieUIModel>>).response,
-                        onSeeAllClick = { openList() },
+                        onSeeAllClick = { openList(Constant.TOP_RATED_MOVIES) },
                         onItemClick = { openDetail(it) }
                     )
                 }

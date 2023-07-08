@@ -2,6 +2,7 @@ package com.alican.mvvm_starter.ui.detail
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -12,6 +13,8 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.LazyRow
+import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -40,26 +43,32 @@ import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.navigation.NavController
 import androidx.paging.compose.collectAsLazyPagingItems
 import androidx.paging.compose.itemsIndexed
 import coil.compose.rememberAsyncImagePainter
 import com.alican.mvvm_starter.R
+import com.alican.mvvm_starter.data.local.model.ReviewsEntity
 import com.alican.mvvm_starter.domain.model.Cast
 import com.alican.mvvm_starter.domain.model.Error
 import com.alican.mvvm_starter.domain.model.Loading
 import com.alican.mvvm_starter.domain.model.MovieCreditsUIModel
 import com.alican.mvvm_starter.domain.model.MovieDetailUIModel
 import com.alican.mvvm_starter.domain.model.Success
+import com.alican.mvvm_starter.ui.home.HomeMovieItem
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun MovieDetailScreen(
     movieId: Int,
-    viewModel: MovieDetailViewModel = hiltViewModel()
+    navController: NavController
 ) {
+
+    val viewModel: MovieDetailViewModel = hiltViewModel()
     val movieDetailState by viewModel.movieDetail.collectAsState()
     val movieCreditsState by viewModel.movieCredits.collectAsState()
     val reviews = viewModel.reviews.collectAsLazyPagingItems()
+
 
 
     LaunchedEffect(movieId) {
@@ -73,10 +82,10 @@ fun MovieDetailScreen(
             TopAppBar(
                 title = { Text(text = stringResource(R.string.txt_movie_detail_title)) },
                 navigationIcon = {
-                    IconButton(onClick = { /* Handle navigation */ }) {
+                    IconButton(onClick = { navController.navigateUp()}) {
                         Image(painter = painterResource(R.drawable.ic_arrow_back), contentDescription = null)
                     }
-                }
+                },
             )
         },
         content = { padding ->
@@ -95,8 +104,17 @@ fun MovieDetailScreen(
                 when (movieCreditsState) {
                     is Loading -> {}
                     is Success -> {
-                        val review = (movieCreditsState as Success<MovieCreditsUIModel>).response
-                        ReviewItem(review = review)
+                        val cast = (movieCreditsState as Success<MovieCreditsUIModel>).response
+                        LazyRow(modifier = Modifier.fillMaxWidth()) {
+                            itemsIndexed(
+                                items = cast.cast as ArrayList,
+                                key = { _, cast ->
+                                    cast.id!!
+                                }
+                            ) { index, value ->
+                                CastItem(cast = value)
+                            }
+                        }
                     }
 
                     is Error -> {}
@@ -107,7 +125,7 @@ fun MovieDetailScreen(
                     itemsIndexed(
                         items = reviews,
                     ) {index, review ->
-
+                        reviews[index]?.let { ReviewItem(review = it) }
                         // İncelemeleri görüntülemek için gerekli işlemleri gerçekleştirin
                     }
                 }
@@ -209,7 +227,7 @@ fun CastItem(cast: Cast) {
 
 
 @Composable
-fun ReviewItem(review: MovieCreditsUIModel) {
+fun ReviewItem(review: ReviewsEntity) {
     androidx.compose.material.Scaffold(
         scaffoldState = rememberScaffoldState(),
         modifier = Modifier.fillMaxSize()

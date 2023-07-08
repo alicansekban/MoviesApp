@@ -4,9 +4,12 @@ import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.foundation.text.KeyboardActions
@@ -21,15 +24,20 @@ import androidx.compose.material3.Text
 import androidx.compose.material3.TextField
 import androidx.compose.material3.TopAppBar
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.TextFieldValue
+import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
@@ -38,29 +46,53 @@ import androidx.paging.compose.collectAsLazyPagingItems
 import androidx.paging.compose.itemsIndexed
 import com.alican.mvvm_starter.R
 import com.alican.mvvm_starter.domain.model.MovieUIModel
+import com.alican.mvvm_starter.ui.home.loadImage
+import com.alican.mvvm_starter.util.Constant
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun ListScreen(
     navController: NavController,
-    type: String? = null,
-    viewModel: MoviesListViewModel = hiltViewModel()
+    type: String? = null
 ) {
 
     val searchQuery = remember { mutableStateOf("") }
 
+    val viewModel: MoviesListViewModel = hiltViewModel()
+
     val movies = viewModel.movies.collectAsLazyPagingItems()
+
+    LaunchedEffect(key1 = type) {
+        viewModel.getData(type)
+    }
+    val title: String = when(type) {
+        Constant.POPULAR_MOVIES -> {
+            stringResource(id = R.string.txt_popular_movies)
+        }
+
+        Constant.UP_COMING_MOVIES -> {
+            stringResource(id = R.string.txt_upcoming_movies)
+        }
+
+        Constant.TOP_RATED_MOVIES -> {
+            stringResource(id = R.string.txt_top_rated_movies)
+        }
+
+        Constant.NOW_PLAYING -> {
+            stringResource(id = R.string.txt_now_playing_movies)
+        } else -> {""}
+    }
 
     Scaffold(
         topBar = {
             TopAppBar(
                 navigationIcon = {
-                    IconButton(onClick = { /* Handle navigation back */ }) {
+                    IconButton(onClick = { navController.navigateUp() }) {
                         Icon(Icons.Default.ArrowBack, contentDescription = "Back")
                     }
                 },
                 title = {
-                    Text(text = type.toString())
+                    Text(text = title)
                 }
             )
         },
@@ -89,8 +121,10 @@ fun ListScreen(
                             movie.id
                         }
                     ) { index, value ->
-                        MovieItem(movie = value) { id ->
-                            navController.navigate("detail/{$id}")
+                        value?.let {
+                            MovieItem(movie = it) { id ->
+                                navController.navigate("detail/{id}".replace(oldValue = "{id}", newValue = "$id"))
+                            }
                         }
                     }
                 }
@@ -101,21 +135,30 @@ fun ListScreen(
 
 
 @Composable
-fun MovieItem(movie: MovieUIModel?, onItemClick: (Int) -> Unit) {
+fun MovieItem(movie: MovieUIModel, onItemClick: (Int) -> Unit) {
     // Movie item UI
     // Öğe görünümünü oluşturun ve onItemClick işlevini çağırarak tıklama olayını işleyin
     // Örneğin, Card veya Box gibi bir Container kullanabilir ve içindeki verileri görüntüleyebilirsiniz
     // Örneğin:
-    Box(
+    Column(
         modifier = Modifier
-            .padding(8.dp)
-            .clickable { onItemClick(movie!!.id) }
+            .width(120.dp)
+            .padding(top = 16.dp, start = 8.dp)
+            .clickable { onItemClick(movie.id) }
     ) {
+        loadImage(url = movie.getImagePath()) {
+            onItemClick(movie.id)
+        }
+        Spacer(modifier = Modifier.height(8.dp))
         Text(
-            text = movie!!.title,
-            modifier = Modifier.fillMaxWidth()
+            text = movie.title,
+            style = TextStyle.Default,
+            fontSize = 14.sp,
+            color = Color.Black,
+            maxLines = 2,
+            overflow = TextOverflow.Ellipsis,
+            textAlign = TextAlign.Center
         )
-        // Öğe içeriği (örneğin, afiş, başlık, vb.) burada görüntülenebilir
     }
 }
 

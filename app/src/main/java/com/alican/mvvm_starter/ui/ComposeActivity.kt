@@ -31,12 +31,11 @@ class ComposeActivity: ComponentActivity() {
                     composable("home") {
                         HomeScreen(
                             openList = {
-                                navController.navigate("list/{type}")
+                                navController.navigate("list/{type}".replace(oldValue = "{type}", newValue = it))
                             },
                             openDetail = {
                                 navController.navigate("detail/{id}".replace(oldValue = "{id}", newValue = it.toString()))
-                            },
-                            navController
+                            }
                         )
                     }
                     composable(
@@ -64,7 +63,7 @@ class ComposeActivity: ComponentActivity() {
                     ) { entry ->
                         val id = entry.arguments?.getInt("id")
                         if (id != null) {
-                            MovieDetailScreen(id)
+                            MovieDetailScreen(id, navController = navController)
                         } else {
                             // Hata durumunda yapılacak işlem
                         }
