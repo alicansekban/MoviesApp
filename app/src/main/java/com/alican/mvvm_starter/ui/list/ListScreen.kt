@@ -1,27 +1,30 @@
 package com.alican.mvvm_starter.ui.list
 
+import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.clickable
-import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
-import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
-import androidx.compose.foundation.lazy.rememberLazyListState
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowBack
+import androidx.compose.material3.Card
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
+import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Scaffold
+import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextField
 import androidx.compose.material3.TopAppBar
@@ -37,6 +40,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.TextStyle
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.TextFieldValue
 import androidx.compose.ui.text.style.TextAlign
@@ -46,7 +50,6 @@ import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
 import androidx.paging.compose.collectAsLazyPagingItems
-import androidx.paging.compose.itemsIndexed
 import com.alican.mvvm_starter.R
 import com.alican.mvvm_starter.domain.model.MovieUIModel
 import com.alican.mvvm_starter.ui.home.loadImage
@@ -92,36 +95,37 @@ fun ListScreen(
 
     Scaffold(
         topBar = {
-            TopAppBar(
-                navigationIcon = {
-                    IconButton(onClick = { navController.navigateUp() }) {
-                        Icon(Icons.Default.ArrowBack, contentDescription = "Back")
-                    }
-                },
-                title = {
-                    Text(text = title)
-                }
-            )
+            TopBar(title = title, showBackButton = true) {
+                navController.navigateUp()
+            }
         },
+
         content = { padding ->
             Column(modifier = Modifier.padding(16.dp)) {
-                SearchBar(
-                    modifier = Modifier.fillMaxWidth(),
-                    searchQuery = searchQuery.value,
-                    onSearchQueryChange = { searchQuery.value = it },
-                    onSearchQuerySubmit = { query ->
-                        if (query.length > 2) {
-                            viewModel.searchMovies(query = query)
+                OutlinedTextField(
+                    value = searchQuery.value, onValueChange = {
+                        searchQuery.value = it
+                        if (it.length > 2) {
+                            viewModel.searchMovies(it)
                         } else {
                             viewModel.getData(type)
                         }
-                    }
+
+                    },
+                    modifier = Modifier
+                        .padding(16.dp)
+                        .fillMaxWidth(),
+                    placeholder =  {
+                        Text(text = "Search...")
+                    },
+                    maxLines = 1,
+                    singleLine = true
                 )
 
                 LazyVerticalGrid(
                     columns = GridCells.Fixed(2)
                 ) {
-                    items(movies.itemCount) { index ->
+                    items(movies.itemCount, key = { it }) { index ->
                         MovieItem(movie = movies[index]!!) { id ->
                             navController.navigate(
                                 "detail/{id}".replace(
@@ -142,9 +146,6 @@ fun ListScreen(
 @Composable
 fun MovieItem(movie: MovieUIModel, onItemClick: (Int) -> Unit) {
     // Movie item UI
-    // Öğe görünümünü oluşturun ve onItemClick işlevini çağırarak tıklama olayını işleyin
-    // Örneğin, Card veya Box gibi bir Container kullanabilir ve içindeki verileri görüntüleyebilirsiniz
-    // Örneğin:
     Column(
         modifier = Modifier
             .width(120.dp)
@@ -201,5 +202,47 @@ fun SearchBar(
         )
     }
 
+}
 
+@Composable
+fun TopBar(title: String, showBackButton: Boolean, onBackClick: () -> Unit) {
+    Surface(
+        modifier = Modifier
+            .fillMaxWidth()
+            .height(56.dp),
+        shadowElevation = 2.dp,
+        border = BorderStroke(1.dp, Color.Gray),
+        color = Color.White
+    ) {
+        Row(
+            modifier = Modifier.fillMaxSize(),
+            verticalAlignment = Alignment.CenterVertically
+        ) {
+            if (showBackButton) {
+                IconButton(
+                    onClick = { onBackClick() },
+                    modifier = Modifier.size(40.dp)
+                ) {
+                    Icon(
+                        imageVector = Icons.Default.ArrowBack,
+                        contentDescription = "Back",
+                        tint = Color.Black
+                    )
+                }
+            }
+
+            Text(
+                text = title,
+                modifier = Modifier.weight(1f),
+                textAlign = TextAlign.Center,
+                style = TextStyle(
+                    fontWeight = FontWeight.Bold,
+                    fontSize = 16.sp,
+                    color = Color.Black
+                ),
+                maxLines = 1,
+                overflow = TextOverflow.Ellipsis
+            )
+        }
+    }
 }

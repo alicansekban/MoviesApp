@@ -24,7 +24,6 @@ import androidx.compose.material.MaterialTheme
 import androidx.compose.material.TopAppBar
 import androidx.compose.material.primarySurface
 import androidx.compose.material.rememberScaffoldState
-import androidx.compose.material3.Button
 import androidx.compose.material3.Card
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
@@ -34,23 +33,20 @@ import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.TextStyle
-import androidx.compose.ui.text.font.Font
-import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
-import androidx.navigation.NavController
 import com.alican.mvvm_starter.R
 import com.alican.mvvm_starter.domain.model.Error
 import com.alican.mvvm_starter.domain.model.Loading
 import com.alican.mvvm_starter.domain.model.MovieUIModel
 import com.alican.mvvm_starter.domain.model.Success
+import com.alican.mvvm_starter.ui.list.TopBar
 import com.alican.mvvm_starter.util.Constant
 import com.bumptech.glide.integration.compose.ExperimentalGlideComposeApi
 import com.bumptech.glide.integration.compose.GlideImage
@@ -73,7 +69,14 @@ fun HomeScreen(
     val listState = rememberLazyListState()
 
     Scaffold(
-        topBar = { }
+        topBar = {
+            TopBar(
+                title = stringResource(id = R.string.get_home_title),
+                showBackButton = false,
+            ) {
+
+            }
+        }
     ) { padding ->
 
         Column(
@@ -89,15 +92,24 @@ fun HomeScreen(
                 is Success -> {
 
                     val response = (popularMovies as Success<List<MovieUIModel>>).response
+
+                    Spacer(modifier = Modifier
+                        .fillMaxSize()
+                        .padding(top = 16.dp))
                     Box(
                         modifier = Modifier
                             .fillMaxWidth()
                             .height(300.dp)
                             .padding(top = 16.dp)
+
                     ) {
 
                         val pagerState = rememberPagerState()
-                        HorizontalPager(pageCount = response.size, state = pagerState) { index ->
+                        HorizontalPager(
+                            pageCount = response.size,
+                            state = pagerState,
+                            modifier = Modifier.padding(top = 16.dp)
+                        ) { index ->
                             loadImage(url = response[index].getImagePath()) {
                             }
 
@@ -195,7 +207,9 @@ fun HomeSection(
                     color = Color.White,
                     fontSize = 16.sp,
                     fontWeight = FontWeight.Bold,
-                    modifier = Modifier.padding(end = 16.dp).clickable { onSeeAllClick() }
+                    modifier = Modifier
+                        .padding(end = 16.dp)
+                        .clickable { onSeeAllClick() }
                 )
             }
         }

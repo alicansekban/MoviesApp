@@ -2,6 +2,7 @@ package com.alican.mvvm_starter.ui.detail
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -20,6 +21,7 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.rememberScaffoldState
 import androidx.compose.material3.Card
+import androidx.compose.material3.Divider
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.Scaffold
@@ -42,8 +44,10 @@ import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation.NavController
 import androidx.paging.compose.collectAsLazyPagingItems
+import androidx.paging.compose.items
 import androidx.paging.compose.itemsIndexed
 import coil.compose.rememberAsyncImagePainter
 import com.alican.mvvm_starter.R
@@ -54,6 +58,7 @@ import com.alican.mvvm_starter.domain.model.Loading
 import com.alican.mvvm_starter.domain.model.MovieCreditsUIModel
 import com.alican.mvvm_starter.domain.model.MovieDetailUIModel
 import com.alican.mvvm_starter.domain.model.Success
+import com.alican.mvvm_starter.ui.home.loadImage
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -62,12 +67,13 @@ fun MovieDetailScreen(
     navController: NavController
 ) {
 
+
     val viewModel: MovieDetailViewModel = hiltViewModel()
-    val movieDetailState by viewModel.movieDetail.collectAsState()
-    val movieCreditsState by viewModel.movieCredits.collectAsState()
+    val movieDetailState by viewModel.movieDetail.collectAsStateWithLifecycle()
+    val movieCreditsState by viewModel.movieCredits.collectAsStateWithLifecycle()
     val reviews = viewModel.reviews.collectAsLazyPagingItems()
 
-
+    val listState = rememberLazyListState()
 
     LaunchedEffect(movieId) {
         viewModel.getMovieDetail(movieId)
@@ -80,8 +86,11 @@ fun MovieDetailScreen(
             TopAppBar(
                 title = { Text(text = stringResource(R.string.txt_movie_detail_title)) },
                 navigationIcon = {
-                    IconButton(onClick = { navController.navigateUp()}) {
-                        Image(painter = painterResource(R.drawable.ic_arrow_back), contentDescription = null)
+                    IconButton(onClick = { navController.navigateUp() }) {
+                        Image(
+                            painter = painterResource(R.drawable.ic_arrow_back),
+                            contentDescription = null
+                        )
                     }
                 },
             )
@@ -90,41 +99,59 @@ fun MovieDetailScreen(
             Box(
                 modifier = Modifier.padding(16.dp)
             ) {
-                when (movieDetailState) {
-                    is Loading -> {}
-                    is Success -> {
-                        val movieDetail = (movieDetailState as Success<MovieDetailUIModel>).response
-                        MovieDetailContent(movieDetail)
-                    }
+                Column() {
 
-                    is Error -> {}
-                }
-                when (movieCreditsState) {
-                    is Loading -> {}
-                    is Success -> {
-                        val cast = (movieCreditsState as Success<MovieCreditsUIModel>).response
-                        LazyRow(modifier = Modifier.fillMaxWidth()) {
-                            itemsIndexed(
-                                items = cast.cast as ArrayList,
-                                key = { _, cast ->
-                                    cast.id!!
+                    when (movieDetailState) {
+                        is Loading -> {}
+                        is Success -> {
+                            val movieDetail =
+                                (movieDetailState as Success<MovieDetailUIModel>).response
+                            MovieDetailContent(movieDetail)
+                        }
+
+                        is Error -> {}
+                    }
+                    when (movieCreditsState) {
+                        is Loading -> {}
+                        is Success -> {
+                            val cast = (movieCreditsState as Success<MovieCreditsUIModel>).response
+                            LazyRow(modifier = Modifier.fillMaxWidth()) {
+                                itemsIndexed(
+                                    items = cast.cast as ArrayList,
+                                    key = { _, cast ->
+                                        cast.id!!
+                                    }
+                                ) { index, value ->
+                                    CastItem(cast = value)
+                                    Divider()
                                 }
-                            ) { index, value ->
-                                CastItem(cast = value)
                             }
                         }
+
+                        is Error -> {}
                     }
 
-                    is Error -> {}
-                }
+                    Text(
+                        text = stringResource(R.string.txt_reviews),
+                        fontSize = 20.sp,
+                        fontWeight = FontWeight.Bold,
+                        modifier = Modifier.padding(top = 16.dp)
+                    )
 
+                    LazyColumn(
+                        modifier = Modifier.fillMaxSize(),
+                        state = listState
+                    ) {
 
-                LazyColumn {
-                    itemsIndexed(
-                        items = reviews,
-                    ) {index, review ->
-                        reviews[index]?.let { ReviewItem(review = it) }
-                        // İncelemeleri görüntülemek için gerekli işlemleri gerçekleştirin
+                        items(
+                            items = reviews,
+                            key = {it.id}
+
+                        ) { data ->
+                            if (data != null) {
+                                ReviewItem(review = data)
+                            }
+                        }
                     }
                 }
             }
@@ -138,18 +165,19 @@ fun MovieDetailContent(movieDetail: MovieDetailUIModel) {
         modifier = Modifier.verticalScroll(rememberScrollState())
     ) {
         // Resim
-        Image(
-            painter = rememberAsyncImagePainter(movieDetail.posterPath),
-            contentDescription = null,
-            modifier = Modifier
-                .fillMaxWidth()
-                .height(300.dp),
-            contentScale = ContentScale.FillWidth
-        )
+        Box(modifier = Modifier
+            .fillMaxWidth()
+            .height(300.dp)
+            .padding(top = 16.dp)) {
+
+            loadImage( movieDetail.getImagePath()) {
+
+            }
+        }
 
         // Diğer içerikler
         Text(text = movieDetail.title.toString(), fontSize = 16.sp, fontWeight = FontWeight.Bold)
-      //  RatingBar(rating = movieDetail.voteAverage, maxRating = 10f)
+        //  RatingBar(rating = movieDetail.voteAverage, maxRating = 10f)
         Text(text = movieDetail.releaseDate.toString())
         Text(text = movieDetail.getGenreTexts())
         Text(
@@ -166,14 +194,6 @@ fun MovieDetailContent(movieDetail: MovieDetailUIModel) {
             fontWeight = FontWeight.Bold,
             modifier = Modifier.padding(top = 16.dp)
         )
-
-        // Yorumlar
-        Text(
-            text = stringResource(R.string.txt_reviews),
-            fontSize = 20.sp,
-            fontWeight = FontWeight.Bold,
-            modifier = Modifier.padding(top = 16.dp)
-        )
     }
 }
 
@@ -182,7 +202,7 @@ fun CastItem(cast: Cast) {
     Card(
         modifier = Modifier
             .width(250.dp)
-            .background(Color.Gray)
+            .height(100.dp)
             .padding(4.dp),
         shape = RoundedCornerShape(30.dp)
     ) {
@@ -195,11 +215,11 @@ fun CastItem(cast: Cast) {
                     .size(60.dp)
                     .clip(RoundedCornerShape(50.dp))
             ) {
-                Image(
-                    painter = rememberAsyncImagePainter(cast.profilePath),
-                    contentDescription = null,
-                    contentScale = ContentScale.Fit
-                )
+                loadImage(
+                    url = cast.getImagePath()
+                ) {
+
+                }
             }
 
             Column(
@@ -210,11 +230,11 @@ fun CastItem(cast: Cast) {
                 Text(
                     text = cast.name.toString(),
                     style = TextStyle(fontWeight = FontWeight.Bold),
-                    color = Color.White
+                    color = Color.Black
                 )
                 Text(
                     text = cast.character.toString(),
-                    color = Color.White
+                    color = Color.Black
                 )
             }
         }
@@ -222,22 +242,18 @@ fun CastItem(cast: Cast) {
 }
 
 
-
-
 @Composable
 fun ReviewItem(review: ReviewsEntity) {
-    androidx.compose.material.Scaffold(
-        scaffoldState = rememberScaffoldState(),
-        modifier = Modifier.fillMaxSize()
-    ) { padding ->
 
-        LazyColumn(
-            modifier = Modifier.fillMaxSize(),
-            contentPadding = padding,
-            state = rememberLazyListState()
-        ) {
+    Card() {
+        Row(verticalAlignment = Alignment.CenterVertically) {
+            loadImage(review.authorDetails?.getImage().toString()) {
 
+            }
+            Column {
+                Text(text = review.authorDetails?.name.toString(), color = Color.Black)
+                Text(review.content.toString())
+            }
         }
-
     }
 }
