@@ -115,7 +115,7 @@ fun ListScreen(
                     modifier = Modifier
                         .padding(16.dp)
                         .fillMaxWidth(),
-                    placeholder =  {
+                    placeholder = {
                         Text(text = "Search...")
                     },
                     maxLines = 1,
@@ -146,26 +146,37 @@ fun ListScreen(
 @Composable
 fun MovieItem(movie: MovieUIModel, onItemClick: (Int) -> Unit) {
     // Movie item UI
-    Column(
+
+    Surface(
         modifier = Modifier
-            .width(120.dp)
-            .padding(top = 16.dp, start = 8.dp)
-            .clickable { onItemClick(movie.id) }
+            .fillMaxWidth().padding(12.dp),
+        shadowElevation = 2.dp,
+        border = BorderStroke(1.dp, Color.Gray),
+        color = Color.White,
+        shape = RoundedCornerShape(5.dp)
     ) {
-        loadImage(url = movie.getImagePath()) {
-            onItemClick(movie.id)
+        Column(
+            modifier = Modifier
+                .width(120.dp)
+                .padding(top = 16.dp, start = 8.dp)
+                .clickable { onItemClick(movie.id) }
+        ) {
+            loadImage(url = movie.getImagePath()) {
+                onItemClick(movie.id)
+            }
+            Spacer(modifier = Modifier.height(8.dp))
+            Text(
+                text = movie.title,
+                style = TextStyle.Default,
+                fontSize = 14.sp,
+                color = Color.Black,
+                maxLines = 1,
+                overflow = TextOverflow.Ellipsis,
+                textAlign = TextAlign.Center
+            )
         }
-        Spacer(modifier = Modifier.height(8.dp))
-        Text(
-            text = movie.title,
-            style = TextStyle.Default,
-            fontSize = 14.sp,
-            color = Color.Black,
-            maxLines = 2,
-            overflow = TextOverflow.Ellipsis,
-            textAlign = TextAlign.Center
-        )
     }
+
 }
 
 
