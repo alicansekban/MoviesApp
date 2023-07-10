@@ -16,6 +16,7 @@ import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.foundation.pager.HorizontalPager
+import androidx.compose.foundation.pager.PageSize
 import androidx.compose.foundation.pager.rememberPagerState
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -33,6 +34,7 @@ import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
@@ -83,7 +85,8 @@ fun HomeScreen(
             modifier = Modifier
                 .fillMaxSize()
                 .verticalScroll(rememberScrollState())
-                .padding(horizontal = 16.dp)
+                .padding(horizontal = 16.dp, vertical = 16.dp)
+                .padding(top = 32.dp)
         ) {
 
             when (popularMovies) {
@@ -93,28 +96,28 @@ fun HomeScreen(
 
                     val response = (popularMovies as Success<List<MovieUIModel>>).response
 
-                    Spacer(modifier = Modifier
-                        .fillMaxSize()
-                        .padding(top = 16.dp))
-                    Box(
+                    Column(
                         modifier = Modifier
+                            .fillMaxSize()
                             .fillMaxWidth()
-                            .height(300.dp)
                             .padding(top = 16.dp)
-
                     ) {
-
                         val pagerState = rememberPagerState()
                         HorizontalPager(
                             pageCount = response.size,
                             state = pagerState,
-                            modifier = Modifier.padding(top = 16.dp)
+                            pageSize = PageSize.Fill,
                         ) { index ->
-                            loadImage(url = response[index].getImagePath()) {
+                            loadImage(
+                                url = response[index].getImagePath(),
+                                modifier = Modifier
+                                    .fillMaxSize()
+                                    .fillMaxWidth()
+                                    .height(300.dp)
+                            ) {
                             }
 
                         }
-
                     }
                     Spacer(
                         modifier = Modifier
@@ -238,7 +241,7 @@ fun HomeMovieItem(movie: MovieUIModel, onItemClick: (Int) -> Unit) {
             .width(120.dp)
             .padding(top = 16.dp, start = 8.dp)
     ) {
-        loadImage(url = movie.getImagePath()) {
+        loadImage(url = movie.getImagePath(), modifier = Modifier) {
             onItemClick(movie.id)
         }
         Spacer(modifier = Modifier.height(8.dp))
@@ -256,15 +259,16 @@ fun HomeMovieItem(movie: MovieUIModel, onItemClick: (Int) -> Unit) {
 
 @OptIn(ExperimentalGlideComposeApi::class)
 @Composable
-fun loadImage(url: String, onItemClick: () -> Unit) {
+fun loadImage(url: String, modifier: Modifier, onItemClick: () -> Unit) {
 
     // Image'a tıklandığında onItemClick fonksiyonunu tetikleyin
-    Box(
+    Card(
         modifier = Modifier
             .fillMaxSize()
-            .clickable { onItemClick() }
+            .clickable { onItemClick() },
+        shape = RoundedCornerShape(10.dp)
     ) {
-        GlideImage(model = url, contentDescription = "loadImage", Modifier.fillMaxSize()) {
+        GlideImage(model = url, contentDescription = "loadImage", modifier = modifier, contentScale = ContentScale.FillBounds) {
             it.error(R.drawable.ic_launcher_background)
                 .placeholder(R.drawable.ic_launcher_foreground)
                 .load(url)

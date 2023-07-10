@@ -156,7 +156,7 @@ fun MovieDetailContent(movieDetail: MovieDetailUIModel) {
                 .padding(top = 16.dp)
         ) {
 
-            loadImage(movieDetail.getImagePath()) {
+            loadImage(movieDetail.getImagePath(), modifier = Modifier) {
 
             }
         }
@@ -203,7 +203,7 @@ fun CastItem(cast: Cast) {
             ) {
                 loadImage(
                     url = cast.getImagePath()
-                ) {
+                , modifier = Modifier) {
 
                 }
             }
@@ -233,7 +233,7 @@ fun ReviewItem(review: ReviewsEntity) {
 
     Card() {
         Row(verticalAlignment = Alignment.CenterVertically) {
-            loadImage(review.authorDetails?.getImage().toString()) {
+            loadImage(review.authorDetails?.getImage().toString(), modifier = Modifier) {
 
             }
             Column {
