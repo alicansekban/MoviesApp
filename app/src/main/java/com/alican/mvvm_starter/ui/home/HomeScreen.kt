@@ -1,5 +1,6 @@
 package com.alican.mvvm_starter.ui.home
 
+import androidx.compose.animation.core.FastOutLinearInEasing
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
@@ -36,6 +37,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.TransformOrigin
 import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.stringResource
@@ -44,6 +46,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.min
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
@@ -57,6 +60,7 @@ import com.alican.mvvm_starter.util.Constant
 import com.bumptech.glide.integration.compose.ExperimentalGlideComposeApi
 import com.bumptech.glide.integration.compose.GlideImage
 import kotlin.math.absoluteValue
+import kotlin.math.min
 
 
 @OptIn(ExperimentalFoundationApi::class)
@@ -115,10 +119,15 @@ fun HomeScreen(
                         ) { index ->
                             Box(modifier = Modifier.graphicsLayer {
                                 val pageOffset = pagerState.calculateCurrentOffsetForPage(index)
-                                // translate the contents by the size of the page, to prevent the pages from sliding in from left or right and stays in the center
-                                translationX = pageOffset * size.width
-                                // apply an alpha to fade the current page in and the old page out
-                                alpha = 1 - pageOffset.absoluteValue
+                                val offScreenRight = pageOffset < 0f
+                                val deg = 105f
+                                val interpolated = FastOutLinearInEasing.transform(pageOffset.absoluteValue)
+                                rotationY = min(interpolated * if (offScreenRight) deg else -deg, 90f)
+
+                                transformOrigin = TransformOrigin(
+                                    pivotFractionX = if (offScreenRight) 0f else 1f,
+                                    pivotFractionY = .5f
+                                )
                             }.fillMaxSize()) {
                                 loadImage(
                                     url = response[index].getImagePath(),
@@ -296,6 +305,22 @@ fun loadImage(url: String, modifier: Modifier, onItemClick: () -> Unit) {
 @OptIn(ExperimentalFoundationApi::class)
 fun PagerState.calculateCurrentOffsetForPage(page: Int): Float {
     return (currentPage - page) + currentPageOffsetFraction
+}
+
+// ACTUAL OFFSET
+@OptIn(ExperimentalFoundationApi::class)
+fun PagerState.offsetForPage(page: Int) = (currentPage - page) + currentPageOffsetFraction
+
+// OFFSET ONLY FROM THE LEFT
+@OptIn(ExperimentalFoundationApi::class)
+fun PagerState.startOffsetForPage(page: Int): Float {
+    return offsetForPage(page).coerceAtLeast(0f)
+}
+
+// OFFSET ONLY FROM THE RIGHT
+@OptIn(ExperimentalFoundationApi::class)
+fun PagerState.endOffsetForPage(page: Int): Float {
+    return offsetForPage(page).coerceAtMost(0f)
 }
 
 
