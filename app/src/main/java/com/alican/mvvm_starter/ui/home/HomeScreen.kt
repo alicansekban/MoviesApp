@@ -17,6 +17,7 @@ import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.foundation.pager.HorizontalPager
 import androidx.compose.foundation.pager.PageSize
+import androidx.compose.foundation.pager.PagerState
 import androidx.compose.foundation.pager.rememberPagerState
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -33,7 +34,9 @@ import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.TextStyle
@@ -43,6 +46,7 @@ import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.alican.mvvm_starter.R
 import com.alican.mvvm_starter.domain.model.Error
 import com.alican.mvvm_starter.domain.model.Loading
@@ -52,6 +56,7 @@ import com.alican.mvvm_starter.ui.list.TopBar
 import com.alican.mvvm_starter.util.Constant
 import com.bumptech.glide.integration.compose.ExperimentalGlideComposeApi
 import com.bumptech.glide.integration.compose.GlideImage
+import kotlin.math.absoluteValue
 
 
 @OptIn(ExperimentalFoundationApi::class)
@@ -61,12 +66,12 @@ fun HomeScreen(
     openDetail: (Int) -> Unit
 ) {
 
-
     val viewModel: HomeViewModel = hiltViewModel()
-    val popularMovies by viewModel.popularMovies.collectAsState()
-    val nowPlayingMovies by viewModel.nowPlayingMovies.collectAsState()
-    val topRatedMovies by viewModel.topRatedMovies.collectAsState()
-    val upComingMovies by viewModel.upComingMovies.collectAsState()
+    val popularMovies by viewModel.popularMovies.collectAsStateWithLifecycle()
+    val nowPlayingMovies by viewModel.nowPlayingMovies.collectAsStateWithLifecycle()
+    val topRatedMovies by viewModel.topRatedMovies.collectAsStateWithLifecycle()
+    val upComingMovies by viewModel.upComingMovies.collectAsStateWithLifecycle()
+
     val scaffoldState = rememberScaffoldState()
     val listState = rememberLazyListState()
 
@@ -108,14 +113,24 @@ fun HomeScreen(
                             state = pagerState,
                             pageSize = PageSize.Fill,
                         ) { index ->
-                            loadImage(
-                                url = response[index].getImagePath(),
-                                modifier = Modifier
-                                    .fillMaxSize()
-                                    .fillMaxWidth()
-                                    .height(300.dp)
-                            ) {
+                            Box(modifier = Modifier.graphicsLayer {
+                                val pageOffset = pagerState.calculateCurrentOffsetForPage(index)
+                                // translate the contents by the size of the page, to prevent the pages from sliding in from left or right and stays in the center
+                                translationX = pageOffset * size.width
+                                // apply an alpha to fade the current page in and the old page out
+                                alpha = 1 - pageOffset.absoluteValue
+                            }.fillMaxSize()) {
+                                loadImage(
+                                    url = response[index].getImagePath(),
+                                    modifier = Modifier
+                                        .fillMaxSize()
+                                        .fillMaxWidth()
+                                        .clip(RoundedCornerShape(16.dp))
+                                        .height(300.dp)
+                                ) {
+                                }
                             }
+
 
                         }
                     }
@@ -275,6 +290,12 @@ fun loadImage(url: String, modifier: Modifier, onItemClick: () -> Unit) {
 
         }
     }
+}
+
+// extension method for current page offset
+@OptIn(ExperimentalFoundationApi::class)
+fun PagerState.calculateCurrentOffsetForPage(page: Int): Float {
+    return (currentPage - page) + currentPageOffsetFraction
 }
 
 

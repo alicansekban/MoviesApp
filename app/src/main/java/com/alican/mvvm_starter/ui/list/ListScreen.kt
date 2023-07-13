@@ -161,7 +161,7 @@ fun MovieItem(movie: MovieUIModel, onItemClick: (Int) -> Unit) {
                 .padding(top = 16.dp, start = 8.dp)
                 .clickable { onItemClick(movie.id) }
         ) {
-            loadImage(url = movie.getImagePath()) {
+            loadImage(url = movie.getImagePath(), modifier = Modifier) {
                 onItemClick(movie.id)
             }
             Spacer(modifier = Modifier.height(8.dp))
