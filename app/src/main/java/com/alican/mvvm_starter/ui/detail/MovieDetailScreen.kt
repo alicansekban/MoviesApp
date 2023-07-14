@@ -1,8 +1,11 @@
 package com.alican.mvvm_starter.ui.detail
 
+import androidx.compose.foundation.BorderStroke
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
@@ -28,6 +31,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -48,7 +52,7 @@ import com.alican.mvvm_starter.ui.list.TopBar
 
 @Composable
 fun MovieDetailScreen(
-    popBackStack : (String) -> Unit,
+    popBackStack: (String) -> Unit,
     viewModel: MovieDetailViewModel = hiltViewModel()
 ) {
     val movieDetailState by viewModel.movieDetail.collectAsStateWithLifecycle()
@@ -63,12 +67,14 @@ fun MovieDetailScreen(
                 title = stringResource(id = R.string.txt_movie_detail_title),
                 showBackButton = true
             ) {
-               popBackStack("-1")
+                popBackStack("-1")
             }
         },
         content = { padding ->
             Box(
-                modifier = Modifier.padding(padding).padding(16.dp)
+                modifier = Modifier
+                    .padding(padding)
+                    .padding(16.dp)
             ) {
 
                 LazyColumn(
@@ -177,12 +183,14 @@ fun MovieDetailContent(movieDetail: MovieDetailUIModel) {
 
 @Composable
 fun CastItem(cast: Cast) {
-    Card(
+    androidx.compose.material.Card(
         modifier = Modifier
             .width(250.dp)
             .height(100.dp)
             .padding(4.dp),
-        shape = RoundedCornerShape(30.dp)
+        shape = RoundedCornerShape(30.dp),
+        border = BorderStroke(1.dp, Color.Gray)
+
     ) {
         Row(
             modifier = Modifier
@@ -222,15 +230,46 @@ fun CastItem(cast: Cast) {
 
 @Composable
 fun ReviewItem(review: ReviewsEntity) {
-
-    Card(modifier = Modifier.padding(8.dp)) {
-        Row(verticalAlignment = Alignment.CenterVertically) {
-            loadImage(review.authorDetails?.getImage().toString(), modifier = Modifier.size(48.dp)) {
+    androidx.compose.material.Card(
+        modifier = Modifier
+            .padding(8.dp)
+            .height(150.dp),
+        backgroundColor = Color.Transparent
+    ) {
+        Row(verticalAlignment = Alignment.CenterVertically, modifier = Modifier.padding(8.dp)) {
+            loadImage(
+                review.authorDetails?.getImage().toString(),
+                modifier = Modifier
+                    .size(48.dp)
+                    .clip(RoundedCornerShape(50.dp))
+            ) {
 
             }
             Column(modifier = Modifier.wrapContentHeight()) {
-                Text(text = review.authorDetails?.name.toString(), color = Color.Black)
-                Text(review.content.toString())
+                Row(horizontalArrangement = Arrangement.Center, modifier = Modifier.fillMaxWidth().padding(horizontal = 8.dp)) {
+                    Text(
+                        text = review.authorDetails?.name.toString(),
+                        style = TextStyle.Default,
+                        fontSize = 16.sp,
+                        color = Color.Black,
+                        textAlign = TextAlign.Start, // Text'i ortalamak için textAlign parametresini ekleyin
+                        modifier = Modifier
+                    )
+                }
+
+                Spacer(modifier = Modifier.padding(4.dp))
+                Divider(modifier = Modifier.padding(start = 4.dp, end = 4.dp))
+                Spacer(modifier = Modifier.padding(4.dp))
+                Text(
+                    text = review.content.toString(),
+                    style = TextStyle.Default,
+                    fontSize = 12.sp,
+                    color = Color.Black,
+                    maxLines = 6,
+                    overflow = TextOverflow.Ellipsis,
+                    textAlign = TextAlign.Start, // Text'i ortalamak için textAlign parametresini ekleyin
+                    modifier = Modifier.padding(horizontal = 8.dp)
+                )
             }
         }
     }

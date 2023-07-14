@@ -88,7 +88,5 @@ class MoviesListFragment : BaseFragment<FragmentMoviesListBinding>() {
                 if (loadStates.refresh is LoadState.Loading) showProgressDialog() else hideProgressDialog()
             }
         }
-
-
     }
 }
