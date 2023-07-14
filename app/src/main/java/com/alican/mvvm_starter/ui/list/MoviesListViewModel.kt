@@ -1,5 +1,6 @@
 package com.alican.mvvm_starter.ui.list
 
+import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import androidx.paging.PagingData
@@ -18,13 +19,18 @@ import javax.inject.Inject
 @HiltViewModel
 class MoviesListViewModel @Inject constructor(
     private val repository: ListMoviesRepository,
-    val interactor: MoviesListInteractor
+    val interactor: MoviesListInteractor,
+    savedStateHandle: SavedStateHandle
 ) : ViewModel() {
 
 
     private val _movies = MutableStateFlow<PagingData<MovieUIModel>>(PagingData.empty())
     val movies: StateFlow<PagingData<MovieUIModel>> get() = _movies
-
+     val title : Int = 0
+     val argument = checkNotNull(savedStateHandle.get<String>("type"))
+    init {
+        getData(argument)
+    }
 
     fun searchMovies(query: String) {
         viewModelScope.launch {

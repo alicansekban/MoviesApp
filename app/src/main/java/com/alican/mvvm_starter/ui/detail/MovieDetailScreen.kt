@@ -9,16 +9,14 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.layout.wrapContentHeight
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.foundation.lazy.rememberLazyListState
-import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.Card
 import androidx.compose.material3.Divider
-import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -81,16 +79,22 @@ fun MovieDetailScreen(
         },
         content = { padding ->
             Box(
-                modifier = Modifier.padding(16.dp)
+                modifier = Modifier.padding(padding).padding(16.dp)
             ) {
-                Column() {
+
+                LazyColumn(
+                    modifier = Modifier.fillMaxSize(),
+                    state = listState
+                ) {
 
                     when (movieDetailState) {
                         is Loading -> {}
                         is Success -> {
                             val movieDetail =
                                 (movieDetailState as Success<MovieDetailUIModel>).response
-                            MovieDetailContent(movieDetail)
+                            item {
+                                MovieDetailContent(movieDetail)
+                            }
                         }
 
                         is Error -> {}
@@ -99,15 +103,17 @@ fun MovieDetailScreen(
                         is Loading -> {}
                         is Success -> {
                             val cast = (movieCreditsState as Success<MovieCreditsUIModel>).response
-                            LazyRow(modifier = Modifier.fillMaxWidth()) {
-                                itemsIndexed(
-                                    items = cast.cast as ArrayList,
-                                    key = { _, cast ->
-                                        cast.id!!
+                            item {
+                                LazyRow(modifier = Modifier.fillMaxWidth()) {
+                                    itemsIndexed(
+                                        items = cast.cast as ArrayList,
+                                        key = { _, cast ->
+                                            cast.id!!
+                                        }
+                                    ) { index, value ->
+                                        CastItem(cast = value)
+                                        Divider()
                                     }
-                                ) { index, value ->
-                                    CastItem(cast = value)
-                                    Divider()
                                 }
                             }
                         }
@@ -115,26 +121,23 @@ fun MovieDetailScreen(
                         is Error -> {}
                     }
 
-                    Text(
-                        text = stringResource(R.string.txt_reviews),
-                        fontSize = 20.sp,
-                        fontWeight = FontWeight.Bold,
-                        modifier = Modifier.padding(top = 16.dp)
-                    )
+                    item {
+                        Text(
+                            text = stringResource(R.string.txt_reviews),
+                            fontSize = 20.sp,
+                            fontWeight = FontWeight.Bold,
+                            modifier = Modifier.padding(top = 16.dp)
+                        )
+                    }
 
-                    LazyColumn(
-                        modifier = Modifier.fillMaxSize(),
-                        state = listState
-                    ) {
 
-                        items(
-                            items = reviews,
-                            key = { it.id }
+                    items(
+                        items = reviews,
+                        key = { it.id }
 
-                        ) { data ->
-                            if (data != null) {
-                                ReviewItem(review = data)
-                            }
+                    ) { data ->
+                        if (data != null) {
+                            ReviewItem(review = data)
                         }
                     }
                 }
@@ -146,7 +149,7 @@ fun MovieDetailScreen(
 @Composable
 fun MovieDetailContent(movieDetail: MovieDetailUIModel) {
     Column(
-        modifier = Modifier.verticalScroll(rememberScrollState())
+        modifier = Modifier
     ) {
         // Resim
         Box(
@@ -202,8 +205,8 @@ fun CastItem(cast: Cast) {
                     .clip(RoundedCornerShape(50.dp))
             ) {
                 loadImage(
-                    url = cast.getImagePath()
-                , modifier = Modifier) {
+                    url = cast.getImagePath(), modifier = Modifier
+                ) {
 
                 }
             }
@@ -231,12 +234,12 @@ fun CastItem(cast: Cast) {
 @Composable
 fun ReviewItem(review: ReviewsEntity) {
 
-    Card() {
+    Card(modifier = Modifier.padding(8.dp)) {
         Row(verticalAlignment = Alignment.CenterVertically) {
-            loadImage(review.authorDetails?.getImage().toString(), modifier = Modifier) {
+            loadImage(review.authorDetails?.getImage().toString(), modifier = Modifier.size(48.dp)) {
 
             }
-            Column {
+            Column(modifier = Modifier.wrapContentHeight()) {
                 Text(text = review.authorDetails?.name.toString(), color = Color.Black)
                 Text(review.content.toString())
             }

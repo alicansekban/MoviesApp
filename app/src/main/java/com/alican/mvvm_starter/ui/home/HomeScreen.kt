@@ -31,7 +31,6 @@ import androidx.compose.material3.Card
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -46,7 +45,6 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.min
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
@@ -151,7 +149,7 @@ fun HomeScreen(
                     HomeSection(
                         title = stringResource(R.string.txt_popular_movies),
                         movies = response,
-                        onSeeAllClick = { openList(Constant.POPULAR_MOVIES) },
+                        onSeeAllClick = { openList("list/{type}".replace(oldValue = "{type}", newValue = Constant.POPULAR_MOVIES)) },
                         onItemClick = { openDetail(it) }
                     )
                 }
@@ -163,7 +161,7 @@ fun HomeScreen(
                     HomeSection(
                         title = stringResource(R.string.txt_upcoming_movies),
                         movies = (upComingMovies as Success<List<MovieUIModel>>).response,
-                        onSeeAllClick = { openList(Constant.UP_COMING_MOVIES) },
+                        onSeeAllClick = { openList("list/{type}".replace(oldValue = "{type}", newValue = Constant.UP_COMING_MOVIES)) },
                         onItemClick = { openDetail(it) }
                     )
                 }
@@ -175,7 +173,7 @@ fun HomeScreen(
                     HomeSection(
                         title = stringResource(R.string.txt_now_playing_movies),
                         movies = (nowPlayingMovies as Success<List<MovieUIModel>>).response,
-                        onSeeAllClick = { openList(Constant.NOW_PLAYING) },
+                        onSeeAllClick = { openList("list/{type}".replace(oldValue = "{type}", newValue = Constant.NOW_PLAYING)) },
                         onItemClick = { openDetail(it) }
                     )
                 }
@@ -187,7 +185,7 @@ fun HomeScreen(
                     HomeSection(
                         title = stringResource(R.string.txt_top_rated_movies),
                         movies = (topRatedMovies as Success<List<MovieUIModel>>).response,
-                        onSeeAllClick = { openList(Constant.TOP_RATED_MOVIES) },
+                        onSeeAllClick = { openList("list/{type}".replace(oldValue = "{type}", newValue = Constant.TOP_RATED_MOVIES)) },
                         onItemClick = { openDetail(it) }
                     )
                 }
@@ -287,8 +285,7 @@ fun loadImage(url: String, modifier: Modifier, onItemClick: () -> Unit) {
 
     // Image'a tıklandığında onItemClick fonksiyonunu tetikleyin
     Card(
-        modifier = Modifier
-            .fillMaxSize()
+        modifier = modifier
             .clickable { onItemClick() },
         shape = RoundedCornerShape(10.dp)
     ) {

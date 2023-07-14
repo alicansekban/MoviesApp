@@ -18,8 +18,6 @@ import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowBack
-import androidx.compose.material3.Card
-import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.OutlinedTextField
@@ -27,9 +25,7 @@ import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextField
-import androidx.compose.material3.TopAppBar
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -48,29 +44,25 @@ import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
-import androidx.navigation.NavController
 import androidx.paging.compose.collectAsLazyPagingItems
 import com.alican.mvvm_starter.R
 import com.alican.mvvm_starter.domain.model.MovieUIModel
 import com.alican.mvvm_starter.ui.home.loadImage
 import com.alican.mvvm_starter.util.Constant
 
-@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun ListScreen(
-    navController: NavController,
+    openDetail: (Int) -> Unit,
+    popBackStack : () -> Unit,
+    viewModel: MoviesListViewModel = hiltViewModel(),
     type: String? = null
 ) {
 
     val searchQuery = remember { mutableStateOf("") }
-
-    val viewModel: MoviesListViewModel = hiltViewModel()
-
     val movies = viewModel.movies.collectAsLazyPagingItems()
 
-    LaunchedEffect(key1 = type) {
-        viewModel.getData(type)
-    }
+
+
     val title: String = when (type) {
         Constant.POPULAR_MOVIES -> {
             stringResource(id = R.string.txt_popular_movies)
@@ -96,19 +88,19 @@ fun ListScreen(
     Scaffold(
         topBar = {
             TopBar(title = title, showBackButton = true) {
-                navController.navigateUp()
+                popBackStack()
             }
         },
 
         content = { padding ->
-            Column(modifier = Modifier.padding(16.dp)) {
+            Column(modifier = Modifier.padding(padding).padding(16.dp)) {
                 OutlinedTextField(
                     value = searchQuery.value, onValueChange = {
                         searchQuery.value = it
                         if (it.length > 2) {
                             viewModel.searchMovies(it)
                         } else {
-                            viewModel.getData(type)
+                            viewModel.getData(viewModel.argument)
                         }
 
                     },
@@ -127,12 +119,7 @@ fun ListScreen(
                 ) {
                     items(movies.itemCount, key = { it }) { index ->
                         MovieItem(movie = movies[index]!!) { id ->
-                            navController.navigate(
-                                "detail/{id}".replace(
-                                    oldValue = "{id}",
-                                    newValue = "$id"
-                                )
-                            )
+                            openDetail(id)
                         }
                     }
                 }
@@ -140,6 +127,11 @@ fun ListScreen(
             }
         }
     )
+}
+
+@Composable
+fun stateLess() {
+
 }
 
 

@@ -24,6 +24,14 @@ class ComposeActivity: ComponentActivity() {
             MoviesWithComposeTheme() {
                 val navController = rememberNavController()
 
+                val navigation: (String) -> Unit = { route ->
+                    if (route == "-1") {
+                        navController.popBackStack()
+                    } else {
+                        navController.navigate(route)
+                    }
+                }
+
                 NavHost(
                     navController = navController,
                     startDestination = "home"
@@ -31,7 +39,7 @@ class ComposeActivity: ComponentActivity() {
                     composable("home") {
                         HomeScreen(
                             openList = {
-                                navController.navigate("list/{type}".replace(oldValue = "{type}", newValue = it))
+                                navigation(it)
                             },
                             openDetail = {
                                 navController.navigate("detail/{id}".replace(oldValue = "{id}", newValue = it.toString()))
@@ -48,7 +56,13 @@ class ComposeActivity: ComponentActivity() {
                     ) { entry ->
                         val type = entry.arguments?.getString("type")
                         if (type != null) {
-                            ListScreen(navController, type)
+                            ListScreen(type = type,
+                            openDetail =  {
+                                navController.navigate("detail/{id}".replace(oldValue = "{id}", newValue = it.toString()))
+                            },
+                            popBackStack =  {
+                                navController.popBackStack()
+                            })
                         } else {
                             // Hata durumunda yapılacak işlem
                         }
