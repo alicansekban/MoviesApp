@@ -2,6 +2,7 @@ package com.alican.mvvm_starter.ui.list
 
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
@@ -87,7 +88,7 @@ fun ListScreen(
 
     Scaffold(
         topBar = {
-            TopBar(title = title, showBackButton = true) {
+            TopBar(title = viewModel.setTitle(), showBackButton = true) {
                 popBackStack("-1")
             }
         },
@@ -130,12 +131,6 @@ fun ListScreen(
 }
 
 @Composable
-fun stateLess() {
-
-}
-
-
-@Composable
 fun MovieItem(movie: MovieUIModel, onItemClick: (Int) -> Unit) {
     // Movie item UI
 
@@ -155,15 +150,18 @@ fun MovieItem(movie: MovieUIModel, onItemClick: (Int) -> Unit) {
                 onItemClick(movie.id)
             }
             Spacer(modifier = Modifier.height(8.dp))
-            Text(
-                text = movie.title,
-                style = TextStyle.Default,
-                fontSize = 14.sp,
-                color = Color.Black,
-                maxLines = 1,
-                overflow = TextOverflow.Ellipsis,
-                textAlign = TextAlign.Center
-            )
+            Row(horizontalArrangement = Arrangement.Center, modifier = Modifier.fillMaxWidth()) {
+                Text(
+                    text = movie.title,
+                    style = TextStyle.Default,
+                    fontSize = 14.sp,
+                    color = Color.Black,
+                    maxLines = 2,
+                    overflow = TextOverflow.Ellipsis,
+                    textAlign = TextAlign.Center, // Text'i ortalamak için textAlign parametresini ekleyin
+                    modifier = Modifier.padding(horizontal = 16.dp).height(40.dp) // İsteğe bağlı: Text'i yatayda boşluklarla hizalayabilirsiniz
+                )
+            }
         }
     }
 

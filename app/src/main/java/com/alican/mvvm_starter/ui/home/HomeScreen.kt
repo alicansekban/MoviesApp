@@ -4,6 +4,7 @@ import androidx.compose.animation.core.FastOutLinearInEasing
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -15,7 +16,6 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.itemsIndexed
-import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.foundation.pager.HorizontalPager
 import androidx.compose.foundation.pager.PageSize
 import androidx.compose.foundation.pager.PagerState
@@ -26,7 +26,6 @@ import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.TopAppBar
 import androidx.compose.material.primarySurface
-import androidx.compose.material.rememberScaffoldState
 import androidx.compose.material3.Card
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
@@ -74,8 +73,9 @@ fun HomeScreen(
     val topRatedMovies by viewModel.topRatedMovies.collectAsStateWithLifecycle()
     val upComingMovies by viewModel.upComingMovies.collectAsStateWithLifecycle()
 
-    val scaffoldState = rememberScaffoldState()
-    val listState = rememberLazyListState()
+//    val scaffoldState = rememberScaffoldState()
+//    val listState = rememberLazyListState()
+
 
     Scaffold(
         topBar = {
@@ -123,7 +123,10 @@ fun HomeScreen(
                                     val interpolated =
                                         FastOutLinearInEasing.transform(pageOffset.absoluteValue)
                                     rotationY =
-                                        min(interpolated * if (offScreenRight) deg else -deg, 90f)
+                                        min(
+                                            interpolated * if (offScreenRight) deg else -deg,
+                                            90f
+                                        )
 
                                     transformOrigin = TransformOrigin(
                                         pivotFractionX = if (offScreenRight) 0f else 1f,
@@ -153,11 +156,22 @@ fun HomeScreen(
                     HomeSection(
                         title = stringResource(R.string.txt_popular_movies),
                         movies = response,
-                        onSeeAllClick = { openList("list/{type}".replace(oldValue = "{type}", newValue = Constant.POPULAR_MOVIES)) },
-                        onItemClick = { openDetail( "detail/{id}".replace(
-                            oldValue = "{id}",
-                            newValue = it.toString()
-                        )) }
+                        onSeeAllClick = {
+                            openList(
+                                "list/{type}".replace(
+                                    oldValue = "{type}",
+                                    newValue = Constant.POPULAR_MOVIES
+                                )
+                            )
+                        },
+                        onItemClick = {
+                            openDetail(
+                                "detail/{id}".replace(
+                                    oldValue = "{id}",
+                                    newValue = it.toString()
+                                )
+                            )
+                        }
                     )
                 }
             }
@@ -168,11 +182,22 @@ fun HomeScreen(
                     HomeSection(
                         title = stringResource(R.string.txt_upcoming_movies),
                         movies = (upComingMovies as Success<List<MovieUIModel>>).response,
-                        onSeeAllClick = { openList("list/{type}".replace(oldValue = "{type}", newValue = Constant.UP_COMING_MOVIES)) },
-                        onItemClick = { openDetail( "detail/{id}".replace(
-                            oldValue = "{id}",
-                            newValue = it.toString()
-                        )) }
+                        onSeeAllClick = {
+                            openList(
+                                "list/{type}".replace(
+                                    oldValue = "{type}",
+                                    newValue = Constant.UP_COMING_MOVIES
+                                )
+                            )
+                        },
+                        onItemClick = {
+                            openDetail(
+                                "detail/{id}".replace(
+                                    oldValue = "{id}",
+                                    newValue = it.toString()
+                                )
+                            )
+                        }
                     )
                 }
             }
@@ -183,11 +208,22 @@ fun HomeScreen(
                     HomeSection(
                         title = stringResource(R.string.txt_now_playing_movies),
                         movies = (nowPlayingMovies as Success<List<MovieUIModel>>).response,
-                        onSeeAllClick = { openList("list/{type}".replace(oldValue = "{type}", newValue = Constant.NOW_PLAYING)) },
-                        onItemClick = { openDetail( "detail/{id}".replace(
-                            oldValue = "{id}",
-                            newValue = it.toString()
-                        )) }
+                        onSeeAllClick = {
+                            openList(
+                                "list/{type}".replace(
+                                    oldValue = "{type}",
+                                    newValue = Constant.NOW_PLAYING
+                                )
+                            )
+                        },
+                        onItemClick = {
+                            openDetail(
+                                "detail/{id}".replace(
+                                    oldValue = "{id}",
+                                    newValue = it.toString()
+                                )
+                            )
+                        }
                     )
                 }
             }
@@ -198,11 +234,22 @@ fun HomeScreen(
                     HomeSection(
                         title = stringResource(R.string.txt_top_rated_movies),
                         movies = (topRatedMovies as Success<List<MovieUIModel>>).response,
-                        onSeeAllClick = { openList("list/{type}".replace(oldValue = "{type}", newValue = Constant.TOP_RATED_MOVIES)) },
-                        onItemClick = { openDetail( "detail/{id}".replace(
-                            oldValue = "{id}",
-                            newValue = it.toString()
-                        )) }
+                        onSeeAllClick = {
+                            openList(
+                                "list/{type}".replace(
+                                    oldValue = "{type}",
+                                    newValue = Constant.TOP_RATED_MOVIES
+                                )
+                            )
+                        },
+                        onItemClick = {
+                            openDetail(
+                                "detail/{id}".replace(
+                                    oldValue = "{id}",
+                                    newValue = it.toString()
+                                )
+                            )
+                        }
                     )
                 }
             }
@@ -210,7 +257,6 @@ fun HomeScreen(
 
     }
 }
-
 
 @Composable
 fun HomeSection(
@@ -271,27 +317,41 @@ fun HomeSection(
     }
 }
 
+
+
 @Composable
 fun HomeMovieItem(movie: MovieUIModel, onItemClick: (Int) -> Unit) {
 
-    Column(
+    androidx.compose.material3.Surface(
         modifier = Modifier
-            .width(120.dp)
-            .padding(top = 16.dp, start = 8.dp)
+            .fillMaxWidth().padding(12.dp).width(150.dp),
+        shadowElevation = 2.dp,
+        color = Color.White,
+        shape = RoundedCornerShape(5.dp)
     ) {
-        loadImage(url = movie.getImagePath(), modifier = Modifier) {
-            onItemClick(movie.id)
+        Column(
+            modifier = Modifier
+                .width(120.dp)
+                .clickable { onItemClick(movie.id) }
+        ) {
+            loadImage(url = movie.getImagePath(), modifier = Modifier) {
+                onItemClick(movie.id)
+            }
+            Spacer(modifier = Modifier.height(8.dp))
+            Row(horizontalArrangement = Arrangement.Center, modifier = Modifier.fillMaxWidth()) {
+                Text(
+                    text = movie.title,
+                    style = TextStyle.Default,
+                    fontSize = 14.sp,
+                    color = Color.Black,
+                    maxLines = 2,
+                    overflow = TextOverflow.Ellipsis,
+                    textAlign = TextAlign.Center, // Text'i ortalamak için textAlign parametresini ekleyin
+                    modifier = Modifier.padding(horizontal = 16.dp)
+                        .height(40.dp) // İsteğe bağlı: Text'i yatayda boşluklarla hizalayabilirsiniz
+                )
+            }
         }
-        Spacer(modifier = Modifier.height(8.dp))
-        Text(
-            text = movie.title,
-            style = TextStyle.Default,
-            fontSize = 14.sp,
-            color = Color.Black,
-            maxLines = 2,
-            overflow = TextOverflow.Ellipsis,
-            textAlign = TextAlign.Center
-        )
     }
 }
 
@@ -305,7 +365,12 @@ fun loadImage(url: String, modifier: Modifier, onItemClick: () -> Unit) {
             .clickable { onItemClick() },
         shape = RoundedCornerShape(10.dp)
     ) {
-        GlideImage(model = url, contentDescription = "loadImage", modifier = modifier, contentScale = ContentScale.FillBounds) {
+        GlideImage(
+            model = url,
+            contentDescription = "loadImage",
+            modifier = modifier,
+            contentScale = ContentScale.FillBounds
+        ) {
             it.error(R.drawable.ic_launcher_background)
                 .placeholder(R.drawable.ic_launcher_foreground)
                 .load(url)
