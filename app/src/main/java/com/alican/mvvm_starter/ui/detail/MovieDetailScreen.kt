@@ -20,7 +20,6 @@ import androidx.compose.material3.Divider
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -34,7 +33,6 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
-import androidx.navigation.NavController
 import androidx.paging.compose.collectAsLazyPagingItems
 import androidx.paging.compose.items
 import com.alican.mvvm_starter.R
@@ -50,23 +48,14 @@ import com.alican.mvvm_starter.ui.list.TopBar
 
 @Composable
 fun MovieDetailScreen(
-    movieId: Int,
-    navController: NavController
+    popBackStack : (String) -> Unit,
+    viewModel: MovieDetailViewModel = hiltViewModel()
 ) {
-
-
-    val viewModel: MovieDetailViewModel = hiltViewModel()
     val movieDetailState by viewModel.movieDetail.collectAsStateWithLifecycle()
     val movieCreditsState by viewModel.movieCredits.collectAsStateWithLifecycle()
     val reviews = viewModel.reviews.collectAsLazyPagingItems()
 
     val listState = rememberLazyListState()
-
-    LaunchedEffect(movieId) {
-        viewModel.getMovieDetail(movieId)
-        viewModel.getMovieCredits(movieId)
-        viewModel.getReviews(movieId)
-    }
 
     Scaffold(
         topBar = {
@@ -74,7 +63,7 @@ fun MovieDetailScreen(
                 title = stringResource(id = R.string.txt_movie_detail_title),
                 showBackButton = true
             ) {
-                navController.navigateUp()
+               popBackStack("-1")
             }
         },
         content = { padding ->

@@ -52,8 +52,8 @@ import com.alican.mvvm_starter.util.Constant
 
 @Composable
 fun ListScreen(
-    openDetail: (Int) -> Unit,
-    popBackStack : () -> Unit,
+    openDetail: (String) -> Unit,
+    popBackStack : (String) -> Unit,
     viewModel: MoviesListViewModel = hiltViewModel(),
     type: String? = null
 ) {
@@ -88,7 +88,7 @@ fun ListScreen(
     Scaffold(
         topBar = {
             TopBar(title = title, showBackButton = true) {
-                popBackStack()
+                popBackStack("-1")
             }
         },
 
@@ -119,7 +119,7 @@ fun ListScreen(
                 ) {
                     items(movies.itemCount, key = { it }) { index ->
                         MovieItem(movie = movies[index]!!) { id ->
-                            openDetail(id)
+                            openDetail("detail/{id}".replace(oldValue = "{id}", newValue = id.toString()))
                         }
                     }
                 }

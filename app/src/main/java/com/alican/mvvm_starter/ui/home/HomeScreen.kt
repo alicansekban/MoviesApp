@@ -65,7 +65,7 @@ import kotlin.math.min
 @Composable
 fun HomeScreen(
     openList: (String) -> Unit,
-    openDetail: (Int) -> Unit
+    openDetail: (String) -> Unit
 ) {
 
     val viewModel: HomeViewModel = hiltViewModel()
@@ -154,7 +154,10 @@ fun HomeScreen(
                         title = stringResource(R.string.txt_popular_movies),
                         movies = response,
                         onSeeAllClick = { openList("list/{type}".replace(oldValue = "{type}", newValue = Constant.POPULAR_MOVIES)) },
-                        onItemClick = { openDetail(it) }
+                        onItemClick = { openDetail( "detail/{id}".replace(
+                            oldValue = "{id}",
+                            newValue = it.toString()
+                        )) }
                     )
                 }
             }
@@ -166,7 +169,10 @@ fun HomeScreen(
                         title = stringResource(R.string.txt_upcoming_movies),
                         movies = (upComingMovies as Success<List<MovieUIModel>>).response,
                         onSeeAllClick = { openList("list/{type}".replace(oldValue = "{type}", newValue = Constant.UP_COMING_MOVIES)) },
-                        onItemClick = { openDetail(it) }
+                        onItemClick = { openDetail( "detail/{id}".replace(
+                            oldValue = "{id}",
+                            newValue = it.toString()
+                        )) }
                     )
                 }
             }
@@ -178,7 +184,10 @@ fun HomeScreen(
                         title = stringResource(R.string.txt_now_playing_movies),
                         movies = (nowPlayingMovies as Success<List<MovieUIModel>>).response,
                         onSeeAllClick = { openList("list/{type}".replace(oldValue = "{type}", newValue = Constant.NOW_PLAYING)) },
-                        onItemClick = { openDetail(it) }
+                        onItemClick = { openDetail( "detail/{id}".replace(
+                            oldValue = "{id}",
+                            newValue = it.toString()
+                        )) }
                     )
                 }
             }
@@ -190,7 +199,10 @@ fun HomeScreen(
                         title = stringResource(R.string.txt_top_rated_movies),
                         movies = (topRatedMovies as Success<List<MovieUIModel>>).response,
                         onSeeAllClick = { openList("list/{type}".replace(oldValue = "{type}", newValue = Constant.TOP_RATED_MOVIES)) },
-                        onItemClick = { openDetail(it) }
+                        onItemClick = { openDetail( "detail/{id}".replace(
+                            oldValue = "{id}",
+                            newValue = it.toString()
+                        )) }
                     )
                 }
             }

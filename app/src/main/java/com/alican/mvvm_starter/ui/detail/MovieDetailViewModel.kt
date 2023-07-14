@@ -1,5 +1,6 @@
 package com.alican.mvvm_starter.ui.detail
 
+import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import androidx.paging.PagingData
@@ -22,8 +23,13 @@ import javax.inject.Inject
 @HiltViewModel
 class MovieDetailViewModel @Inject constructor(
     val interactor: MovieDetailInteractor,
-    val repository: HomeMoviesRepository
+    val repository: HomeMoviesRepository,
+    savedStateHandle: SavedStateHandle
 ) : ViewModel() {
+
+
+    val argument = checkNotNull(savedStateHandle.get<String>("id"))
+
 
     private val _movieDetail = MutableStateFlow<BaseUIModel<MovieDetailUIModel>>(Loading())
     val movieDetail: StateFlow<BaseUIModel<MovieDetailUIModel>> =
@@ -37,6 +43,13 @@ class MovieDetailViewModel @Inject constructor(
 
     private val _reviews = MutableStateFlow<PagingData<ReviewsEntity>>(PagingData.empty())
     val reviews: StateFlow<PagingData<ReviewsEntity>> get() = _reviews
+
+    init {
+        getMovieDetail(argument.toInt())
+        getMovieCredits(argument.toInt())
+        getReviews(argument.toInt())
+
+    }
 
     fun getReviews(id: Int) {
         viewModelScope.launch {

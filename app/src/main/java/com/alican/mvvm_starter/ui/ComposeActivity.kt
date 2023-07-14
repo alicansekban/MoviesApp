@@ -15,7 +15,7 @@ import com.alican.mvvm_starter.ui.theme.MoviesWithComposeTheme
 import dagger.hilt.android.AndroidEntryPoint
 
 @AndroidEntryPoint
-class ComposeActivity: ComponentActivity() {
+class ComposeActivity : ComponentActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -42,7 +42,7 @@ class ComposeActivity: ComponentActivity() {
                                 navigation(it)
                             },
                             openDetail = {
-                                navController.navigate("detail/{id}".replace(oldValue = "{id}", newValue = it.toString()))
+                               navigation(it)
                             }
                         )
                     }
@@ -57,12 +57,12 @@ class ComposeActivity: ComponentActivity() {
                         val type = entry.arguments?.getString("type")
                         if (type != null) {
                             ListScreen(type = type,
-                            openDetail =  {
-                                navController.navigate("detail/{id}".replace(oldValue = "{id}", newValue = it.toString()))
-                            },
-                            popBackStack =  {
-                                navController.popBackStack()
-                            })
+                                openDetail = {
+                                    navigation(it)
+                                },
+                                popBackStack = {
+                                    navigation(it)
+                                })
                         } else {
                             // Hata durumunda yapılacak işlem
                         }
@@ -71,13 +71,16 @@ class ComposeActivity: ComponentActivity() {
                         route = "detail/{id}",
                         arguments = listOf(
                             navArgument("id") {
-                                type = NavType.IntType
+                                type = NavType.StringType
                             }
                         )
                     ) { entry ->
-                        val id = entry.arguments?.getInt("id")
+                        val id = entry.arguments?.getString("id")
                         if (id != null) {
-                            MovieDetailScreen(id, navController = navController)
+                            MovieDetailScreen(
+                                popBackStack = {
+                                    navigation(it)
+                                })
                         } else {
                             // Hata durumunda yapılacak işlem
                         }
