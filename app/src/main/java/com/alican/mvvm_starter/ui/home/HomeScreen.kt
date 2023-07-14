@@ -115,18 +115,22 @@ fun HomeScreen(
                             state = pagerState,
                             pageSize = PageSize.Fill,
                         ) { index ->
-                            Box(modifier = Modifier.graphicsLayer {
-                                val pageOffset = pagerState.calculateCurrentOffsetForPage(index)
-                                val offScreenRight = pageOffset < 0f
-                                val deg = 105f
-                                val interpolated = FastOutLinearInEasing.transform(pageOffset.absoluteValue)
-                                rotationY = min(interpolated * if (offScreenRight) deg else -deg, 90f)
+                            Box(modifier = Modifier
+                                .graphicsLayer {
+                                    val pageOffset = pagerState.calculateCurrentOffsetForPage(index)
+                                    val offScreenRight = pageOffset < 0f
+                                    val deg = 105f
+                                    val interpolated =
+                                        FastOutLinearInEasing.transform(pageOffset.absoluteValue)
+                                    rotationY =
+                                        min(interpolated * if (offScreenRight) deg else -deg, 90f)
 
-                                transformOrigin = TransformOrigin(
-                                    pivotFractionX = if (offScreenRight) 0f else 1f,
-                                    pivotFractionY = .5f
-                                )
-                            }.fillMaxSize()) {
+                                    transformOrigin = TransformOrigin(
+                                        pivotFractionX = if (offScreenRight) 0f else 1f,
+                                        pivotFractionY = .5f
+                                    )
+                                }
+                                .fillMaxSize()) {
                                 loadImage(
                                     url = response[index].getImagePath(),
                                     modifier = Modifier

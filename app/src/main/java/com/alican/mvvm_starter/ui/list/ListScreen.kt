@@ -143,14 +143,12 @@ fun MovieItem(movie: MovieUIModel, onItemClick: (Int) -> Unit) {
         modifier = Modifier
             .fillMaxWidth().padding(12.dp),
         shadowElevation = 2.dp,
-        border = BorderStroke(1.dp, Color.Gray),
         color = Color.White,
         shape = RoundedCornerShape(5.dp)
     ) {
         Column(
             modifier = Modifier
                 .width(120.dp)
-                .padding(top = 16.dp, start = 8.dp)
                 .clickable { onItemClick(movie.id) }
         ) {
             loadImage(url = movie.getImagePath(), modifier = Modifier) {
