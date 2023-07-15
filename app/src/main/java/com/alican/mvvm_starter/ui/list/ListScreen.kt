@@ -104,8 +104,7 @@ fun statelessList(
                     singleLine = true
                 )
 
-
-
+                Spacer(modifier = Modifier.height(8.dp))
                 LazyVerticalGrid(
                     columns = GridCells.Fixed(2)
                 ) {
