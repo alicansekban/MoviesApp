@@ -23,9 +23,6 @@ import androidx.compose.foundation.pager.rememberPagerState
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
-import androidx.compose.material.MaterialTheme
-import androidx.compose.material.TopAppBar
-import androidx.compose.material.primarySurface
 import androidx.compose.material3.Card
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
@@ -75,8 +72,6 @@ fun HomeScreen(
     val topRatedMovies by viewModel.topRatedMovies.collectAsStateWithLifecycle()
     val upComingMovies by viewModel.upComingMovies.collectAsStateWithLifecycle()
 
-//    val scaffoldState = rememberScaffoldState()
-//    val listState = rememberLazyListState()
 
 
     statelessHome(popularMovies, nowPlayingMovies, topRatedMovies, upComingMovies,openList, openDetail)
@@ -118,7 +113,7 @@ fun statelessHome(
                 is Loading -> {}
                 is Success -> {
 
-                    val response = (popularMovies as Success<List<MovieUIModel>>).response
+                    val response = popularMovies.response
 
                     Column(
                         modifier = Modifier
@@ -198,7 +193,7 @@ fun statelessHome(
                 is Success -> {
                     HomeSection(
                         title = stringResource(R.string.txt_upcoming_movies),
-                        movies = (upComingMovies as Success<List<MovieUIModel>>).response,
+                        movies = upComingMovies.response,
                         onSeeAllClick = {
                             openList(
                                 "list/{type}".replace(
@@ -224,7 +219,7 @@ fun statelessHome(
                 is Success -> {
                     HomeSection(
                         title = stringResource(R.string.txt_now_playing_movies),
-                        movies = (nowPlayingMovies as Success<List<MovieUIModel>>).response,
+                        movies = nowPlayingMovies.response,
                         onSeeAllClick = {
                             openList(
                                 "list/{type}".replace(
@@ -250,7 +245,7 @@ fun statelessHome(
                 is Success -> {
                     HomeSection(
                         title = stringResource(R.string.txt_top_rated_movies),
-                        movies = (topRatedMovies as Success<List<MovieUIModel>>).response,
+                        movies = topRatedMovies.response,
                         onSeeAllClick = {
                             openList(
                                 "list/{type}".replace(
@@ -364,10 +359,10 @@ fun HomeMovieItem(movie: MovieUIModel, onItemClick: (Int) -> Unit) {
                     color = Black,
                     maxLines = 2,
                     overflow = TextOverflow.Ellipsis,
-                    textAlign = TextAlign.Center, // Text'i ortalamak için textAlign parametresini ekleyin
+                    textAlign = TextAlign.Center,
                     modifier = Modifier
                         .padding(horizontal = 16.dp)
-                        .height(40.dp) // İsteğe bağlı: Text'i yatayda boşluklarla hizalayabilirsiniz
+                        .height(40.dp) //
                 )
             }
         }
@@ -378,7 +373,7 @@ fun HomeMovieItem(movie: MovieUIModel, onItemClick: (Int) -> Unit) {
 @Composable
 fun loadImage(url: String, modifier: Modifier, onItemClick: () -> Unit) {
 
-    // Image'a tıklandığında onItemClick fonksiyonunu tetikleyin
+
     Card(
         modifier = modifier
             .clickable { onItemClick() },
@@ -402,30 +397,4 @@ fun loadImage(url: String, modifier: Modifier, onItemClick: () -> Unit) {
 @OptIn(ExperimentalFoundationApi::class)
 fun PagerState.calculateCurrentOffsetForPage(page: Int): Float {
     return (currentPage - page) + currentPageOffsetFraction
-}
-
-// ACTUAL OFFSET
-@OptIn(ExperimentalFoundationApi::class)
-fun PagerState.offsetForPage(page: Int) = (currentPage - page) + currentPageOffsetFraction
-
-// OFFSET ONLY FROM THE LEFT
-@OptIn(ExperimentalFoundationApi::class)
-fun PagerState.startOffsetForPage(page: Int): Float {
-    return offsetForPage(page).coerceAtLeast(0f)
-}
-
-// OFFSET ONLY FROM THE RIGHT
-@OptIn(ExperimentalFoundationApi::class)
-fun PagerState.endOffsetForPage(page: Int): Float {
-    return offsetForPage(page).coerceAtMost(0f)
-}
-
-
-@Composable
-fun HomeScreenToolbar() {
-    TopAppBar(
-        title = { Text(text = stringResource(R.string.get_home_title)) },
-        backgroundColor = MaterialTheme.colors.primarySurface,
-        contentColor = MaterialTheme.colors.onPrimary
-    )
 }

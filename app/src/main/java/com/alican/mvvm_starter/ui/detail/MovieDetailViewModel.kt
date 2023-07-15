@@ -28,7 +28,7 @@ class MovieDetailViewModel @Inject constructor(
 ) : ViewModel() {
 
 
-    val argument = checkNotNull(savedStateHandle.get<String>("id"))
+    private val argument = checkNotNull(savedStateHandle.get<String>("id"))
 
 
     private val _movieDetail = MutableStateFlow<BaseUIModel<MovieDetailUIModel>>(Loading())

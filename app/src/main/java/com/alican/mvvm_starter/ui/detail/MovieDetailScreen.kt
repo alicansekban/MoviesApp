@@ -64,7 +64,6 @@ fun MovieDetailScreen(
     val movieCreditsState by viewModel.movieCredits.collectAsStateWithLifecycle()
     val reviews = viewModel.reviews.collectAsLazyPagingItems()
 
- //    val listState = rememberLazyListState()
 
 
     statelessDetail(movieDetailState, movieCreditsState, reviews, popBackStack = {
@@ -167,7 +166,6 @@ fun MovieDetailContent(movieDetail: MovieDetailUIModel) {
     Column(
         modifier = Modifier
     ) {
-        // Resim
         Box(
             modifier = Modifier
                 .fillMaxWidth()
@@ -180,9 +178,7 @@ fun MovieDetailContent(movieDetail: MovieDetailUIModel) {
             }
         }
 
-        // Diğer içerikler
         Text(text = movieDetail.title.toString(), fontSize = 16.sp, fontWeight = FontWeight.Bold)
-        //  RatingBar(rating = movieDetail.voteAverage, maxRating = 10f)
         Text(text = movieDetail.releaseDate.toString())
         Text(text = movieDetail.getGenreTexts())
         Text(
@@ -191,8 +187,6 @@ fun MovieDetailContent(movieDetail: MovieDetailUIModel) {
             overflow = TextOverflow.Ellipsis,
             modifier = Modifier.padding(top = 8.dp)
         )
-
-        // Oyuncu kadrosu
         Text(
             text = stringResource(R.string.txt_cast),
             fontSize = 16.sp,
@@ -277,7 +271,7 @@ fun ReviewItem(review: ReviewsEntity) {
                         style = TextStyle.Default,
                         fontSize = 16.sp,
                         color = Black,
-                        textAlign = TextAlign.Start, // Text'i ortalamak için textAlign parametresini ekleyin
+                        textAlign = TextAlign.Start,
                         modifier = Modifier
                     )
                 }
@@ -292,7 +286,7 @@ fun ReviewItem(review: ReviewsEntity) {
                     color = Black,
                     maxLines = 6,
                     overflow = TextOverflow.Ellipsis,
-                    textAlign = TextAlign.Start, // Text'i ortalamak için textAlign parametresini ekleyin
+                    textAlign = TextAlign.Start,
                     modifier = Modifier.padding(horizontal = 8.dp)
                 )
             }
