@@ -2,7 +2,6 @@ package com.alican.mvvm_starter.ui.home
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.alican.mvvm_starter.data.remote.api.WebService
 import com.alican.mvvm_starter.data.repository.HomeMoviesRepository
 import com.alican.mvvm_starter.domain.interactor.HomeMoviesInteractor
 import com.alican.mvvm_starter.domain.model.BaseUIModel
@@ -16,7 +15,6 @@ import javax.inject.Inject
 
 @HiltViewModel
 class HomeViewModel @Inject constructor(
-    private val webService: WebService,
     val repository: HomeMoviesRepository,
     val interactor: HomeMoviesInteractor
 ) : ViewModel() {

@@ -13,4 +13,6 @@
     <string name="txt_cast">Cast</string>
     <string name="get_home_title">Home Page</string>
     <string name="txt_movie_detail_title">Movie Detail</string>
+    <string name="connection_error_msg">Internetinizi kontrol edin!</string>
+    <string name="error_message">Bir hata olustu!</string>
 </resources>

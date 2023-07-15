@@ -63,8 +63,6 @@ class ComposeActivity : ComponentActivity() {
                                 popBackStack = {
                                     navigation(it)
                                 })
-                        } else {
-                            // Hata durumunda yapılacak işlem
                         }
                     }
                     composable(
@@ -81,8 +79,6 @@ class ComposeActivity : ComponentActivity() {
                                 popBackStack = {
                                     navigation(it)
                                 })
-                        } else {
-                            // Hata durumunda yapılacak işlem
                         }
                     }
                 }
