@@ -14,14 +14,6 @@
         android:theme="@style/Theme.MVVMTemplate"
         tools:targetApi="33">
         <activity
-            android:name=".ui.MainActivity"
-            android:exported="true">
-
-            <meta-data
-                android:name="android.app.lib_name"
-                android:value="" />
-        </activity>
-        <activity
             android:name="com.alican.mvvm_starter.ui.ComposeActivity"
             android:exported="true">
 
