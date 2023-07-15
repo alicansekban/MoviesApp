@@ -14,9 +14,8 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
+import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.foundation.text.KeyboardActions
-import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowBack
 import androidx.compose.material3.Icon
@@ -25,67 +24,52 @@ import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
-import androidx.compose.material3.TextField
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.getValue
+import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.res.painterResource
-import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.text.input.ImeAction
-import androidx.compose.ui.text.input.TextFieldValue
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.paging.compose.LazyPagingItems
 import androidx.paging.compose.collectAsLazyPagingItems
-import com.alican.mvvm_starter.R
 import com.alican.mvvm_starter.domain.model.MovieUIModel
 import com.alican.mvvm_starter.ui.home.loadImage
-import com.alican.mvvm_starter.util.Constant
+import com.alican.mvvm_starter.ui.theme.Black
+import com.alican.mvvm_starter.ui.theme.Gray
+import com.alican.mvvm_starter.ui.theme.White
 
 @Composable
 fun ListScreen(
     openDetail: (String) -> Unit,
-    popBackStack : (String) -> Unit,
-    viewModel: MoviesListViewModel = hiltViewModel(),
-    type: String? = null
+    popBackStack: (String) -> Unit,
+    viewModel: MoviesListViewModel = hiltViewModel()
 ) {
 
     val searchQuery = remember { mutableStateOf("") }
     val movies = viewModel.movies.collectAsLazyPagingItems()
 
+    statelessList(openDetail, popBackStack, viewModel, searchQuery, movies)
 
 
-    val title: String = when (type) {
-        Constant.POPULAR_MOVIES -> {
-            stringResource(id = R.string.txt_popular_movies)
-        }
+}
 
-        Constant.UP_COMING_MOVIES -> {
-            stringResource(id = R.string.txt_upcoming_movies)
-        }
-
-        Constant.TOP_RATED_MOVIES -> {
-            stringResource(id = R.string.txt_top_rated_movies)
-        }
-
-        Constant.NOW_PLAYING -> {
-            stringResource(id = R.string.txt_now_playing_movies)
-        }
-
-        else -> {
-            ""
-        }
-    }
-
+@Composable
+fun statelessList(
+    openDetail: (String) -> Unit,
+    popBackStack: (String) -> Unit,
+    viewModel: MoviesListViewModel = hiltViewModel(),
+    searchQuery: MutableState<String> = remember {
+        mutableStateOf("")
+    },
+    movies: LazyPagingItems<MovieUIModel>
+) {
     Scaffold(
         topBar = {
             TopBar(title = viewModel.setTitle(), showBackButton = true) {
@@ -94,7 +78,12 @@ fun ListScreen(
         },
 
         content = { padding ->
-            Column(modifier = Modifier.padding(padding).padding(16.dp)) {
+            Column(
+                modifier = Modifier
+                    .padding(padding)
+                    .padding(16.dp)
+            ) {
+
                 OutlinedTextField(
                     value = searchQuery.value, onValueChange = {
                         searchQuery.value = it
@@ -106,8 +95,8 @@ fun ListScreen(
 
                     },
                     modifier = Modifier
-                        .padding(16.dp)
                         .fillMaxWidth(),
+                    shape = CircleShape,
                     placeholder = {
                         Text(text = "Search...")
                     },
@@ -115,12 +104,19 @@ fun ListScreen(
                     singleLine = true
                 )
 
+
+
                 LazyVerticalGrid(
                     columns = GridCells.Fixed(2)
                 ) {
                     items(movies.itemCount, key = { it }) { index ->
                         MovieItem(movie = movies[index]!!) { id ->
-                            openDetail("detail/{id}".replace(oldValue = "{id}", newValue = id.toString()))
+                            openDetail(
+                                "detail/{id}".replace(
+                                    oldValue = "{id}",
+                                    newValue = id.toString()
+                                )
+                            )
                         }
                     }
                 }
@@ -136,9 +132,10 @@ fun MovieItem(movie: MovieUIModel, onItemClick: (Int) -> Unit) {
 
     Surface(
         modifier = Modifier
-            .fillMaxWidth().padding(12.dp),
+            .fillMaxWidth()
+            .padding(12.dp),
         shadowElevation = 2.dp,
-        color = Color.White,
+        color = White,
         shape = RoundedCornerShape(5.dp)
     ) {
         Column(
@@ -155,50 +152,16 @@ fun MovieItem(movie: MovieUIModel, onItemClick: (Int) -> Unit) {
                     text = movie.title,
                     style = TextStyle.Default,
                     fontSize = 14.sp,
-                    color = Color.Black,
+                    color = Black,
                     maxLines = 2,
                     overflow = TextOverflow.Ellipsis,
-                    textAlign = TextAlign.Center, // Text'i ortalamak için textAlign parametresini ekleyin
-                    modifier = Modifier.padding(horizontal = 16.dp).height(40.dp) // İsteğe bağlı: Text'i yatayda boşluklarla hizalayabilirsiniz
+                    textAlign = TextAlign.Center,
+                    modifier = Modifier
+                        .padding(horizontal = 16.dp)
+                        .height(40.dp)
                 )
             }
         }
-    }
-
-}
-
-
-@Composable
-fun SearchBar(
-    modifier: Modifier = Modifier,
-    searchQuery: String,
-    onSearchQueryChange: (String) -> Unit,
-    onSearchQuerySubmit: (String) -> Unit
-) {
-    var textFieldValue by remember { mutableStateOf(TextFieldValue(searchQuery)) }
-
-    Row(modifier = modifier) {
-        Icon(
-            painter = painterResource(id = R.drawable.ic_search),
-            contentDescription = "Search",
-            modifier = Modifier.size(24.dp)
-        )
-
-        TextField(
-            value = textFieldValue,
-            onValueChange = {
-                textFieldValue = it
-                onSearchQueryChange(it.text)
-            },
-            modifier = Modifier
-                .fillMaxWidth()
-                .padding(start = 8.dp),
-            textStyle = TextStyle(fontSize = 14.sp),
-            singleLine = true,
-            placeholder = { Text(text = "Search") },
-            keyboardOptions = KeyboardOptions(imeAction = ImeAction.Search),
-            keyboardActions = KeyboardActions(onSearch = { onSearchQuerySubmit(textFieldValue.text) })
-        )
     }
 
 }
@@ -210,8 +173,8 @@ fun TopBar(title: String, showBackButton: Boolean, onBackClick: () -> Unit) {
             .fillMaxWidth()
             .height(56.dp),
         shadowElevation = 2.dp,
-        border = BorderStroke(1.dp, Color.Gray),
-        color = Color.White
+        border = BorderStroke(1.dp, Gray),
+        color = White
     ) {
         Row(
             modifier = Modifier.fillMaxSize(),
@@ -225,7 +188,7 @@ fun TopBar(title: String, showBackButton: Boolean, onBackClick: () -> Unit) {
                     Icon(
                         imageVector = Icons.Default.ArrowBack,
                         contentDescription = "Back",
-                        tint = Color.Black
+                        tint = Black
                     )
                 }
             }
@@ -237,7 +200,7 @@ fun TopBar(title: String, showBackButton: Boolean, onBackClick: () -> Unit) {
                 style = TextStyle(
                     fontWeight = FontWeight.Bold,
                     fontSize = 16.sp,
-                    color = Color.Black
+                    color = Black
                 ),
                 maxLines = 1,
                 overflow = TextOverflow.Ellipsis

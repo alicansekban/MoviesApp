@@ -14,6 +14,7 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.layout.wrapContentHeight
 import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.LazyListState
 import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.foundation.lazy.rememberLazyListState
@@ -27,7 +28,6 @@ import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
@@ -37,10 +37,12 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import androidx.paging.compose.LazyPagingItems
 import androidx.paging.compose.collectAsLazyPagingItems
 import androidx.paging.compose.items
 import com.alican.mvvm_starter.R
 import com.alican.mvvm_starter.data.local.model.ReviewsEntity
+import com.alican.mvvm_starter.domain.model.BaseUIModel
 import com.alican.mvvm_starter.domain.model.Cast
 import com.alican.mvvm_starter.domain.model.Error
 import com.alican.mvvm_starter.domain.model.Loading
@@ -49,6 +51,9 @@ import com.alican.mvvm_starter.domain.model.MovieDetailUIModel
 import com.alican.mvvm_starter.domain.model.Success
 import com.alican.mvvm_starter.ui.home.loadImage
 import com.alican.mvvm_starter.ui.list.TopBar
+import com.alican.mvvm_starter.ui.theme.Black
+import com.alican.mvvm_starter.ui.theme.Gray
+import com.alican.mvvm_starter.ui.theme.Transparent
 
 @Composable
 fun MovieDetailScreen(
@@ -59,8 +64,24 @@ fun MovieDetailScreen(
     val movieCreditsState by viewModel.movieCredits.collectAsStateWithLifecycle()
     val reviews = viewModel.reviews.collectAsLazyPagingItems()
 
-    val listState = rememberLazyListState()
+ //    val listState = rememberLazyListState()
 
+
+    statelessDetail(movieDetailState, movieCreditsState, reviews, popBackStack = {
+        popBackStack(it)
+    })
+
+
+}
+
+@Composable
+fun statelessDetail(
+    movieDetailState: BaseUIModel<MovieDetailUIModel>,
+    movieCreditsState: BaseUIModel<MovieCreditsUIModel>,
+    reviews: LazyPagingItems<ReviewsEntity>,
+    listState: LazyListState = rememberLazyListState(),
+    popBackStack: (String) -> Unit
+) {
     Scaffold(
         topBar = {
             TopBar(
@@ -86,7 +107,7 @@ fun MovieDetailScreen(
                         is Loading -> {}
                         is Success -> {
                             val movieDetail =
-                                (movieDetailState as Success<MovieDetailUIModel>).response
+                                movieDetailState.response
                             item {
                                 MovieDetailContent(movieDetail)
                             }
@@ -97,7 +118,7 @@ fun MovieDetailScreen(
                     when (movieCreditsState) {
                         is Loading -> {}
                         is Success -> {
-                            val cast = (movieCreditsState as Success<MovieCreditsUIModel>).response
+                            val cast = movieCreditsState.response
                             item {
                                 LazyRow(modifier = Modifier.fillMaxWidth()) {
                                     itemsIndexed(
@@ -189,7 +210,7 @@ fun CastItem(cast: Cast) {
             .height(100.dp)
             .padding(4.dp),
         shape = RoundedCornerShape(30.dp),
-        border = BorderStroke(1.dp, Color.Gray)
+        border = BorderStroke(1.dp, Gray)
 
     ) {
         Row(
@@ -216,11 +237,11 @@ fun CastItem(cast: Cast) {
                 Text(
                     text = cast.name.toString(),
                     style = TextStyle(fontWeight = FontWeight.Bold),
-                    color = Color.Black
+                    color = Black
                 )
                 Text(
                     text = cast.character.toString(),
-                    color = Color.Black
+                    color = Black
                 )
             }
         }
@@ -234,7 +255,7 @@ fun ReviewItem(review: ReviewsEntity) {
         modifier = Modifier
             .padding(8.dp)
             .height(150.dp),
-        backgroundColor = Color.Transparent
+        backgroundColor = Transparent
     ) {
         Row(verticalAlignment = Alignment.CenterVertically, modifier = Modifier.padding(8.dp)) {
             loadImage(
@@ -246,12 +267,16 @@ fun ReviewItem(review: ReviewsEntity) {
 
             }
             Column(modifier = Modifier.wrapContentHeight()) {
-                Row(horizontalArrangement = Arrangement.Center, modifier = Modifier.fillMaxWidth().padding(horizontal = 8.dp)) {
+                Row(
+                    horizontalArrangement = Arrangement.Center, modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(horizontal = 8.dp)
+                ) {
                     Text(
                         text = review.authorDetails?.name.toString(),
                         style = TextStyle.Default,
                         fontSize = 16.sp,
-                        color = Color.Black,
+                        color = Black,
                         textAlign = TextAlign.Start, // Text'i ortalamak için textAlign parametresini ekleyin
                         modifier = Modifier
                     )
@@ -264,7 +289,7 @@ fun ReviewItem(review: ReviewsEntity) {
                     text = review.content.toString(),
                     style = TextStyle.Default,
                     fontSize = 12.sp,
-                    color = Color.Black,
+                    color = Black,
                     maxLines = 6,
                     overflow = TextOverflow.Ellipsis,
                     textAlign = TextAlign.Start, // Text'i ortalamak için textAlign parametresini ekleyin

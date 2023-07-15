@@ -34,7 +34,6 @@ import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.TransformOrigin
 import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.layout.ContentScale
@@ -48,11 +47,14 @@ import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.alican.mvvm_starter.R
+import com.alican.mvvm_starter.domain.model.BaseUIModel
 import com.alican.mvvm_starter.domain.model.Error
 import com.alican.mvvm_starter.domain.model.Loading
 import com.alican.mvvm_starter.domain.model.MovieUIModel
 import com.alican.mvvm_starter.domain.model.Success
 import com.alican.mvvm_starter.ui.list.TopBar
+import com.alican.mvvm_starter.ui.theme.Black
+import com.alican.mvvm_starter.ui.theme.White
 import com.alican.mvvm_starter.util.Constant
 import com.bumptech.glide.integration.compose.ExperimentalGlideComposeApi
 import com.bumptech.glide.integration.compose.GlideImage
@@ -77,6 +79,21 @@ fun HomeScreen(
 //    val listState = rememberLazyListState()
 
 
+    statelessHome(popularMovies, nowPlayingMovies, topRatedMovies, upComingMovies,openList, openDetail)
+
+
+}
+
+@OptIn(ExperimentalFoundationApi::class)
+@Composable
+fun statelessHome(
+    popularMovies: BaseUIModel<List<MovieUIModel>>,
+    nowPlayingMovies: BaseUIModel<List<MovieUIModel>>,
+    topRatedMovies: BaseUIModel<List<MovieUIModel>>,
+    upComingMovies: BaseUIModel<List<MovieUIModel>>,
+    openList: (String) -> Unit,
+    openDetail: (String) -> Unit
+) {
     Scaffold(
         topBar = {
             TopBar(
@@ -92,8 +109,8 @@ fun HomeScreen(
             modifier = Modifier
                 .fillMaxSize()
                 .verticalScroll(rememberScrollState())
-                .padding(horizontal = 16.dp, vertical = 16.dp)
-                .padding(top = 32.dp)
+                .padding(padding)
+                .padding(horizontal = 16.dp)
         ) {
 
             when (popularMovies) {
@@ -277,11 +294,11 @@ fun HomeSection(
                 verticalAlignment = Alignment.CenterVertically,
                 modifier = Modifier
                     .fillMaxSize()
-                    .background(color = Color.Black)
+                    .background(color = Black)
             ) {
                 Text(
                     text = title,
-                    color = Color.White,
+                    color = White,
                     fontSize = 16.sp,
                     fontWeight = FontWeight.Bold,
                     modifier = Modifier
@@ -291,7 +308,7 @@ fun HomeSection(
 
                 Text(
                     text = stringResource(id = R.string.txt_see_all),
-                    color = Color.White,
+                    color = White,
                     fontSize = 16.sp,
                     fontWeight = FontWeight.Bold,
                     modifier = Modifier
@@ -318,15 +335,16 @@ fun HomeSection(
 }
 
 
-
 @Composable
 fun HomeMovieItem(movie: MovieUIModel, onItemClick: (Int) -> Unit) {
 
     androidx.compose.material3.Surface(
         modifier = Modifier
-            .fillMaxWidth().padding(12.dp).width(150.dp),
+            .fillMaxWidth()
+            .padding(12.dp)
+            .width(150.dp),
         shadowElevation = 2.dp,
-        color = Color.White,
+        color = White,
         shape = RoundedCornerShape(5.dp)
     ) {
         Column(
@@ -343,11 +361,12 @@ fun HomeMovieItem(movie: MovieUIModel, onItemClick: (Int) -> Unit) {
                     text = movie.title,
                     style = TextStyle.Default,
                     fontSize = 14.sp,
-                    color = Color.Black,
+                    color = Black,
                     maxLines = 2,
                     overflow = TextOverflow.Ellipsis,
                     textAlign = TextAlign.Center, // Text'i ortalamak için textAlign parametresini ekleyin
-                    modifier = Modifier.padding(horizontal = 16.dp)
+                    modifier = Modifier
+                        .padding(horizontal = 16.dp)
                         .height(40.dp) // İsteğe bağlı: Text'i yatayda boşluklarla hizalayabilirsiniz
                 )
             }

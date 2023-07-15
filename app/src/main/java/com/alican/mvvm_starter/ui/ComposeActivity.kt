@@ -56,7 +56,7 @@ class ComposeActivity : ComponentActivity() {
                     ) { entry ->
                         val type = entry.arguments?.getString("type")
                         if (type != null) {
-                            ListScreen(type = type,
+                            ListScreen(
                                 openDetail = {
                                     navigation(it)
                                 },
