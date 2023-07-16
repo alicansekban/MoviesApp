@@ -63,10 +63,10 @@ import kotlin.math.min
 @Composable
 fun HomeScreen(
     openList: (String) -> Unit,
-    openDetail: (String) -> Unit
+    openDetail: (String) -> Unit,
+    viewModel: HomeViewModel = hiltViewModel()
 ) {
 
-    val viewModel: HomeViewModel = hiltViewModel()
     val popularMovies by viewModel.popularMovies.collectAsStateWithLifecycle()
     val nowPlayingMovies by viewModel.nowPlayingMovies.collectAsStateWithLifecycle()
     val topRatedMovies by viewModel.topRatedMovies.collectAsStateWithLifecycle()
@@ -74,7 +74,14 @@ fun HomeScreen(
 
 
 
-    statelessHome(popularMovies, nowPlayingMovies, topRatedMovies, upComingMovies,openList, openDetail)
+    statelessHome(
+        popularMovies,
+        nowPlayingMovies,
+        topRatedMovies,
+        upComingMovies,
+        openList,
+        openDetail
+    )
 
 
 }

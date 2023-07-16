@@ -25,6 +25,7 @@ import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -52,10 +53,29 @@ fun ListScreen(
     viewModel: MoviesListViewModel = hiltViewModel()
 ) {
 
-    val searchQuery = remember { mutableStateOf("") }
     val movies = viewModel.movies.collectAsLazyPagingItems()
 
-    statelessList(openDetail, popBackStack, viewModel, searchQuery, movies)
+    val searchQuery: MutableState<String> = remember { mutableStateOf("") }
+
+
+    LaunchedEffect(key1 = searchQuery.value ) {
+        if (searchQuery.value.length > 2) {
+            viewModel.searchMovies(searchQuery.value)
+        } else if (searchQuery.value.isEmpty()) {
+            viewModel.getData(viewModel.argument)
+        }
+    }
+
+    statelessList(
+        openDetail,
+        popBackStack,
+        viewModel.setTitle(),
+        movies = movies,
+        searchQuery = searchQuery.value,
+        onSearchQueryChange = { newValue ->
+            searchQuery.value = newValue
+        }
+    )
 
 
 }
@@ -64,15 +84,15 @@ fun ListScreen(
 fun statelessList(
     openDetail: (String) -> Unit,
     popBackStack: (String) -> Unit,
-    viewModel: MoviesListViewModel = hiltViewModel(),
-    searchQuery: MutableState<String> = remember {
-        mutableStateOf("")
-    },
-    movies: LazyPagingItems<MovieUIModel>
+    title: String,
+    movies: LazyPagingItems<MovieUIModel>,
+    searchQuery: String,
+    onSearchQueryChange: (String) -> Unit
+
 ) {
     Scaffold(
         topBar = {
-            TopBar(title = viewModel.setTitle(), showBackButton = true) {
+            TopBar(title = title, showBackButton = true) {
                 popBackStack("-1")
             }
         },
@@ -85,13 +105,8 @@ fun statelessList(
             ) {
 
                 OutlinedTextField(
-                    value = searchQuery.value, onValueChange = {
-                        searchQuery.value = it
-                        if (it.length > 2) {
-                            viewModel.searchMovies(it)
-                        } else {
-                            viewModel.getData(viewModel.argument)
-                        }
+                    value = searchQuery, onValueChange = {
+                        onSearchQueryChange(it)
 
                     },
                     modifier = Modifier
