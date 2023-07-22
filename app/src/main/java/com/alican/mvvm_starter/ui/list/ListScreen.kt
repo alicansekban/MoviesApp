@@ -1,26 +1,18 @@
 package com.alican.mvvm_starter.ui.list
 
-import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.ArrowBack
-import androidx.compose.material.icons.filled.Favorite
-import androidx.compose.material3.Icon
-import androidx.compose.material3.IconButton
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Surface
@@ -30,10 +22,8 @@ import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
-import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.TextStyle
-import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
@@ -41,10 +31,10 @@ import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.paging.compose.LazyPagingItems
 import androidx.paging.compose.collectAsLazyPagingItems
+import com.alican.mvvm_starter.customViews.TopBar
 import com.alican.mvvm_starter.domain.model.MovieUIModel
 import com.alican.mvvm_starter.ui.home.loadImage
 import com.alican.mvvm_starter.ui.theme.Black
-import com.alican.mvvm_starter.ui.theme.Gray
 import com.alican.mvvm_starter.ui.theme.White
 
 @Composable
@@ -181,69 +171,6 @@ fun MovieItem(movie: MovieUIModel, onItemClick: (Int) -> Unit) {
                         .padding(horizontal = 16.dp)
                         .height(40.dp)
                 )
-            }
-        }
-    }
-
-}
-
-@Composable
-fun TopBar(
-    title: String,
-    showBackButton: Boolean,
-    onBackClick: () -> Unit,
-    showFavoriteButton: Boolean,
-    onFavoriteClick: () -> Unit
-) {
-    Surface(
-        modifier = Modifier
-            .fillMaxWidth()
-            .height(56.dp),
-        shadowElevation = 2.dp,
-        border = BorderStroke(1.dp, Gray),
-        color = White
-    ) {
-        Row(
-            modifier = Modifier.fillMaxSize(),
-            verticalAlignment = Alignment.CenterVertically
-        ) {
-            if (showBackButton) {
-                IconButton(
-                    onClick = { onBackClick() },
-                    modifier = Modifier.size(40.dp)
-                ) {
-                    Icon(
-                        imageVector = Icons.Default.ArrowBack,
-                        contentDescription = "Back",
-                        tint = Black
-                    )
-                }
-            }
-
-            Text(
-                text = title,
-                modifier = Modifier.weight(1f),
-                textAlign = TextAlign.Center,
-                style = TextStyle(
-                    fontWeight = FontWeight.Bold,
-                    fontSize = 16.sp,
-                    color = Black
-                ),
-                maxLines = 1,
-                overflow = TextOverflow.Ellipsis
-            )
-            if (showFavoriteButton) {
-                IconButton(
-                    onClick = { onFavoriteClick() },
-                    modifier = Modifier.size(40.dp)
-                ) {
-
-                    Icon(
-                        imageVector = Icons.Default.Favorite,
-                        contentDescription = "Favorites",
-                        tint = Black
-                    )
-                }
             }
         }
     }

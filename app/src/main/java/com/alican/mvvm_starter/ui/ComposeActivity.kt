@@ -94,7 +94,14 @@ class ComposeActivity : ComponentActivity() {
                     composable(
                         route = "favorites",
                     ) { entry ->
-                        FavoritesScreen()
+                        FavoritesScreen(
+                            openDetail = {
+                                navigation(it)
+                            },
+                            popBackStack = {
+                                navigation(it)
+                            }
+                        )
                     }
                 }
             }

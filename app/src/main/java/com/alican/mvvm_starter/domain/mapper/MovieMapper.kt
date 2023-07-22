@@ -1,6 +1,7 @@
 package com.alican.mvvm_starter.domain.mapper
 
 import com.alican.mvvm_starter.data.local.model.AuthorDetails
+import com.alican.mvvm_starter.data.local.model.FavoritesEntity
 import com.alican.mvvm_starter.data.local.model.ReviewsEntity
 import com.alican.mvvm_starter.data.model.MovieCreditResponse
 import com.alican.mvvm_starter.data.model.MovieDetailResponse
@@ -76,5 +77,15 @@ class MovieMapper @Inject constructor() {
         )
     }
 
+    fun mapMovietoFavoriteEntity(movieUIModel: MovieUIModel): FavoritesEntity {
+        return FavoritesEntity(
+            id = movieUIModel.id,
+            title = movieUIModel.title,
+            posterPath = movieUIModel.getImagePath(),
+            overview = movieUIModel.overview,
+            releaseDate = movieUIModel.release_date,
+            voteAverage = movieUIModel.vote_average
+        )
+    }
 
 }

@@ -46,12 +46,12 @@ import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.alican.mvvm_starter.R
+import com.alican.mvvm_starter.customViews.TopBar
 import com.alican.mvvm_starter.domain.model.BaseUIModel
 import com.alican.mvvm_starter.domain.model.Error
 import com.alican.mvvm_starter.domain.model.Loading
 import com.alican.mvvm_starter.domain.model.MovieUIModel
 import com.alican.mvvm_starter.domain.model.Success
-import com.alican.mvvm_starter.ui.list.TopBar
 import com.alican.mvvm_starter.ui.theme.Black
 import com.alican.mvvm_starter.ui.theme.White
 import com.alican.mvvm_starter.util.Constant
@@ -61,7 +61,6 @@ import kotlin.math.absoluteValue
 import kotlin.math.min
 
 
-@OptIn(ExperimentalFoundationApi::class)
 @Composable
 fun HomeScreen(
     openList: (String) -> Unit,

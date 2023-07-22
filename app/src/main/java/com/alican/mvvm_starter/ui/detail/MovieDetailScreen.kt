@@ -41,6 +41,7 @@ import androidx.paging.compose.LazyPagingItems
 import androidx.paging.compose.collectAsLazyPagingItems
 import androidx.paging.compose.items
 import com.alican.mvvm_starter.R
+import com.alican.mvvm_starter.customViews.TopBar
 import com.alican.mvvm_starter.data.local.model.ReviewsEntity
 import com.alican.mvvm_starter.domain.model.BaseUIModel
 import com.alican.mvvm_starter.domain.model.Cast
@@ -50,7 +51,6 @@ import com.alican.mvvm_starter.domain.model.MovieCreditsUIModel
 import com.alican.mvvm_starter.domain.model.MovieDetailUIModel
 import com.alican.mvvm_starter.domain.model.Success
 import com.alican.mvvm_starter.ui.home.loadImage
-import com.alican.mvvm_starter.ui.list.TopBar
 import com.alican.mvvm_starter.ui.theme.Black
 import com.alican.mvvm_starter.ui.theme.Gray
 import com.alican.mvvm_starter.ui.theme.Transparent
