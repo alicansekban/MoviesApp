@@ -58,6 +58,7 @@ import com.alican.mvvm_starter.ui.theme.Transparent
 @Composable
 fun MovieDetailScreen(
     popBackStack: (String) -> Unit,
+    onFavoriteClick: (String) -> Unit,
     viewModel: MovieDetailViewModel = hiltViewModel()
 ) {
     val movieDetailState by viewModel.movieDetail.collectAsStateWithLifecycle()
@@ -66,9 +67,12 @@ fun MovieDetailScreen(
 
 
 
-    statelessDetail(movieDetailState, movieCreditsState, reviews, popBackStack = {
-        popBackStack(it)
-    })
+    statelessDetail(
+        movieDetailState,
+        movieCreditsState,
+        reviews,
+        popBackStack = { popBackStack(it) },
+    onFavoriteClick = {onFavoriteClick(it)})
 
 
 }
@@ -79,16 +83,18 @@ fun statelessDetail(
     movieCreditsState: BaseUIModel<MovieCreditsUIModel>,
     reviews: LazyPagingItems<ReviewsEntity>,
     listState: LazyListState = rememberLazyListState(),
-    popBackStack: (String) -> Unit
+    popBackStack: (String) -> Unit,
+    onFavoriteClick: (String) -> Unit,
 ) {
     Scaffold(
         topBar = {
             TopBar(
                 title = stringResource(id = R.string.txt_movie_detail_title),
-                showBackButton = true
-            ) {
-                popBackStack("-1")
-            }
+                showBackButton = true,
+                onBackClick = { popBackStack("-1") },
+                showFavoriteButton = false,
+                onFavoriteClick = { onFavoriteClick("favorites") }
+            )
         },
         content = { padding ->
             Box(

@@ -9,6 +9,7 @@ import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import androidx.navigation.navArgument
 import com.alican.mvvm_starter.ui.detail.MovieDetailScreen
+import com.alican.mvvm_starter.ui.favorites.FavoritesScreen
 import com.alican.mvvm_starter.ui.home.HomeScreen
 import com.alican.mvvm_starter.ui.list.ListScreen
 import com.alican.mvvm_starter.ui.theme.MoviesWithComposeTheme
@@ -42,7 +43,10 @@ class ComposeActivity : ComponentActivity() {
                                 navigation(it)
                             },
                             openDetail = {
-                               navigation(it)
+                                navigation(it)
+                            },
+                            openFavorites = {
+                                navigation(it)
                             }
                         )
                     }
@@ -58,6 +62,9 @@ class ComposeActivity : ComponentActivity() {
                         if (type != null) {
                             ListScreen(
                                 openDetail = {
+                                    navigation(it)
+                                },
+                                openFavorites = {
                                     navigation(it)
                                 },
                                 popBackStack = {
@@ -78,8 +85,16 @@ class ComposeActivity : ComponentActivity() {
                             MovieDetailScreen(
                                 popBackStack = {
                                     navigation(it)
+                                },
+                                onFavoriteClick = {
+                                    navigation(it)
                                 })
                         }
+                    }
+                    composable(
+                        route = "favorites",
+                    ) { entry ->
+                        FavoritesScreen()
                     }
                 }
             }

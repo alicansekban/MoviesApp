@@ -14,6 +14,8 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.layout.wrapContentHeight
+import androidx.compose.foundation.layout.wrapContentWidth
 import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.foundation.pager.HorizontalPager
@@ -64,6 +66,7 @@ import kotlin.math.min
 fun HomeScreen(
     openList: (String) -> Unit,
     openDetail: (String) -> Unit,
+    openFavorites: (String) -> Unit,
     viewModel: HomeViewModel = hiltViewModel()
 ) {
 
@@ -80,7 +83,8 @@ fun HomeScreen(
         topRatedMovies,
         upComingMovies,
         openList,
-        openDetail
+        openDetail,
+        openFavorites
     )
 
 
@@ -94,16 +98,18 @@ fun statelessHome(
     topRatedMovies: BaseUIModel<List<MovieUIModel>>,
     upComingMovies: BaseUIModel<List<MovieUIModel>>,
     openList: (String) -> Unit,
-    openDetail: (String) -> Unit
+    openDetail: (String) -> Unit,
+    openFavorites: (String) -> Unit
 ) {
     Scaffold(
         topBar = {
             TopBar(
                 title = stringResource(id = R.string.get_home_title),
                 showBackButton = false,
-            ) {
-
-            }
+                onBackClick = {},
+                showFavoriteButton = true,
+                onFavoriteClick = {openFavorites("favorites")}
+            )
         }
     ) { padding ->
 
@@ -162,6 +168,22 @@ fun statelessHome(
                                         .height(300.dp)
                                 ) {
                                 }
+                                Row(
+                                    modifier = Modifier
+                                        .align(Alignment.BottomCenter)
+                                        .padding(bottom = 8.dp)
+                                ) {
+                                    DotsIndicator(
+                                        totalDots = response.size,
+                                        selectedIndex = pagerState.currentPage,
+                                        selectedColor = White,
+                                        unSelectedColor = Black,
+                                        modifier = Modifier
+                                            .wrapContentWidth()
+                                            .wrapContentHeight()
+                                    )
+                                }
+
                             }
 
 

@@ -18,6 +18,7 @@ import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowBack
+import androidx.compose.material.icons.filled.Favorite
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.OutlinedTextField
@@ -50,6 +51,7 @@ import com.alican.mvvm_starter.ui.theme.White
 fun ListScreen(
     openDetail: (String) -> Unit,
     popBackStack: (String) -> Unit,
+    openFavorites: (String) -> Unit,
     viewModel: MoviesListViewModel = hiltViewModel()
 ) {
 
@@ -58,7 +60,7 @@ fun ListScreen(
     val searchQuery: MutableState<String> = remember { mutableStateOf("") }
 
 
-    LaunchedEffect(key1 = searchQuery.value ) {
+    LaunchedEffect(key1 = searchQuery.value) {
         if (searchQuery.value.length > 2) {
             viewModel.searchMovies(searchQuery.value)
         } else if (searchQuery.value.isEmpty()) {
@@ -69,6 +71,7 @@ fun ListScreen(
     statelessList(
         openDetail,
         popBackStack,
+        openFavorites,
         viewModel.setTitle(),
         movies = movies,
         searchQuery = searchQuery.value,
@@ -84,6 +87,7 @@ fun ListScreen(
 fun statelessList(
     openDetail: (String) -> Unit,
     popBackStack: (String) -> Unit,
+    openFavorites: (String) -> Unit,
     title: String,
     movies: LazyPagingItems<MovieUIModel>,
     searchQuery: String,
@@ -92,9 +96,12 @@ fun statelessList(
 ) {
     Scaffold(
         topBar = {
-            TopBar(title = title, showBackButton = true) {
-                popBackStack("-1")
-            }
+            TopBar(
+                title = title,
+                showBackButton = true,
+                onBackClick = { popBackStack("-1") },
+                showFavoriteButton = false,
+                onFavoriteClick = { openFavorites("favorites") })
         },
 
         content = { padding ->
@@ -181,7 +188,13 @@ fun MovieItem(movie: MovieUIModel, onItemClick: (Int) -> Unit) {
 }
 
 @Composable
-fun TopBar(title: String, showBackButton: Boolean, onBackClick: () -> Unit) {
+fun TopBar(
+    title: String,
+    showBackButton: Boolean,
+    onBackClick: () -> Unit,
+    showFavoriteButton: Boolean,
+    onFavoriteClick: () -> Unit
+) {
     Surface(
         modifier = Modifier
             .fillMaxWidth()
@@ -219,6 +232,19 @@ fun TopBar(title: String, showBackButton: Boolean, onBackClick: () -> Unit) {
                 maxLines = 1,
                 overflow = TextOverflow.Ellipsis
             )
+            if (showFavoriteButton) {
+                IconButton(
+                    onClick = { onFavoriteClick() },
+                    modifier = Modifier.size(40.dp)
+                ) {
+
+                    Icon(
+                        imageVector = Icons.Default.Favorite,
+                        contentDescription = "Favorites",
+                        tint = Black
+                    )
+                }
+            }
         }
     }
 }
