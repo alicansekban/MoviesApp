@@ -2,7 +2,6 @@ package com.alican.mvvm_starter.domain.interactor
 
 import android.content.Context
 import com.alican.mvvm_starter.R
-import com.alican.mvvm_starter.data.local.model.FavoritesEntity
 import com.alican.mvvm_starter.data.repository.FavoriteMoviesRepository
 import com.alican.mvvm_starter.domain.mapper.MovieMapper
 import com.alican.mvvm_starter.domain.model.BaseUIModel
@@ -26,7 +25,8 @@ class FavoriteMoviesInteractor @Inject constructor(
         return flow {
             emit(Loading())
             emit(
-                when(val result = repository.insertFavoriteMovie(mapper.mapMovietoFavoriteEntity(movie))) {
+                when (val result =
+                    repository.insertFavoriteMovie(mapper.mapMovietoFavoriteEntity(movie))) {
                     is ResultWrapper.GenericError -> Error(context.getString(R.string.error_message))
                     ResultWrapper.Loading -> Loading()
                     ResultWrapper.NetworkError -> Error(context.getString(R.string.connection_error_msg))
@@ -36,20 +36,4 @@ class FavoriteMoviesInteractor @Inject constructor(
             )
         }
     }
-
-    fun getFavoriteMovies(): Flow<BaseUIModel<List<FavoritesEntity>>> {
-        return flow {
-            emit(Loading())
-            emit(
-                when (val result = repository.getFavoriteMovies()) {
-                    is ResultWrapper.GenericError -> Error(context.getString(R.string.error_message))
-                    ResultWrapper.Loading -> Loading()
-                    ResultWrapper.NetworkError -> Error(context.getString(R.string.connection_error_msg))
-                    is ResultWrapper.Success -> Success(result.value)
-                }
-            )
-        }
-    }
-
-
 }

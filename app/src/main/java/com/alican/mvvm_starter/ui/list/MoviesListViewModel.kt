@@ -7,7 +7,10 @@ import androidx.lifecycle.viewModelScope
 import androidx.paging.PagingData
 import androidx.paging.cachedIn
 import com.alican.mvvm_starter.R
+import com.alican.mvvm_starter.domain.interactor.FavoriteMoviesInteractor
 import com.alican.mvvm_starter.domain.interactor.MoviesListInteractor
+import com.alican.mvvm_starter.domain.model.BaseUIModel
+import com.alican.mvvm_starter.domain.model.Loading
 import com.alican.mvvm_starter.domain.model.MovieUIModel
 import com.alican.mvvm_starter.util.Constant
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -21,13 +24,20 @@ import javax.inject.Inject
 @HiltViewModel
 class MoviesListViewModel @Inject constructor(
     val interactor: MoviesListInteractor,
+    val favoritesInteractor: FavoriteMoviesInteractor,
     savedStateHandle: SavedStateHandle,
     @ApplicationContext private val context: Context
 ) : ViewModel() {
 
+    val initialFavoritesValue = Loading<Boolean>()
+
 
     private val _movies = MutableStateFlow<PagingData<MovieUIModel>>(PagingData.empty())
     val movies: StateFlow<PagingData<MovieUIModel>> get() = _movies
+
+    private val _favorites = MutableStateFlow<BaseUIModel<Boolean>>(initialFavoritesValue)
+    val favorites: StateFlow<BaseUIModel<Boolean>> get() = _favorites
+
 
     var title: String = ""
     val argument = checkNotNull(savedStateHandle.get<String>("type"))
@@ -57,6 +67,18 @@ class MoviesListViewModel @Inject constructor(
 
             else -> {
                 ""
+            }
+        }
+    }
+
+    fun addToFavorites(movie: MovieUIModel) {
+        viewModelScope.launch {
+            try {
+                favoritesInteractor.insertFavoriteMovie(movie).collectLatest {
+                    _favorites.emit(it)
+                }
+            } catch (e : Exception) {
+                //
             }
         }
     }

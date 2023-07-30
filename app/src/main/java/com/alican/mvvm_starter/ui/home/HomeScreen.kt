@@ -73,9 +73,7 @@ fun HomeScreen(
     val nowPlayingMovies by viewModel.nowPlayingMovies.collectAsStateWithLifecycle()
     val topRatedMovies by viewModel.topRatedMovies.collectAsStateWithLifecycle()
     val upComingMovies by viewModel.upComingMovies.collectAsStateWithLifecycle()
-
-
-
+    
     statelessHome(
         popularMovies,
         nowPlayingMovies,
@@ -85,8 +83,6 @@ fun HomeScreen(
         openDetail,
         openFavorites
     )
-
-
 }
 
 @OptIn(ExperimentalFoundationApi::class)

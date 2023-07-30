@@ -13,7 +13,7 @@ class FavoriteMoviesRepository @Inject constructor(
         return localDataSource.insertFavoriteMovie(movie = movie)
     }
 
-    fun getFavoriteMovies(): ResultWrapper<List<FavoritesEntity>> {
-        return localDataSource.getFavoriteMovies()
+    fun getFavoriteMovies(searchQuery:String): ResultWrapper<List<FavoritesEntity>> {
+        return localDataSource.getFavoriteMovies(searchQuery)
     }
 }

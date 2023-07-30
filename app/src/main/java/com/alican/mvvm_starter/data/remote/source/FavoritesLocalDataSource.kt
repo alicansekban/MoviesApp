@@ -2,6 +2,7 @@ package com.alican.mvvm_starter.data.remote.source
 
 import com.alican.mvvm_starter.data.local.AppDatabase
 import com.alican.mvvm_starter.data.local.model.FavoritesEntity
+import com.alican.mvvm_starter.data.model.ErrorResponse
 import com.alican.mvvm_starter.util.ResultWrapper
 import javax.inject.Inject
 
@@ -20,11 +21,13 @@ class FavoritesLocalDataSource @Inject constructor(
 
     }
 
-    fun getFavoriteMovies(): ResultWrapper<List<FavoritesEntity>> {
+    fun getFavoriteMovies(searchQuery:String): ResultWrapper<List<FavoritesEntity>> {
         return try {
-            ResultWrapper.Success(db.favoritesDao().getFavoriteMovies())
+            ResultWrapper.Loading
+            ResultWrapper.Success(db.favoritesDao().getFavoriteMovies(searchQuery))
+
         } catch (e: Exception) {
-            ResultWrapper.GenericError()
+            ResultWrapper.GenericError(error = ErrorResponse(message = e.message))
         }
     }
 }

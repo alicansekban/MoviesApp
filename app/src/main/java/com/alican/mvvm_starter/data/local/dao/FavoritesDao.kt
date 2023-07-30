@@ -19,6 +19,6 @@ interface FavoritesDao {
     suspend fun clearFavoriteMovies()
 
 
-    @Query("select * from favorite_movies order by id asc")
-    fun getFavoriteMovies() : List<FavoritesEntity>
+    @Query("select * from favorite_movies WHERE title LIKE '%' || :searchQuery || '%'")
+    fun getFavoriteMovies(searchQuery: String) : List<FavoritesEntity>
 }

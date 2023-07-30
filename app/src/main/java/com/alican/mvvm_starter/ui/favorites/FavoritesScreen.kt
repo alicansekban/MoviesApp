@@ -11,12 +11,12 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
-import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material3.OutlinedTextField
+import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -51,11 +51,17 @@ fun FavoritesScreen(
     val searchQuery: MutableState<String> = remember { mutableStateOf("") }
 
 
+    LaunchedEffect(key1 = searchQuery.value) {
+        if (searchQuery.value.length > 3) {
+            viewModel.getFavorites(searchQuery.value)
+        } else {
+            viewModel.getFavorites("")
+        }
+    }
+
     when (movies) {
         is Error ->  {}
-        is Loading -> {
-            LoadingView()
-        }
+        is Loading -> { LoadingView()}
 
         is Success -> {
             stateLessFavorites(
@@ -81,55 +87,48 @@ fun stateLessFavorites(
     onSearchQueryChange: (String) -> Unit
 ) {
 
+    Scaffold(
+        topBar = {
+            TopBar(
+                title = "Favorite Movies",
+                showBackButton = true,
+                onBackClick = { popBackStack("-1") },
+                showFavoriteButton = false,
+                onFavoriteClick = { })
+        },
 
-    Column(
-        modifier = Modifier
-            .padding(16.dp)
-    ) {
-        TopBar(
-            title = "Favorite Movies",
-            showBackButton = true,
-            onBackClick = { popBackStack("-1") },
-            showFavoriteButton = false,
-            onFavoriteClick = { })
+        content = { padding ->
+            Column(
+                modifier = Modifier
+                    .padding(padding)
+                    .padding(top = 8.dp)
+            ) {
+                Spacer(modifier = Modifier.height(8.dp))
+                LazyVerticalGrid(
+                    columns = GridCells.Fixed(2)
+                ) {
+                    items(movies.size, key = { it }) { index ->
+                        if (movies.isEmpty()) {
+                            FavoritesEmptyUi()
+                        } else {
+                            favoriteMoviesItem(movie = movies[index]) { id ->
+                                openDetail(
+                                    "detail/{id}".replace(
+                                        oldValue = "{id}",
+                                        newValue = id.toString()
+                                    )
+                                )
+                            }
+                        }
 
-        OutlinedTextField(
-            value = searchQuery, onValueChange = {
-                onSearchQueryChange(it)
-
-            },
-            modifier = Modifier
-                .fillMaxWidth(),
-            shape = CircleShape,
-            placeholder = {
-                Text(text = "Search...")
-            },
-            maxLines = 1,
-            singleLine = true
-        )
-
-        Spacer(modifier = Modifier.height(8.dp))
-        LazyVerticalGrid(
-            columns = GridCells.Fixed(2)
-        ) {
-            items(movies.size, key = { it }) { index ->
-                if (movies.isEmpty()) {
-                    FavoritesEmptyUi()
-                } else {
-                    favoriteMoviesItem(movie = movies[index]) { id ->
-                        openDetail(
-                            "detail/{id}".replace(
-                                oldValue = "{id}",
-                                newValue = id.toString()
-                            )
-                        )
                     }
                 }
 
             }
         }
+    )
 
-    }
+
 }
 
 @Composable
