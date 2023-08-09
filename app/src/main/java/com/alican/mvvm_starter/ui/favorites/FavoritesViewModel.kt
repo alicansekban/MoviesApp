@@ -19,7 +19,6 @@ class FavoritesViewModel @Inject constructor(
     private val useCase: FavoriteMoviesUseCase
 ) : ViewModel() {
 
-
     private val _favoriteMovies = MutableStateFlow<BaseUIModel<List<FavoritesEntity>>>(Loading())
     val favoriteMovies: StateFlow<BaseUIModel<List<FavoritesEntity>>> get() = _favoriteMovies
 

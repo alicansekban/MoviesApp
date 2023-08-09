@@ -2,6 +2,7 @@ package com.alican.mvvm_starter.util
 
 import com.alican.mvvm_starter.data.model.ErrorResponse
 import com.squareup.moshi.Moshi
+import com.squareup.moshi.kotlin.reflect.KotlinJsonAdapterFactory
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.withContext
 import retrofit2.HttpException
@@ -13,7 +14,7 @@ sealed class ResultWrapper<out T> {
     data class GenericError(val code: Int? = null, val error: ErrorResponse? = null) : ResultWrapper<Nothing>()
     object NetworkError : ResultWrapper<Nothing>()
 
-    suspend fun <T> safeApiCall(dispatcher: CoroutineDispatcher, apiCall: suspend () -> T): ResultWrapper<T> {
+    suspend fun <T : Any> safeApiCall(dispatcher: CoroutineDispatcher, apiCall: suspend () -> T): ResultWrapper<T> {
         return withContext(dispatcher) {
             try {
                 Success(apiCall.invoke())
@@ -38,7 +39,7 @@ sealed class ResultWrapper<out T> {
     private fun convertErrorBody(throwable: HttpException): ErrorResponse? {
         return try {
             throwable.response()?.errorBody()?.source()?.let {
-                val moshiAdapter = Moshi.Builder().build().adapter(ErrorResponse::class.java)
+                val moshiAdapter = Moshi.Builder().add(KotlinJsonAdapterFactory()).build().adapter(ErrorResponse::class.java)
                 moshiAdapter.fromJson(it)
             }
         } catch (exception: Exception) {

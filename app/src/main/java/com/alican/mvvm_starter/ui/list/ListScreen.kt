@@ -17,31 +17,35 @@ import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Favorite
+import androidx.compose.material3.Card
+import androidx.compose.material3.CardDefaults
+import androidx.compose.material3.Divider
 import androidx.compose.material3.Icon
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedTextField
-import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.MutableState
-import androidx.compose.runtime.SideEffect
+import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
+import androidx.compose.ui.unit.IntOffset
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.compose.ui.window.Popup
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.paging.compose.LazyPagingItems
 import androidx.paging.compose.collectAsLazyPagingItems
-import com.alican.mvvm_starter.customViews.LoadingView
 import com.alican.mvvm_starter.customViews.TopBar
 import com.alican.mvvm_starter.domain.model.Error
 import com.alican.mvvm_starter.domain.model.Loading
@@ -50,7 +54,6 @@ import com.alican.mvvm_starter.domain.model.Success
 import com.alican.mvvm_starter.ui.home.loadImage
 import com.alican.mvvm_starter.ui.theme.Black
 import com.alican.mvvm_starter.ui.theme.White
-import com.google.android.material.dialog.MaterialAlertDialogBuilder
 
 @Composable
 fun ListScreen(
@@ -64,6 +67,8 @@ fun ListScreen(
     val favoritesState = viewModel.favorites.collectAsStateWithLifecycle()
     val searchQuery: MutableState<String> = remember { mutableStateOf("") }
 
+    var popupControl by remember { mutableStateOf(false) }
+
     LaunchedEffect(key1 = searchQuery.value) {
         if (searchQuery.value.length > 2) {
             viewModel.searchMovies(searchQuery.value)
@@ -71,25 +76,55 @@ fun ListScreen(
             viewModel.getData(viewModel.argument)
         }
     }
+    if (popupControl) {
 
-    val context = LocalContext.current
+    }
+
+//    if (popupControl) {
+//        Popup(
+//            alignment = Alignment.Center,
+//            offset = IntOffset(0, 0),
+//            onDismissRequest = { popupControl = false }
+//        ) {
+//            Card(
+//                modifier = Modifier
+//                    .width(270.dp)
+//                    .height(150.dp)
+//                    .background(MaterialTheme.colorScheme.background)
+//                    .padding(16.dp)
+//            ) {
+//                Column {
+//                    Row(
+//                        horizontalArrangement = Arrangement.SpaceBetween,
+//                        modifier = Modifier.fillMaxWidth()
+//                    ) {
+//                        Text(
+//                            text = "Uyarı",
+//                            fontSize = 20.sp,
+//                            color = Color.Red
+//                        )
+//                        IconButton(
+//                            onClick = { popupControl = false },
+//                            modifier = Modifier.size(24.dp)
+//                        ) {
+//                            Icon(Icons.Default.Close, contentDescription = null)
+//                        }
+//                    }
+//                    Spacer(modifier = Modifier.height(16.dp))
+//                    Text("Bu bir pop-up mesajıdır.")
+//                }
+//            }
+//        }
+//    }
 
     when (favoritesState.value) {
         is Error -> {}
         is Loading -> {
-            LoadingView()
         }
 
         is Success -> {
-            SideEffect {
-                MaterialAlertDialogBuilder(
-                    context
-                )
-                    .setMessage("Movie Added to your Favorites.")
-                    .setNeutralButton("OK") { dialog, which ->
-                        dialog.dismiss()
-                    }
-                    .show()
+            LaunchedEffect(key1 = Unit) {
+                popupControl = true
             }
         }
     }
@@ -121,61 +156,56 @@ fun statelessList(
     onSearchQueryChange: (String) -> Unit
 
 ) {
-    Scaffold(
-        topBar = {
-            TopBar(
-                title = title,
-                showBackButton = true,
-                onBackClick = { popBackStack("-1") },
-                showFavoriteButton = true,
-                onFavoriteClick = { openFavorites("favorites") })
-        },
 
-        content = { padding ->
-            Column(
-                modifier = Modifier
-                    .padding(padding)
-                    .padding(16.dp)
-            ) {
+    Column(
+        modifier = Modifier
+            .padding(16.dp)
+    ) {
 
-                OutlinedTextField(
-                    value = searchQuery, onValueChange = {
-                        onSearchQueryChange(it)
+        TopBar(
+            title = title,
+            showBackButton = true,
+            onBackClick = { popBackStack("-1") },
+            showFavoriteButton = true,
+            onFavoriteClick = { openFavorites("favorites") })
 
+        OutlinedTextField(
+            value = searchQuery, onValueChange = {
+                onSearchQueryChange(it)
+
+            },
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(top = 16.dp),
+            shape = CircleShape,
+            placeholder = {
+                Text(text = "Search...")
+            },
+            maxLines = 1,
+            singleLine = true
+        )
+
+        Spacer(modifier = Modifier.height(8.dp))
+        LazyVerticalGrid(
+            columns = GridCells.Fixed(2)
+        ) {
+            items(movies.itemCount, key = { it }) { index ->
+                MovieItem(movie = movies[index]!!,
+                    onFavoriteClick = {
+                        onFavoriteClick(it)
                     },
-                    modifier = Modifier
-                        .fillMaxWidth(),
-                    shape = CircleShape,
-                    placeholder = {
-                        Text(text = "Search...")
-                    },
-                    maxLines = 1,
-                    singleLine = true
-                )
-
-                Spacer(modifier = Modifier.height(8.dp))
-                LazyVerticalGrid(
-                    columns = GridCells.Fixed(2)
-                ) {
-                    items(movies.itemCount, key = { it }) { index ->
-                        MovieItem(movie = movies[index]!!,
-                            onFavoriteClick = {
-                                onFavoriteClick(it)
-                            },
-                            onItemClick = {
-                                openDetail(
-                                    "detail/{id}".replace(
-                                        oldValue = "{id}",
-                                        newValue = it.toString()
-                                    )
-                                )
-                            })
-                    }
-                }
-
+                    onItemClick = {
+                        openDetail(
+                            "detail/{id}".replace(
+                                oldValue = "{id}",
+                                newValue = it.toString()
+                            )
+                        )
+                    })
             }
         }
-    )
+
+    }
 }
 
 @Composable
@@ -233,4 +263,83 @@ fun MovieItem(
             }
         }
     }
+}
+
+
+@Composable
+fun popUp(
+
+    onDismissRequest: () -> Unit,
+) {
+    Popup(
+        alignment = Alignment.Center,
+        offset = IntOffset(0, 0),
+        onDismissRequest = { onDismissRequest() }
+    ) {
+        Card(
+            modifier = Modifier
+                .height(132.dp)
+                .fillMaxWidth(0.72f),
+            elevation = CardDefaults.cardElevation(2.dp),
+            shape = RoundedCornerShape(14.dp),
+            colors = CardDefaults.cardColors(containerColor = Color.White),
+        ) {
+            Column {
+                Row(
+                    Modifier
+                        .fillMaxWidth()
+                        .height(44.dp)
+                        .clickable {
+                            onDismissRequest()
+                        }, horizontalArrangement = Arrangement.Center
+                ) {
+                    Spacer(modifier = Modifier.width(15.dp))
+                    Text(
+                        text = "Ürün sepetinize eklendi",
+                        modifier = Modifier
+                            .align(Alignment.CenterVertically),
+                        color = MaterialTheme.colorScheme.tertiary,
+                        textAlign = TextAlign.Center
+                    )
+                }
+                Divider(Modifier.fillMaxWidth())
+                Row(
+                    Modifier
+                        .fillMaxWidth()
+                        .height(44.dp)
+                        .clickable {
+                            onDismissRequest()
+                        },
+                    horizontalArrangement = Arrangement.Center
+                ) {
+                    Text(
+                        text = "Sepete Git",
+                        modifier = Modifier
+                            .padding(top = 10.dp),
+                        color = MaterialTheme.colorScheme.tertiary,
+                        textAlign = TextAlign.Center
+                    )
+                }
+                Divider(Modifier.fillMaxWidth())
+                Row(
+                    Modifier
+                        .fillMaxWidth()
+                        .height(44.dp)
+                        .clickable {
+                            onDismissRequest()
+                        },
+                    horizontalArrangement = Arrangement.Center
+                ) {
+                    Text(
+                        text = "Alışverişe Devam Et",
+                        modifier = Modifier
+                            .padding(top = 10.dp),
+                        color = MaterialTheme.colorScheme.tertiary,
+                        textAlign = TextAlign.Center
+                    )
+                }
+            }
+        }
+    }
+
 }

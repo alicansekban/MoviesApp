@@ -11,7 +11,9 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
+import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
@@ -103,6 +105,21 @@ fun stateLessFavorites(
                     .padding(padding)
                     .padding(top = 8.dp)
             ) {
+
+                OutlinedTextField(
+                    value = searchQuery, onValueChange = {
+                        onSearchQueryChange(it)
+
+                    },
+                    modifier = Modifier
+                        .fillMaxWidth().padding(start = 16.dp, end = 16.dp),
+                    shape = CircleShape,
+                    placeholder = {
+                        Text(text = "Search...")
+                    },
+                    maxLines = 1,
+                    singleLine = true
+                )
                 Spacer(modifier = Modifier.height(8.dp))
                 LazyVerticalGrid(
                     columns = GridCells.Fixed(2)

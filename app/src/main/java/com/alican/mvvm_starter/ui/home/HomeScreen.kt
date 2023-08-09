@@ -25,6 +25,9 @@ import androidx.compose.foundation.pager.rememberPagerState
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
+import androidx.compose.material.BottomNavigation
+import androidx.compose.material.BottomNavigationItem
+import androidx.compose.material.Icon
 import androidx.compose.material3.Card
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
@@ -45,6 +48,8 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import androidx.navigation.compose.currentBackStackEntryAsState
+import androidx.navigation.compose.rememberNavController
 import com.alican.mvvm_starter.R
 import com.alican.mvvm_starter.customViews.TopBar
 import com.alican.mvvm_starter.domain.model.BaseUIModel
@@ -55,6 +60,7 @@ import com.alican.mvvm_starter.domain.model.Success
 import com.alican.mvvm_starter.ui.theme.Black
 import com.alican.mvvm_starter.ui.theme.White
 import com.alican.mvvm_starter.util.Constant
+import com.alican.mvvm_starter.util.Screen
 import com.bumptech.glide.integration.compose.ExperimentalGlideComposeApi
 import com.bumptech.glide.integration.compose.GlideImage
 import kotlin.math.absoluteValue
@@ -73,7 +79,7 @@ fun HomeScreen(
     val nowPlayingMovies by viewModel.nowPlayingMovies.collectAsStateWithLifecycle()
     val topRatedMovies by viewModel.topRatedMovies.collectAsStateWithLifecycle()
     val upComingMovies by viewModel.upComingMovies.collectAsStateWithLifecycle()
-    
+
     statelessHome(
         popularMovies,
         nowPlayingMovies,
@@ -96,14 +102,37 @@ fun statelessHome(
     openDetail: (String) -> Unit,
     openFavorites: (String) -> Unit
 ) {
+    val navController = rememberNavController()
     Scaffold(
+        bottomBar = {
+            BottomNavigation {
+                val navBackStackEntry by navController.currentBackStackEntryAsState()
+                val currentRoute = navBackStackEntry?.destination?.route
+                listOf(
+                    Screen.Home,
+                    Screen.More
+                ).forEach { screen ->
+                    BottomNavigationItem(
+                        icon = { Icon(imageVector = screen.icon, contentDescription = null) },
+                        label = { Text(text = screen.title) },
+                        selected = currentRoute == screen.route,
+                        onClick = {
+                            navController.navigate(screen.route) {
+                                popUpTo(navController.graph.startDestinationId)
+                                launchSingleTop = true
+                            }
+                        }
+                    )
+                }
+            }
+        },
         topBar = {
             TopBar(
                 title = stringResource(id = R.string.get_home_title),
                 showBackButton = false,
                 onBackClick = {},
                 showFavoriteButton = true,
-                onFavoriteClick = {openFavorites("favorites")}
+                onFavoriteClick = { openFavorites("favorites") }
             )
         }
     ) { padding ->
@@ -137,7 +166,8 @@ fun statelessHome(
                         ) { index ->
                             Box(modifier = Modifier
                                 .graphicsLayer {
-                                    val pageOffset = pagerState.calculateCurrentOffsetForPage(index)
+                                    val pageOffset =
+                                        pagerState.calculateCurrentOffsetForPage(index)
                                     val offScreenRight = pageOffset < 0f
                                     val deg = 105f
                                     val interpolated =
@@ -375,7 +405,10 @@ fun HomeMovieItem(movie: MovieUIModel, onItemClick: (Int) -> Unit) {
                 onItemClick(movie.id)
             }
             Spacer(modifier = Modifier.height(8.dp))
-            Row(horizontalArrangement = Arrangement.Center, modifier = Modifier.fillMaxWidth()) {
+            Row(
+                horizontalArrangement = Arrangement.Center,
+                modifier = Modifier.fillMaxWidth()
+            ) {
                 Text(
                     text = movie.title,
                     style = TextStyle.Default,
