@@ -29,13 +29,12 @@ class MoviesListViewModel @Inject constructor(
     @ApplicationContext private val context: Context
 ) : ViewModel() {
 
-    val initialFavoritesValue = Loading<Boolean>()
 
 
     private val _movies = MutableStateFlow<PagingData<MovieUIModel>>(PagingData.empty())
     val movies: StateFlow<PagingData<MovieUIModel>> get() = _movies
 
-    private val _favorites = MutableStateFlow<BaseUIModel<Boolean>>(initialFavoritesValue)
+    private val _favorites = MutableStateFlow<BaseUIModel<Boolean>>(Loading())
     val favorites: StateFlow<BaseUIModel<Boolean>> get() = _favorites
 
 

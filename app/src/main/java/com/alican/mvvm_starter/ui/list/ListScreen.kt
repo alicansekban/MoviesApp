@@ -44,14 +44,10 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.compose.ui.window.Popup
 import androidx.hilt.navigation.compose.hiltViewModel
-import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.paging.compose.LazyPagingItems
 import androidx.paging.compose.collectAsLazyPagingItems
 import com.alican.mvvm_starter.customViews.TopBar
-import com.alican.mvvm_starter.domain.model.Error
-import com.alican.mvvm_starter.domain.model.Loading
 import com.alican.mvvm_starter.domain.model.MovieUIModel
-import com.alican.mvvm_starter.domain.model.Success
 import com.alican.mvvm_starter.ui.home.loadImage
 import com.alican.mvvm_starter.ui.theme.Black
 import com.alican.mvvm_starter.ui.theme.White
@@ -65,33 +61,13 @@ fun ListScreen(
 ) {
 
     val movies = viewModel.movies.collectAsLazyPagingItems()
-    val favoritesState = viewModel.favorites.collectAsStateWithLifecycle()
     val searchQuery: MutableState<String> = remember { mutableStateOf("") }
-
-    var popupControl by remember { mutableStateOf(false) }
 
     LaunchedEffect(key1 = searchQuery.value) {
         if (searchQuery.value.length > 2) {
             viewModel.searchMovies(searchQuery.value)
         } else if (searchQuery.value.isEmpty()) {
             viewModel.getData(viewModel.argument)
-        }
-    }
-    if (popupControl) {
-        popUp {
-            popupControl = false
-        }
-    }
-    when (favoritesState.value) {
-        is Error -> {}
-        is Loading -> {
-        }
-
-        is Success -> {
-            LaunchedEffect(key1 = Unit) {
-                popupControl = true
-            }
-
         }
     }
 
@@ -125,7 +101,14 @@ fun statelessList(
     onSearchQueryChange: (String) -> Unit
 
 ) {
+    var popupControl by remember { mutableStateOf(false) }
 
+    if (popupControl) {
+        popUp(
+            onDismissRequest = { popupControl = false },
+            openFavorites = { openFavorites("favorites") }
+        )
+    }
 
     Scaffold(
         topBar = {
@@ -166,6 +149,7 @@ fun statelessList(
                     items(movies.itemCount, key = { it }) { index ->
                         MovieItem(movie = movies[index]!!,
                             onFavoriteClick = {
+                                popupControl = true
                                 onFavoriteClick(it)
                             },
                             onItemClick = {
@@ -245,6 +229,7 @@ fun MovieItem(
 @Composable
 fun popUp(
     onDismissRequest: () -> Unit,
+    openFavorites: () -> Unit
 ) {
     Popup(
         alignment = Alignment.Center,
@@ -283,7 +268,7 @@ fun popUp(
                         .fillMaxWidth()
                         .height(44.dp)
                         .clickable {
-                            onDismissRequest()
+                            openFavorites()
                         },
                     horizontalArrangement = Arrangement.Center
                 ) {
