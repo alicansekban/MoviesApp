@@ -23,6 +23,7 @@ import androidx.compose.material3.Divider
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedTextField
+import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -77,46 +78,10 @@ fun ListScreen(
         }
     }
     if (popupControl) {
-
+        popUp {
+            popupControl = false
+        }
     }
-
-//    if (popupControl) {
-//        Popup(
-//            alignment = Alignment.Center,
-//            offset = IntOffset(0, 0),
-//            onDismissRequest = { popupControl = false }
-//        ) {
-//            Card(
-//                modifier = Modifier
-//                    .width(270.dp)
-//                    .height(150.dp)
-//                    .background(MaterialTheme.colorScheme.background)
-//                    .padding(16.dp)
-//            ) {
-//                Column {
-//                    Row(
-//                        horizontalArrangement = Arrangement.SpaceBetween,
-//                        modifier = Modifier.fillMaxWidth()
-//                    ) {
-//                        Text(
-//                            text = "Uyarı",
-//                            fontSize = 20.sp,
-//                            color = Color.Red
-//                        )
-//                        IconButton(
-//                            onClick = { popupControl = false },
-//                            modifier = Modifier.size(24.dp)
-//                        ) {
-//                            Icon(Icons.Default.Close, contentDescription = null)
-//                        }
-//                    }
-//                    Spacer(modifier = Modifier.height(16.dp))
-//                    Text("Bu bir pop-up mesajıdır.")
-//                }
-//            }
-//        }
-//    }
-
     when (favoritesState.value) {
         is Error -> {}
         is Loading -> {
@@ -126,8 +91,12 @@ fun ListScreen(
             LaunchedEffect(key1 = Unit) {
                 popupControl = true
             }
+
         }
     }
+
+
+
     statelessList(
         openDetail = openDetail,
         popBackStack = popBackStack,
@@ -157,55 +126,62 @@ fun statelessList(
 
 ) {
 
-    Column(
-        modifier = Modifier
-            .padding(16.dp)
-    ) {
 
-        TopBar(
-            title = title,
-            showBackButton = true,
-            onBackClick = { popBackStack("-1") },
-            showFavoriteButton = true,
-            onFavoriteClick = { openFavorites("favorites") })
+    Scaffold(
+        topBar = {
+            TopBar(
+                title = title,
+                showBackButton = true,
+                onBackClick = { popBackStack("-1") },
+                showFavoriteButton = true,
+                onFavoriteClick = { openFavorites("favorites") })
+        },
 
-        OutlinedTextField(
-            value = searchQuery, onValueChange = {
-                onSearchQueryChange(it)
+        content = { padding ->
+            Column(
+                modifier = Modifier
+                    .padding(padding)
+                    .padding(16.dp)
+            ) {
 
-            },
-            modifier = Modifier
-                .fillMaxWidth()
-                .padding(top = 16.dp),
-            shape = CircleShape,
-            placeholder = {
-                Text(text = "Search...")
-            },
-            maxLines = 1,
-            singleLine = true
-        )
+                OutlinedTextField(
+                    value = searchQuery, onValueChange = {
+                        onSearchQueryChange(it)
 
-        Spacer(modifier = Modifier.height(8.dp))
-        LazyVerticalGrid(
-            columns = GridCells.Fixed(2)
-        ) {
-            items(movies.itemCount, key = { it }) { index ->
-                MovieItem(movie = movies[index]!!,
-                    onFavoriteClick = {
-                        onFavoriteClick(it)
                     },
-                    onItemClick = {
-                        openDetail(
-                            "detail/{id}".replace(
-                                oldValue = "{id}",
-                                newValue = it.toString()
-                            )
-                        )
-                    })
+                    modifier = Modifier
+                        .fillMaxWidth(),
+                    shape = CircleShape,
+                    placeholder = {
+                        Text(text = "Search...")
+                    },
+                    maxLines = 1,
+                    singleLine = true
+                )
+
+                Spacer(modifier = Modifier.height(8.dp))
+                LazyVerticalGrid(
+                    columns = GridCells.Fixed(2)
+                ) {
+                    items(movies.itemCount, key = { it }) { index ->
+                        MovieItem(movie = movies[index]!!,
+                            onFavoriteClick = {
+                                onFavoriteClick(it)
+                            },
+                            onItemClick = {
+                                openDetail(
+                                    "detail/{id}".replace(
+                                        oldValue = "{id}",
+                                        newValue = it.toString()
+                                    )
+                                )
+                            })
+                    }
+                }
+
             }
         }
-
-    }
+    )
 }
 
 @Composable
@@ -268,7 +244,6 @@ fun MovieItem(
 
 @Composable
 fun popUp(
-
     onDismissRequest: () -> Unit,
 ) {
     Popup(
@@ -278,7 +253,7 @@ fun popUp(
     ) {
         Card(
             modifier = Modifier
-                .height(132.dp)
+                .height(90.dp)
                 .fillMaxWidth(0.72f),
             elevation = CardDefaults.cardElevation(2.dp),
             shape = RoundedCornerShape(14.dp),
@@ -295,7 +270,7 @@ fun popUp(
                 ) {
                     Spacer(modifier = Modifier.width(15.dp))
                     Text(
-                        text = "Ürün sepetinize eklendi",
+                        text = "Movie added to your favorites",
                         modifier = Modifier
                             .align(Alignment.CenterVertically),
                         color = MaterialTheme.colorScheme.tertiary,
@@ -313,31 +288,14 @@ fun popUp(
                     horizontalArrangement = Arrangement.Center
                 ) {
                     Text(
-                        text = "Sepete Git",
+                        text = "Go to favorites",
                         modifier = Modifier
                             .padding(top = 10.dp),
                         color = MaterialTheme.colorScheme.tertiary,
                         textAlign = TextAlign.Center
                     )
                 }
-                Divider(Modifier.fillMaxWidth())
-                Row(
-                    Modifier
-                        .fillMaxWidth()
-                        .height(44.dp)
-                        .clickable {
-                            onDismissRequest()
-                        },
-                    horizontalArrangement = Arrangement.Center
-                ) {
-                    Text(
-                        text = "Alışverişe Devam Et",
-                        modifier = Modifier
-                            .padding(top = 10.dp),
-                        color = MaterialTheme.colorScheme.tertiary,
-                        textAlign = TextAlign.Center
-                    )
-                }
+
             }
         }
     }

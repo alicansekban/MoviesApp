@@ -25,9 +25,6 @@ import androidx.compose.foundation.pager.rememberPagerState
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
-import androidx.compose.material.BottomNavigation
-import androidx.compose.material.BottomNavigationItem
-import androidx.compose.material.Icon
 import androidx.compose.material3.Card
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
@@ -48,8 +45,6 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
-import androidx.navigation.compose.currentBackStackEntryAsState
-import androidx.navigation.compose.rememberNavController
 import com.alican.mvvm_starter.R
 import com.alican.mvvm_starter.customViews.TopBar
 import com.alican.mvvm_starter.domain.model.BaseUIModel
@@ -60,7 +55,6 @@ import com.alican.mvvm_starter.domain.model.Success
 import com.alican.mvvm_starter.ui.theme.Black
 import com.alican.mvvm_starter.ui.theme.White
 import com.alican.mvvm_starter.util.Constant
-import com.alican.mvvm_starter.util.Screen
 import com.bumptech.glide.integration.compose.ExperimentalGlideComposeApi
 import com.bumptech.glide.integration.compose.GlideImage
 import kotlin.math.absoluteValue
@@ -102,29 +96,9 @@ fun statelessHome(
     openDetail: (String) -> Unit,
     openFavorites: (String) -> Unit
 ) {
-    val navController = rememberNavController()
     Scaffold(
         bottomBar = {
-            BottomNavigation {
-                val navBackStackEntry by navController.currentBackStackEntryAsState()
-                val currentRoute = navBackStackEntry?.destination?.route
-                listOf(
-                    Screen.Home,
-                    Screen.More
-                ).forEach { screen ->
-                    BottomNavigationItem(
-                        icon = { Icon(imageVector = screen.icon, contentDescription = null) },
-                        label = { Text(text = screen.title) },
-                        selected = currentRoute == screen.route,
-                        onClick = {
-                            navController.navigate(screen.route) {
-                                popUpTo(navController.graph.startDestinationId)
-                                launchSingleTop = true
-                            }
-                        }
-                    )
-                }
-            }
+
         },
         topBar = {
             TopBar(
