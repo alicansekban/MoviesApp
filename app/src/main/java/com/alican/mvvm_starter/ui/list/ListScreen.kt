@@ -29,6 +29,7 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.MutableState
+import androidx.compose.runtime.State
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -44,10 +45,15 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.compose.ui.window.Popup
 import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.paging.compose.LazyPagingItems
 import androidx.paging.compose.collectAsLazyPagingItems
 import com.alican.mvvm_starter.customViews.TopBar
+import com.alican.mvvm_starter.domain.model.BaseUIModel
+import com.alican.mvvm_starter.domain.model.Error
+import com.alican.mvvm_starter.domain.model.Loading
 import com.alican.mvvm_starter.domain.model.MovieUIModel
+import com.alican.mvvm_starter.domain.model.Success
 import com.alican.mvvm_starter.ui.home.loadImage
 import com.alican.mvvm_starter.ui.theme.Black
 import com.alican.mvvm_starter.ui.theme.White
@@ -61,6 +67,7 @@ fun ListScreen(
 ) {
 
     val movies = viewModel.movies.collectAsLazyPagingItems()
+    val state = viewModel.favorites.collectAsStateWithLifecycle()
     val searchQuery: MutableState<String> = remember { mutableStateOf("") }
 
     LaunchedEffect(key1 = searchQuery.value) {
@@ -83,7 +90,8 @@ fun ListScreen(
         searchQuery = searchQuery.value,
         onSearchQueryChange = { newValue ->
             searchQuery.value = newValue
-        }
+        },
+        state
     )
 
 
@@ -98,7 +106,8 @@ fun statelessList(
     title: String,
     movies: LazyPagingItems<MovieUIModel>,
     searchQuery: String,
-    onSearchQueryChange: (String) -> Unit
+    onSearchQueryChange: (String) -> Unit,
+    favoriteState : State<BaseUIModel<Boolean>>
 
 ) {
     var popupControl by remember { mutableStateOf(false) }
@@ -108,6 +117,13 @@ fun statelessList(
             onDismissRequest = { popupControl = false },
             openFavorites = { openFavorites("favorites") }
         )
+    }
+    when (favoriteState.value) {
+        is Error -> {}
+        is Loading -> {}
+        is Success -> {
+            popupControl = true
+        }
     }
 
     Scaffold(
@@ -149,7 +165,6 @@ fun statelessList(
                     items(movies.itemCount, key = { it }) { index ->
                         MovieItem(movie = movies[index]!!,
                             onFavoriteClick = {
-                                popupControl = true
                                 onFavoriteClick(it)
                             },
                             onItemClick = {
