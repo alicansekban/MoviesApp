@@ -13,6 +13,7 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
+import androidx.compose.foundation.lazy.grid.rememberLazyGridState
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
@@ -41,7 +42,6 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.alican.mvvm_starter.customViews.LoadingView
 import com.alican.mvvm_starter.customViews.TopBar
 import com.alican.mvvm_starter.data.local.model.FavoritesEntity
-import com.alican.mvvm_starter.domain.model.BaseUIModel
 import com.alican.mvvm_starter.domain.model.Error
 import com.alican.mvvm_starter.domain.model.Loading
 import com.alican.mvvm_starter.domain.model.Success
@@ -70,7 +70,13 @@ fun FavoritesScreen(
             viewModel.getFavorites("")
         }
     }
-
+    when (removedState) {
+        is Error -> {}
+        is Loading -> {LoadingView()}
+        is Success -> {
+                viewModel.getFavorites()
+        }
+    }
     when (movies) {
         is Error ->  {}
         is Loading -> { LoadingView()}
@@ -84,7 +90,6 @@ fun FavoritesScreen(
                 onSearchQueryChange = { newValue ->
                     searchQuery.value = newValue
                 },
-                removeState = removedState,
                 removeFavoriteClicked =  {
                     viewModel.removeFavoriteMovie(it)
                 }
@@ -101,19 +106,8 @@ fun stateLessFavorites(
     popBackStack: (String) -> Unit,
     searchQuery: String,
     onSearchQueryChange: (String) -> Unit,
-    removeState : BaseUIModel<Any>,
     removeFavoriteClicked : (Int) -> Unit
 ) {
-
-
-    when (removeState) {
-        is Error ->{}
-        is Loading -> {}
-        is Success -> {
-            popBackStack("-1")
-        }
-    }
-
     Scaffold(
         topBar = {
             TopBar(
@@ -148,7 +142,8 @@ fun stateLessFavorites(
                 )
                 Spacer(modifier = Modifier.height(8.dp))
                 LazyVerticalGrid(
-                    columns = GridCells.Fixed(2)
+                    columns = GridCells.Fixed(2),
+                    state = rememberLazyGridState()
                 ) {
                     items(movies.size, key = { it }) { index ->
                         if (movies.isEmpty()) {

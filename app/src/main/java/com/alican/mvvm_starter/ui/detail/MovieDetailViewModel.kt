@@ -4,6 +4,7 @@ import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import androidx.paging.PagingData
+import androidx.paging.cachedIn
 import com.alican.mvvm_starter.data.local.model.ReviewsEntity
 import com.alican.mvvm_starter.data.repository.HomeMoviesRepository
 import com.alican.mvvm_starter.domain.interactor.MovieDetailInteractor
@@ -42,7 +43,8 @@ class MovieDetailViewModel @Inject constructor(
 
 
     private val _reviews = MutableStateFlow<PagingData<ReviewsEntity>>(PagingData.empty())
-    val reviews: StateFlow<PagingData<ReviewsEntity>> get() = _reviews
+    val reviews: StateFlow<PagingData<ReviewsEntity>> get() = _reviews.stateIn(viewModelScope,
+        SharingStarted.Eagerly, PagingData.empty())
 
     init {
         getMovieDetail(argument.toInt())
@@ -54,7 +56,7 @@ class MovieDetailViewModel @Inject constructor(
     fun getReviews(id: Int) {
         viewModelScope.launch {
             try {
-                repository.discoverMovie(id)
+                repository.discoverMovie(id).cachedIn(viewModelScope)
                     .collectLatest { movies ->
                         _reviews.emit(movies)
                     }

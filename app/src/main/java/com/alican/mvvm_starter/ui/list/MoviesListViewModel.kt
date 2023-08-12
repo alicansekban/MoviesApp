@@ -16,8 +16,10 @@ import com.alican.mvvm_starter.util.Constant
 import dagger.hilt.android.lifecycle.HiltViewModel
 import dagger.hilt.android.qualifiers.ApplicationContext
 import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.collectLatest
+import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
@@ -32,10 +34,12 @@ class MoviesListViewModel @Inject constructor(
 
 
     private val _movies = MutableStateFlow<PagingData<MovieUIModel>>(PagingData.empty())
-    val movies: StateFlow<PagingData<MovieUIModel>> get() = _movies
+    val movies: StateFlow<PagingData<MovieUIModel>> get() = _movies.stateIn(viewModelScope,
+        SharingStarted.Eagerly, PagingData.empty())
 
-    private val _favorites = MutableStateFlow<BaseUIModel<Boolean>>(Loading())
-    val favorites: StateFlow<BaseUIModel<Boolean>> get() = _favorites
+    private val _favorites = MutableStateFlow<BaseUIModel<Any>>(Loading())
+    val favorites: StateFlow<BaseUIModel<Any>> get() = _favorites.stateIn(viewModelScope,
+        SharingStarted.Eagerly,Loading())
 
 
     var title: String = ""

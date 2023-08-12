@@ -21,7 +21,7 @@ class FavoriteMoviesInteractor @Inject constructor(
     @ApplicationContext private val context: Context
 ) {
 
-    suspend fun insertFavoriteMovie(movie: MovieUIModel): Flow<BaseUIModel<Boolean>> {
+    suspend fun insertFavoriteMovie(movie: MovieUIModel): Flow<BaseUIModel<Any>> {
         return flow {
             emit(Loading())
             emit(

@@ -13,6 +13,7 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
+import androidx.compose.foundation.lazy.grid.rememberLazyGridState
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
@@ -30,7 +31,6 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.MutableState
-import androidx.compose.runtime.State
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -38,6 +38,7 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
@@ -51,11 +52,7 @@ import androidx.paging.LoadState
 import androidx.paging.compose.LazyPagingItems
 import androidx.paging.compose.collectAsLazyPagingItems
 import com.alican.mvvm_starter.customViews.TopBar
-import com.alican.mvvm_starter.domain.model.BaseUIModel
-import com.alican.mvvm_starter.domain.model.Error
-import com.alican.mvvm_starter.domain.model.Loading
 import com.alican.mvvm_starter.domain.model.MovieUIModel
-import com.alican.mvvm_starter.domain.model.Success
 import com.alican.mvvm_starter.ui.home.loadImage
 import com.alican.mvvm_starter.ui.theme.Black
 import com.alican.mvvm_starter.ui.theme.White
@@ -67,6 +64,8 @@ fun ListScreen(
     openFavorites: (String) -> Unit,
     viewModel: MoviesListViewModel = hiltViewModel()
 ) {
+
+    val context = LocalContext.current
 
     val movies = viewModel.movies.collectAsLazyPagingItems()
     val state = viewModel.favorites.collectAsStateWithLifecycle()
@@ -80,8 +79,6 @@ fun ListScreen(
         }
     }
 
-
-
     statelessList(
         openDetail = openDetail,
         popBackStack = popBackStack,
@@ -92,8 +89,7 @@ fun ListScreen(
         searchQuery = searchQuery.value,
         onSearchQueryChange = { newValue ->
             searchQuery.value = newValue
-        },
-        state
+        }
     )
 
 
@@ -108,25 +104,17 @@ fun statelessList(
     title: String,
     movies: LazyPagingItems<MovieUIModel>,
     searchQuery: String,
-    onSearchQueryChange: (String) -> Unit,
-    favoriteState: State<BaseUIModel<Boolean>>
+    onSearchQueryChange: (String) -> Unit
 
 ) {
     var popupControl by remember { mutableStateOf(false) }
-
     if (popupControl) {
         popUp(
             onDismissRequest = { popupControl = false },
             openFavorites = { openFavorites("favorites") }
         )
     }
-    when (favoriteState.value) {
-        is Error -> {}
-        is Loading -> {}
-        is Success -> {
-            popupControl = true
-        }
-    }
+
 
     Scaffold(
         topBar = {
@@ -162,7 +150,8 @@ fun statelessList(
 
                 Spacer(modifier = Modifier.height(8.dp))
                 LazyVerticalGrid(
-                    columns = GridCells.Fixed(2)
+                    columns = GridCells.Fixed(2),
+                    state = rememberLazyGridState()
                 ) {
                     items(movies.itemCount, key = { it }) { index ->
                         MovieItem(movie = movies[index]!!,

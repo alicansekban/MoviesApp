@@ -10,11 +10,10 @@ class FavoritesLocalDataSource @Inject constructor(
     private val db: AppDatabase
 ) {
 
-    suspend fun insertFavoriteMovie(movie: FavoritesEntity): ResultWrapper<Boolean> {
+    suspend fun insertFavoriteMovie(movie: FavoritesEntity): ResultWrapper<Any> {
         return try {
             ResultWrapper.Loading
-            db.favoritesDao().insertFavoriteMovie(movie)
-            ResultWrapper.Success(true)
+            ResultWrapper.Success(db.favoritesDao().insertFavoriteMovie(movie))
         } catch (e: Exception) {
             ResultWrapper.GenericError()
         }

@@ -9,7 +9,7 @@ class FavoriteMoviesRepository @Inject constructor(
     private val localDataSource: FavoritesLocalDataSource
 ) {
 
-    suspend fun insertFavoriteMovie(movie: FavoritesEntity) : ResultWrapper<Boolean> {
+    suspend fun insertFavoriteMovie(movie: FavoritesEntity) : ResultWrapper<Any> {
         return localDataSource.insertFavoriteMovie(movie = movie)
     }
 
