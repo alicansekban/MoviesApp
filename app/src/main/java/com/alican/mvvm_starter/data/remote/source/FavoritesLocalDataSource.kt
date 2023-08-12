@@ -15,17 +15,26 @@ class FavoritesLocalDataSource @Inject constructor(
             ResultWrapper.Loading
             db.favoritesDao().insertFavoriteMovie(movie)
             ResultWrapper.Success(true)
-        } catch (e : Exception) {
+        } catch (e: Exception) {
             ResultWrapper.GenericError()
         }
 
     }
 
-    fun getFavoriteMovies(searchQuery:String): ResultWrapper<List<FavoritesEntity>> {
+    fun getFavoriteMovies(searchQuery: String): ResultWrapper<List<FavoritesEntity>> {
         return try {
             ResultWrapper.Loading
             ResultWrapper.Success(db.favoritesDao().getFavoriteMovies(searchQuery))
 
+        } catch (e: Exception) {
+            ResultWrapper.GenericError(error = ErrorResponse(message = e.message))
+        }
+    }
+
+    suspend fun removeMovieFromFavorites(id: Int): ResultWrapper<Any> {
+        return try {
+            ResultWrapper.Loading
+            ResultWrapper.Success(db.favoritesDao().removeFromFavorite(id))
         } catch (e: Exception) {
             ResultWrapper.GenericError(error = ErrorResponse(message = e.message))
         }

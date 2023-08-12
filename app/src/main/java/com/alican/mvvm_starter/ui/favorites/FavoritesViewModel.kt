@@ -6,6 +6,7 @@ import com.alican.mvvm_starter.data.local.model.FavoritesEntity
 import com.alican.mvvm_starter.domain.model.BaseUIModel
 import com.alican.mvvm_starter.domain.model.Loading
 import com.alican.mvvm_starter.domain.usecase.FavoriteMoviesUseCase
+import com.alican.mvvm_starter.domain.usecase.FavoriteRemoveMovieUseCase
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -16,11 +17,15 @@ import javax.inject.Inject
 
 @HiltViewModel
 class FavoritesViewModel @Inject constructor(
-    private val useCase: FavoriteMoviesUseCase
+    private val useCase: FavoriteMoviesUseCase,
+    private val removeMovieUseCase: FavoriteRemoveMovieUseCase
 ) : ViewModel() {
 
     private val _favoriteMovies = MutableStateFlow<BaseUIModel<List<FavoritesEntity>>>(Loading())
     val favoriteMovies: StateFlow<BaseUIModel<List<FavoritesEntity>>> get() = _favoriteMovies
+
+    private val _removeFavoriteMovie = MutableStateFlow<BaseUIModel<Any>>(Loading())
+    val removeFavoriteMovie: StateFlow<BaseUIModel<Any>> get() = _removeFavoriteMovie
 
     init {
         getFavorites()
@@ -30,6 +35,14 @@ class FavoritesViewModel @Inject constructor(
         viewModelScope.launch(Dispatchers.IO) {
             useCase(searchQuery).collectLatest {
                 _favoriteMovies.emit(it)
+            }
+        }
+    }
+
+    fun removeFavoriteMovie(id:Int) {
+        viewModelScope.launch(Dispatchers.IO) {
+            removeMovieUseCase(id).collectLatest {
+                _removeFavoriteMovie.emit(it)
             }
         }
     }

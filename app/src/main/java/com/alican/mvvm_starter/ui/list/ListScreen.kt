@@ -19,6 +19,7 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Favorite
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
+import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.Divider
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
@@ -46,6 +47,7 @@ import androidx.compose.ui.unit.sp
 import androidx.compose.ui.window.Popup
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import androidx.paging.LoadState
 import androidx.paging.compose.LazyPagingItems
 import androidx.paging.compose.collectAsLazyPagingItems
 import com.alican.mvvm_starter.customViews.TopBar
@@ -107,7 +109,7 @@ fun statelessList(
     movies: LazyPagingItems<MovieUIModel>,
     searchQuery: String,
     onSearchQueryChange: (String) -> Unit,
-    favoriteState : State<BaseUIModel<Boolean>>
+    favoriteState: State<BaseUIModel<Boolean>>
 
 ) {
     var popupControl by remember { mutableStateOf(false) }
@@ -176,6 +178,12 @@ fun statelessList(
                                 )
                             })
                     }
+                    item {
+                        if (movies.loadState.append is LoadState.Loading) {
+                            CircularProgressIndicator()
+                        }
+                    }
+
                 }
 
             }
@@ -199,24 +207,25 @@ fun MovieItem(
         color = White,
         shape = RoundedCornerShape(5.dp)
     ) {
-        Box(
-            modifier = Modifier
-                .width(120.dp)
-                .clickable { onItemClick(movie.id) }
-        ) {
-            loadImage(url = movie.getImagePath(), modifier = Modifier) {
-                onItemClick(movie.id)
+        Column(modifier = Modifier
+            .width(120.dp)
+            .clickable { onItemClick(movie.id) }) {
+            Box{
+                loadImage(url = movie.getImagePath(), modifier = Modifier) {
+                    onItemClick(movie.id)
+                }
+
+                Icon(
+                    Icons.Filled.Favorite, "Favori",
+                    modifier = Modifier
+                        .align(Alignment.BottomEnd) // Sağ üst köşeye hizalama
+                        .padding(8.dp)
+                        .background(Color.White, RoundedCornerShape(4.dp))
+                        .clickable { onFavoriteClick(movie) }
+                )
+
+
             }
-
-            Icon(
-                Icons.Filled.Favorite, "Favori",
-                modifier = Modifier
-                    .align(Alignment.BottomEnd) // Sağ üst köşeye hizalama
-                    .padding(8.dp)
-                    .background(Color.White, RoundedCornerShape(4.dp))
-                    .clickable { onFavoriteClick(movie) }
-            )
-
             Row(
                 horizontalArrangement = Arrangement.Center,
                 modifier = Modifier
@@ -237,6 +246,7 @@ fun MovieItem(
                 )
             }
         }
+
     }
 }
 

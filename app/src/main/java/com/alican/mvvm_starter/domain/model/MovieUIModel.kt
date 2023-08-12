@@ -10,7 +10,7 @@ data class MovieUIModel(
     val original_language: String,
     val overview: String,
     val poster_path: String? = null,
-    val release_date: String,
+    val release_date: String?,
     val title: String,
     val vote_average: Double,
     val adult : Boolean

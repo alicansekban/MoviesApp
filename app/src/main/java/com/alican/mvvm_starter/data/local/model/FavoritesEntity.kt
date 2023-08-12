@@ -12,6 +12,6 @@ data class FavoritesEntity(
     var title: String,
     var posterPath: String,
     var overview: String,
-    var releaseDate: String,
+    var releaseDate: String?,
     var voteAverage: Double,
 )

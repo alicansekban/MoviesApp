@@ -1,7 +1,9 @@
 package com.alican.mvvm_starter.ui.favorites
 
+import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
@@ -13,6 +15,9 @@ import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Favorite
+import androidx.compose.material3.Icon
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Surface
@@ -23,7 +28,9 @@ import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
@@ -34,6 +41,7 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.alican.mvvm_starter.customViews.LoadingView
 import com.alican.mvvm_starter.customViews.TopBar
 import com.alican.mvvm_starter.data.local.model.FavoritesEntity
+import com.alican.mvvm_starter.domain.model.BaseUIModel
 import com.alican.mvvm_starter.domain.model.Error
 import com.alican.mvvm_starter.domain.model.Loading
 import com.alican.mvvm_starter.domain.model.Success
@@ -49,6 +57,8 @@ fun FavoritesScreen(
 ) {
 
     val movies by viewModel.favoriteMovies.collectAsStateWithLifecycle()
+    val removedState by viewModel.removeFavoriteMovie.collectAsStateWithLifecycle()
+
 
     val searchQuery: MutableState<String> = remember { mutableStateOf("") }
 
@@ -73,6 +83,10 @@ fun FavoritesScreen(
                 searchQuery = searchQuery.value,
                 onSearchQueryChange = { newValue ->
                     searchQuery.value = newValue
+                },
+                removeState = removedState,
+                removeFavoriteClicked =  {
+                    viewModel.removeFavoriteMovie(it)
                 }
             )
         }
@@ -86,8 +100,19 @@ fun stateLessFavorites(
     openDetail: (String) -> Unit,
     popBackStack: (String) -> Unit,
     searchQuery: String,
-    onSearchQueryChange: (String) -> Unit
+    onSearchQueryChange: (String) -> Unit,
+    removeState : BaseUIModel<Any>,
+    removeFavoriteClicked : (Int) -> Unit
 ) {
+
+
+    when (removeState) {
+        is Error ->{}
+        is Loading -> {}
+        is Success -> {
+            popBackStack("-1")
+        }
+    }
 
     Scaffold(
         topBar = {
@@ -112,7 +137,8 @@ fun stateLessFavorites(
 
                     },
                     modifier = Modifier
-                        .fillMaxWidth().padding(start = 16.dp, end = 16.dp),
+                        .fillMaxWidth()
+                        .padding(start = 16.dp, end = 16.dp),
                     shape = CircleShape,
                     placeholder = {
                         Text(text = "Search...")
@@ -128,14 +154,20 @@ fun stateLessFavorites(
                         if (movies.isEmpty()) {
                             FavoritesEmptyUi()
                         } else {
-                            favoriteMoviesItem(movie = movies[index]) { id ->
-                                openDetail(
-                                    "detail/{id}".replace(
-                                        oldValue = "{id}",
-                                        newValue = id.toString()
+                            favoriteMoviesItem(
+                                movie = movies[index],
+                                onItemClick = {
+                                    openDetail(
+                                        "detail/{id}".replace(
+                                            oldValue = "{id}",
+                                            newValue = it.toString()
+                                        )
                                     )
-                                )
-                            }
+                                }
+                                ,
+                                onRemoveClick = {
+                                    removeFavoriteClicked(it)
+                                } )
                         }
 
                     }
@@ -149,7 +181,7 @@ fun stateLessFavorites(
 }
 
 @Composable
-fun favoriteMoviesItem(movie: FavoritesEntity, onItemClick: (Int) -> Unit) {
+fun favoriteMoviesItem(movie: FavoritesEntity, onItemClick: (Int) -> Unit,onRemoveClick : (Int) -> Unit) {
     // Movie item UI
 
     Surface(
@@ -160,16 +192,31 @@ fun favoriteMoviesItem(movie: FavoritesEntity, onItemClick: (Int) -> Unit) {
         color = White,
         shape = RoundedCornerShape(5.dp)
     ) {
-        Column(
-            modifier = Modifier
-                .width(120.dp)
-                .clickable { onItemClick(movie.id) }
-        ) {
-            loadImage(url = movie.posterPath, modifier = Modifier) {
-                onItemClick(movie.id)
+        Column(modifier = Modifier
+            .width(120.dp)
+            .clickable { onItemClick(movie.id) }) {
+            Box{
+                loadImage(url = movie.posterPath, modifier = Modifier) {
+                    onItemClick(movie.id)
+                }
+
+                Icon(
+                    Icons.Filled.Favorite, "Favori",
+                    modifier = Modifier
+                        .align(Alignment.BottomEnd) // Sağ üst köşeye hizalama
+                        .padding(8.dp)
+                        .background(Color.White, RoundedCornerShape(4.dp))
+                        .clickable { onRemoveClick(movie.id) }
+                )
+
+
             }
-            Spacer(modifier = Modifier.height(8.dp))
-            Row(horizontalArrangement = Arrangement.Center, modifier = Modifier.fillMaxWidth()) {
+            Row(
+                horizontalArrangement = Arrangement.Center,
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(top = 8.dp)
+            ) {
                 Text(
                     text = movie.title,
                     style = TextStyle.Default,
@@ -184,5 +231,6 @@ fun favoriteMoviesItem(movie: FavoritesEntity, onItemClick: (Int) -> Unit) {
                 )
             }
         }
+
     }
 }

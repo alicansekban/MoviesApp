@@ -16,4 +16,8 @@ class FavoriteMoviesRepository @Inject constructor(
     fun getFavoriteMovies(searchQuery:String): ResultWrapper<List<FavoritesEntity>> {
         return localDataSource.getFavoriteMovies(searchQuery)
     }
+
+    suspend fun removeMovieFromFavorites(id:Int): ResultWrapper<Any> {
+        return localDataSource.removeMovieFromFavorites(id)
+    }
 }
