@@ -29,6 +29,7 @@ import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -61,6 +62,9 @@ fun FavoritesScreen(
 
 
     val searchQuery: MutableState<String> = remember { mutableStateOf("") }
+    var id by remember {
+        mutableStateOf(1)
+    }
 
 
     LaunchedEffect(key1 = searchQuery.value) {
@@ -74,7 +78,9 @@ fun FavoritesScreen(
         is Error -> {}
         is Loading -> {LoadingView()}
         is Success -> {
+            LaunchedEffect(key1 = id) {
                 viewModel.getFavorites()
+            }
         }
     }
     when (movies) {
@@ -91,6 +97,7 @@ fun FavoritesScreen(
                     searchQuery.value = newValue
                 },
                 removeFavoriteClicked =  {
+                    id = it
                     viewModel.removeFavoriteMovie(it)
                 }
             )

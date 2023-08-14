@@ -12,6 +12,7 @@ import com.alican.mvvm_starter.domain.interactor.MoviesListInteractor
 import com.alican.mvvm_starter.domain.model.BaseUIModel
 import com.alican.mvvm_starter.domain.model.Loading
 import com.alican.mvvm_starter.domain.model.MovieUIModel
+import com.alican.mvvm_starter.domain.model.Success
 import com.alican.mvvm_starter.util.Constant
 import dagger.hilt.android.lifecycle.HiltViewModel
 import dagger.hilt.android.qualifiers.ApplicationContext
@@ -32,14 +33,19 @@ class MoviesListViewModel @Inject constructor(
 ) : ViewModel() {
 
 
-
     private val _movies = MutableStateFlow<PagingData<MovieUIModel>>(PagingData.empty())
-    val movies: StateFlow<PagingData<MovieUIModel>> get() = _movies.stateIn(viewModelScope,
-        SharingStarted.Eagerly, PagingData.empty())
+    val movies: StateFlow<PagingData<MovieUIModel>>
+        get() = _movies.stateIn(
+            viewModelScope,
+            SharingStarted.Eagerly, PagingData.empty()
+        )
 
     private val _favorites = MutableStateFlow<BaseUIModel<Any>>(Loading())
-    val favorites: StateFlow<BaseUIModel<Any>> get() = _favorites.stateIn(viewModelScope,
-        SharingStarted.Eagerly,Loading())
+    val favorites: StateFlow<BaseUIModel<Any>>
+        get() = _favorites.stateIn(
+            viewModelScope,
+            SharingStarted.Eagerly, Loading()
+        )
 
 
     var title: String = ""
@@ -77,12 +83,17 @@ class MoviesListViewModel @Inject constructor(
     fun addToFavorites(movie: MovieUIModel) {
         viewModelScope.launch {
             try {
-                favoritesInteractor.insertFavoriteMovie(movie).collectLatest {
-                    _favorites.emit(it)
-                }
-            } catch (e : Exception) {
+                favoritesInteractor.insertFavoriteMovie(movie)
+                _favorites.emit(Success(movie))
+            } catch (e: Exception) {
                 //
             }
+        }
+    }
+
+    fun favoritesEmitted() {
+        viewModelScope.launch {
+            _favorites.emit(Loading())
         }
     }
 
