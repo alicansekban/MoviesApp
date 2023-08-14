@@ -12,14 +12,13 @@ import com.alican.mvvm_starter.domain.interactor.MoviesListInteractor
 import com.alican.mvvm_starter.domain.model.BaseUIModel
 import com.alican.mvvm_starter.domain.model.Loading
 import com.alican.mvvm_starter.domain.model.MovieUIModel
-import com.alican.mvvm_starter.domain.model.Success
 import com.alican.mvvm_starter.util.Constant
 import dagger.hilt.android.lifecycle.HiltViewModel
 import dagger.hilt.android.qualifiers.ApplicationContext
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
-import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
 import javax.inject.Inject
@@ -35,10 +34,7 @@ class MoviesListViewModel @Inject constructor(
 
     private val _movies = MutableStateFlow<PagingData<MovieUIModel>>(PagingData.empty())
     val movies: StateFlow<PagingData<MovieUIModel>>
-        get() = _movies.stateIn(
-            viewModelScope,
-            SharingStarted.Eagerly, PagingData.empty()
-        )
+        get() = _movies
 
     private val _favorites = MutableStateFlow<BaseUIModel<Any>>(Loading())
     val favorites: StateFlow<BaseUIModel<Any>>
@@ -47,13 +43,11 @@ class MoviesListViewModel @Inject constructor(
             SharingStarted.Eagerly, Loading()
         )
 
-
     var title: String = ""
     val argument = checkNotNull(savedStateHandle.get<String>("type"))
 
     init {
         getData(argument)
-
     }
 
     fun setTitle(): String {
@@ -81,10 +75,11 @@ class MoviesListViewModel @Inject constructor(
     }
 
     fun addToFavorites(movie: MovieUIModel) {
-        viewModelScope.launch {
+        viewModelScope.launch(Dispatchers.IO) {
             try {
-                favoritesInteractor.insertFavoriteMovie(movie)
-                _favorites.emit(Success(movie))
+                favoritesInteractor.insertFavoriteMovie(movie).collect{
+                    _favorites.emit(it)
+                }
             } catch (e: Exception) {
                 //
             }
@@ -101,7 +96,7 @@ class MoviesListViewModel @Inject constructor(
         viewModelScope.launch {
             try {
                 interactor.searchMovies(query).cachedIn(viewModelScope)
-                    .collectLatest { movies ->
+                    .collect { movies ->
                         _movies.emit(movies)
                     }
             } catch (e: Exception) {
@@ -115,7 +110,7 @@ class MoviesListViewModel @Inject constructor(
         viewModelScope.launch {
             try {
                 interactor.getPopularMovies().cachedIn(viewModelScope)
-                    .collectLatest { movies ->
+                    .collect { movies ->
                         _movies.emit(movies)
                     }
             } catch (e: Exception) {
@@ -129,7 +124,7 @@ class MoviesListViewModel @Inject constructor(
         viewModelScope.launch {
             try {
                 interactor.getNowPlayingMovies().cachedIn(viewModelScope)
-                    .collectLatest { movies ->
+                    .collect { movies ->
                         _movies.emit(movies)
                     }
             } catch (e: Exception) {
@@ -143,7 +138,7 @@ class MoviesListViewModel @Inject constructor(
         viewModelScope.launch {
             try {
                 interactor.getTopRatedMovies().cachedIn(viewModelScope)
-                    .collectLatest { movies ->
+                    .collect { movies ->
                         _movies.emit(movies)
                     }
             } catch (e: Exception) {
@@ -157,7 +152,7 @@ class MoviesListViewModel @Inject constructor(
         viewModelScope.launch {
             try {
                 interactor.getUpcomingMovies().cachedIn(viewModelScope)
-                    .collectLatest { movies ->
+                    .collect { movies ->
                         _movies.emit(movies)
                     }
             } catch (e: Exception) {

@@ -39,13 +39,15 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalConfiguration
+import androidx.compose.ui.platform.LocalView
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
-import androidx.compose.ui.unit.IntOffset
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import androidx.compose.ui.window.Popup
+import androidx.compose.ui.window.Dialog
+import androidx.compose.ui.window.DialogWindowProvider
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.paging.LoadState
@@ -57,6 +59,7 @@ import com.alican.mvvm_starter.domain.model.Success
 import com.alican.mvvm_starter.ui.home.loadImage
 import com.alican.mvvm_starter.ui.theme.Black
 import com.alican.mvvm_starter.ui.theme.White
+import com.alican.mvvm_starter.util.widthPercent
 import kotlin.random.Random
 
 @Composable
@@ -69,8 +72,14 @@ fun ListScreen(
 
     val listState = rememberLazyGridState()
 
+    // ...
+
+
     val movies = viewModel.movies.collectAsLazyPagingItems()
+
+
     var searchQuery by remember { mutableStateOf("") }
+
 
     LaunchedEffect(key1 = searchQuery) {
         if (searchQuery.length > 2) {
@@ -252,15 +261,18 @@ fun popUp(
     onDismissRequest: () -> Unit,
     openFavorites: () -> Unit
 ) {
-    Popup(
-        alignment = Alignment.Center,
-        offset = IntOffset(0, 0),
+    Dialog(
         onDismissRequest = { onDismissRequest() }
     ) {
+
+        (LocalView.current.parent as DialogWindowProvider).window.setDimAmount(0.50f)
+        val configuration = LocalConfiguration.current
+
+
         Card(
             modifier = Modifier
                 .height(90.dp)
-                .fillMaxWidth(0.72f),
+                .widthPercent(0.72f, configuration),
             elevation = CardDefaults.cardElevation(2.dp),
             shape = RoundedCornerShape(14.dp),
             colors = CardDefaults.cardColors(containerColor = Color.White),

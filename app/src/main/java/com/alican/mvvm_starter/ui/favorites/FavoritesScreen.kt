@@ -1,5 +1,6 @@
 package com.alican.mvvm_starter.ui.favorites
 
+import android.widget.Toast
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
@@ -26,6 +27,7 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.MutableState
+import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -33,6 +35,7 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
@@ -60,10 +63,18 @@ fun FavoritesScreen(
     val movies by viewModel.favoriteMovies.collectAsStateWithLifecycle()
     val removedState by viewModel.removeFavoriteMovie.collectAsStateWithLifecycle()
 
-
+    val context = LocalContext.current
     val searchQuery: MutableState<String> = remember { mutableStateOf("") }
     var id by remember {
         mutableStateOf(1)
+    }
+    val popupControl by remember { derivedStateOf { removedState is Success<*> } }
+    if (popupControl) {
+        LaunchedEffect(key1 = popupControl) {
+            viewModel.favoritesEmitted()
+            Toast.makeText(context,"Movie removed from your favorites", Toast.LENGTH_LONG).show()
+            viewModel.getFavorites()
+        }
     }
 
 
@@ -72,15 +83,6 @@ fun FavoritesScreen(
             viewModel.getFavorites(searchQuery.value)
         } else {
             viewModel.getFavorites("")
-        }
-    }
-    when (removedState) {
-        is Error -> {}
-        is Loading -> {LoadingView()}
-        is Success -> {
-            LaunchedEffect(key1 = id) {
-                viewModel.getFavorites()
-            }
         }
     }
     when (movies) {

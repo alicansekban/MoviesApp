@@ -42,6 +42,11 @@ class FavoritesViewModel @Inject constructor(
             }
         }
     }
+    fun favoritesEmitted() {
+        viewModelScope.launch {
+            _removeFavoriteMovie.emit(Loading())
+        }
+    }
 
     fun removeFavoriteMovie(id:Int) {
         viewModelScope.launch(Dispatchers.IO) {
