@@ -1,4 +1,4 @@
-package com.alican.mvvm_starter.ui.home
+package com.alican.mvvm_starter.customViews
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box

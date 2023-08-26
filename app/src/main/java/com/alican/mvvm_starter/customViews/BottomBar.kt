@@ -19,6 +19,7 @@ fun BottomAppBar() {
         val currentRoute = navBackStackEntry?.destination?.route
         listOf(
             Screen.Home,
+            Screen.Favorites,
             Screen.More
         ).forEach { screen ->
             BottomNavigationItem(

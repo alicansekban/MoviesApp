@@ -77,7 +77,7 @@ class MoviesListViewModel @Inject constructor(
     fun addToFavorites(movie: MovieUIModel) {
         viewModelScope.launch(Dispatchers.IO) {
             try {
-                favoritesInteractor.insertFavoriteMovie(movie).collect{
+                favoritesInteractor.insertFavoriteMovie(movie).collect {
                     _favorites.emit(it)
                 }
             } catch (e: Exception) {
