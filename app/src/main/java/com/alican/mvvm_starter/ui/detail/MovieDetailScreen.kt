@@ -92,6 +92,8 @@ fun statelessDetail(
                 title = stringResource(id = R.string.txt_movie_detail_title),
                 showBackButton = true,
                 onBackClick = { popBackStack("-1") },
+                showMenuButton = false,
+                onMenuClick = {},
                 showFavoriteButton = false,
                 onFavoriteClick = { onFavoriteClick("favorites") }
             )

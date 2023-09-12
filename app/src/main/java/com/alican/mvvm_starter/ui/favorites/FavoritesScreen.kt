@@ -8,6 +8,7 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
@@ -58,6 +59,7 @@ fun FavoritesScreen(
     viewModel: FavoritesViewModel = hiltViewModel(),
     openDetail: (String) -> Unit,
     popBackStack: (String) -> Unit,
+    menuClicked: () -> Unit
 ) {
 
     val movies by viewModel.favoriteMovies.collectAsStateWithLifecycle()
@@ -72,7 +74,7 @@ fun FavoritesScreen(
     if (popupControl) {
         LaunchedEffect(key1 = popupControl) {
             viewModel.favoritesEmitted()
-            Toast.makeText(context,"Movie removed from your favorites", Toast.LENGTH_LONG).show()
+            Toast.makeText(context, "Movie removed from your favorites", Toast.LENGTH_LONG).show()
             viewModel.getFavorites()
         }
     }
@@ -86,8 +88,10 @@ fun FavoritesScreen(
         }
     }
     when (movies) {
-        is Error ->  {}
-        is Loading -> { LoadingView()}
+        is Error -> {}
+        is Loading -> {
+            LoadingView()
+        }
 
         is Success -> {
             stateLessFavorites(
@@ -98,14 +102,21 @@ fun FavoritesScreen(
                 onSearchQueryChange = { newValue ->
                     searchQuery.value = newValue
                 },
-                removeFavoriteClicked =  {
+                removeFavoriteClicked = {
                     id = it
                     viewModel.removeFavoriteMovie(it)
-                }
+                },
+                menuClicked
             )
         }
     }
+}
 
+@Composable
+fun EmptyScreen() {
+    Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
+        Text(text = "You don't have any favorites yet.")
+    }
 }
 
 @Composable
@@ -115,14 +126,17 @@ fun stateLessFavorites(
     popBackStack: (String) -> Unit,
     searchQuery: String,
     onSearchQueryChange: (String) -> Unit,
-    removeFavoriteClicked : (Int) -> Unit
+    removeFavoriteClicked: (Int) -> Unit,
+    menuClicked: () -> Unit
 ) {
     Scaffold(
         topBar = {
             TopBar(
                 title = "Favorite Movies",
-                showBackButton = true,
+                showBackButton = false,
                 onBackClick = { popBackStack("-1") },
+                showMenuButton = true,
+                onMenuClick = { menuClicked() },
                 showFavoriteButton = false,
                 onFavoriteClick = { })
         },
@@ -133,50 +147,53 @@ fun stateLessFavorites(
                     .padding(padding)
                     .padding(top = 8.dp)
             ) {
+                if (movies.isEmpty()) {
+                    EmptyScreen()
+                } else {
 
-                OutlinedTextField(
-                    value = searchQuery, onValueChange = {
-                        onSearchQueryChange(it)
+                    OutlinedTextField(
+                        value = searchQuery, onValueChange = {
+                            onSearchQueryChange(it)
 
-                    },
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .padding(start = 16.dp, end = 16.dp),
-                    shape = CircleShape,
-                    placeholder = {
-                        Text(text = "Search...")
-                    },
-                    maxLines = 1,
-                    singleLine = true
-                )
-                Spacer(modifier = Modifier.height(8.dp))
-                LazyVerticalGrid(
-                    columns = GridCells.Fixed(2),
-                    state = rememberLazyGridState()
-                ) {
-                    items(movies.size, key = { it }) { index ->
-                        if (movies.isEmpty()) {
-                            FavoritesEmptyUi()
-                        } else {
-                            favoriteMoviesItem(
-                                movie = movies[index],
-                                onItemClick = {
-                                    openDetail(
-                                        "detail/{id}".replace(
-                                            oldValue = "{id}",
-                                            newValue = it.toString()
+                        },
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .padding(start = 16.dp, end = 16.dp),
+                        shape = CircleShape,
+                        placeholder = {
+                            Text(text = "Search...")
+                        },
+                        maxLines = 1,
+                        singleLine = true
+                    )
+                    Spacer(modifier = Modifier.height(8.dp))
+                    LazyVerticalGrid(
+                        columns = GridCells.Fixed(2),
+                        state = rememberLazyGridState()
+                    ) {
+                        items(movies.size, key = { it }) { index ->
+                            if (movies.isEmpty()) {
+                                FavoritesEmptyUi()
+                            } else {
+                                favoriteMoviesItem(
+                                    movie = movies[index],
+                                    onItemClick = {
+                                        openDetail(
+                                            "detail/{id}".replace(
+                                                oldValue = "{id}",
+                                                newValue = it.toString()
+                                            )
                                         )
-                                    )
-                                }
-                                ,
-                                onRemoveClick = {
-                                    removeFavoriteClicked(it)
-                                } )
+                                    },
+                                    onRemoveClick = {
+                                        removeFavoriteClicked(it)
+                                    })
+                            }
+
                         }
-
                     }
-                }
 
+                }
             }
         }
     )
@@ -185,7 +202,11 @@ fun stateLessFavorites(
 }
 
 @Composable
-fun favoriteMoviesItem(movie: FavoritesEntity, onItemClick: (Int) -> Unit,onRemoveClick : (Int) -> Unit) {
+fun favoriteMoviesItem(
+    movie: FavoritesEntity,
+    onItemClick: (Int) -> Unit,
+    onRemoveClick: (Int) -> Unit
+) {
     // Movie item UI
 
     Surface(
@@ -199,7 +220,7 @@ fun favoriteMoviesItem(movie: FavoritesEntity, onItemClick: (Int) -> Unit,onRemo
         Column(modifier = Modifier
             .width(120.dp)
             .clickable { onItemClick(movie.id) }) {
-            Box{
+            Box {
                 loadImage(url = movie.posterPath, modifier = Modifier) {
                     onItemClick(movie.id)
                 }

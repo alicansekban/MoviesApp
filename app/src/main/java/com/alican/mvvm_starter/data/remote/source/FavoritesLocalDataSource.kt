@@ -17,7 +17,6 @@ class FavoritesLocalDataSource @Inject constructor(
         } catch (e: Exception) {
             ResultWrapper.GenericError()
         }
-
     }
 
     fun getFavoriteMovies(searchQuery: String): ResultWrapper<List<FavoritesEntity>> {

@@ -25,8 +25,7 @@ class FavoriteMoviesInteractor @Inject constructor(
         return flow {
             emit(Loading())
             emit(
-                when (val result =
-                    repository.insertFavoriteMovie(mapper.mapMovietoFavoriteEntity(movie))) {
+                when (val result = repository.insertFavoriteMovie(mapper.mapMovietoFavoriteEntity(movie))) {
                     is ResultWrapper.GenericError -> Error(context.getString(R.string.error_message))
                     ResultWrapper.Loading -> Loading()
                     ResultWrapper.NetworkError -> Error(context.getString(R.string.connection_error_msg))

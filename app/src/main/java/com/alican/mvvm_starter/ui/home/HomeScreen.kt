@@ -67,6 +67,7 @@ fun HomeScreen(
     openList: (String) -> Unit,
     openDetail: (String) -> Unit,
     openFavorites: (String) -> Unit,
+    menuClicked: () -> Unit,
     viewModel: HomeViewModel = hiltViewModel()
 ) {
 
@@ -82,7 +83,8 @@ fun HomeScreen(
         upComingMovies,
         openList,
         openDetail,
-        openFavorites
+        openFavorites,
+        menuClicked
     )
 }
 
@@ -95,19 +97,19 @@ fun statelessHome(
     upComingMovies: BaseUIModel<List<MovieUIModel>>,
     openList: (String) -> Unit,
     openDetail: (String) -> Unit,
-    openFavorites: (String) -> Unit
+    openFavorites: (String) -> Unit,
+    menuClicked: () -> Unit
 ) {
     Scaffold(
-        bottomBar = {
-
-        },
         topBar = {
             TopBar(
                 title = stringResource(id = R.string.get_home_title),
                 showBackButton = false,
+                showMenuButton = true,
+                onMenuClick = { menuClicked() },
                 onBackClick = {},
-                showFavoriteButton = true,
-                onFavoriteClick = { openFavorites("favorites") }
+                showFavoriteButton = false,
+                onFavoriteClick = {  }
             )
         }
     ) { padding ->

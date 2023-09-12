@@ -9,6 +9,7 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowBack
 import androidx.compose.material.icons.filled.Favorite
+import androidx.compose.material.icons.filled.Menu
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.Surface
@@ -31,6 +32,8 @@ import com.alican.mvvm_starter.ui.theme.White
 fun TopBar(
     title: String,
     showBackButton: Boolean,
+    showMenuButton: Boolean,
+    onMenuClick : () -> Unit,
     onBackClick: () -> Unit,
     showFavoriteButton: Boolean,
     onFavoriteClick: () -> Unit
@@ -55,6 +58,18 @@ fun TopBar(
                     Icon(
                         imageVector = Icons.Default.ArrowBack,
                         contentDescription = "Back",
+                        tint = Black
+                    )
+                }
+            }
+            if (showMenuButton) {
+                IconButton(
+                    onClick = { onMenuClick() },
+                    modifier = Modifier.size(40.dp)
+                ) {
+                    Icon(
+                        imageVector = Icons.Default.Menu,
+                        contentDescription = "Menu",
                         tint = Black
                     )
                 }

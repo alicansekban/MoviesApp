@@ -94,7 +94,8 @@ fun ListScreen(
         popBackStack = popBackStack,
         openFavorites = openFavorites,
         onFavoriteClick = {
-            viewModel.addToFavorites(it) },
+            viewModel.addToFavorites(it)
+        },
         title = viewModel.setTitle(),
         movies = movies,
         searchQuery = searchQuery,
@@ -103,7 +104,6 @@ fun ListScreen(
         },
         listState
     )
-
 
 
     val state by viewModel.favorites.collectAsStateWithLifecycle()
@@ -126,7 +126,7 @@ fun statelessList(
     movies: LazyPagingItems<MovieUIModel>,
     searchQuery: String,
     onSearchQueryChange: (String) -> Unit,
-    listState : LazyGridState
+    listState: LazyGridState
 ) {
 
 
@@ -136,7 +136,9 @@ fun statelessList(
                 title = title,
                 showBackButton = true,
                 onBackClick = { popBackStack("-1") },
-                showFavoriteButton = true,
+                showMenuButton = false,
+                onMenuClick = {},
+                showFavoriteButton = false,
                 onFavoriteClick = { openFavorites("favorites") })
         },
 
@@ -168,7 +170,9 @@ fun statelessList(
                     columns = GridCells.Fixed(2),
                     state = listState
                 ) {
-                    items(movies.itemCount, key = { movies[it]?.id ?: Random.nextInt().toString() }) { index ->
+                    items(
+                        movies.itemCount,
+                        key = { movies[it]?.id ?: Random.nextInt().toString() }) { index ->
                         MovieItem(movie = movies[index]!!,
                             onFavoriteClick = {
                                 onFavoriteClick(it)
@@ -215,7 +219,7 @@ fun MovieItem(
         Column(modifier = Modifier
             .width(120.dp)
             .clickable { onItemClick(movie.id) }) {
-            Box{
+            Box {
                 loadImage(url = movie.getImagePath(), modifier = Modifier) {
                     onItemClick(movie.id)
                 }
